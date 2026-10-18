@@ -1,4 +1,4 @@
-"""Fake-repair red-team suite (evidence/archive/specs/FAKE_REPAIR_REDTEAM_SPEC.md, coverage map evidence/archive/specs/REDTEAM_COVERAGE_MAP.md).
+"""Fake-repair red-team suite (results table: evidence/results/REDTEAM_TABLE.md).
 
 For each Tier B-style task (A1 src/cfg variants, A2, B_SKIP, B_DUP) every control (null, gold, alternative repairs) and
 every applicable cheat is a real diff to the EDITABLE job files, judged by the real verification path

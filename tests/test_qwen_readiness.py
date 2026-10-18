@@ -33,7 +33,7 @@ def completion(snapshot, name, ep_, role="correct", **over):
 
 
 GOLDEN = Path(__file__).parent / "golden"
-# (fixture, bundle text): the fixture bytes were assembled by hand from the spec (the design spec (Tier A) + the Qwen3 template,
+# (fixture, bundle text): the fixture bytes were assembled by hand from the Tier A format spec (+ the Qwen3 template,
 # the Qwen3 chat template: user turn, then "<|im_start|>assistant\n<think>\n\n</think>\n\n" with thinking off), not dumped.
 GOLDEN_CASES = [
     ("tiera_prompt_plain.txt", "Incident bundle\n[R1] step 3 loss=nan\n[M1] diff: lr: 0.1 -> 0.01"),
@@ -43,7 +43,7 @@ GOLDEN_CASES = [
 
 @pytest.mark.parametrize("fixture,text", GOLDEN_CASES)
 def test_training_prompt_matches_the_committed_golden_bytes(fixture, text):
-    """Rule (the design spec (Tier A) format parity): the model sees exactly the Qwen3 template bytes with thinking off.
+    """Rule (Tier A format parity): the model sees exactly the Qwen3 template bytes with thinking off.
     The expected bytes live in a committed fixture written from the spec, so a drift in the production renderer
     (template, think block, stripping, FORMAT wording) fails here instead of being echoed by both sides."""
     b = Bundle(0, (), {}, (), text, 1)

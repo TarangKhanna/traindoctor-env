@@ -1,4 +1,4 @@
-"""The verifier ladder (the design spec (docs/DESIGN_NOTES.md)). Each rung adds one requirement:
+"""The verifier ladder (docs/VERIFICATION.md). Each rung adds one requirement:
 V0 label correct; V1 = V0 + cited evidence was observed and satisfies the mechanism's evidence predicate;
 V2 = V1 + verified repair with preserved training correctness + no unnecessary destructive action.
 All three are emitted with their components so a composite cannot hide which part failed."""

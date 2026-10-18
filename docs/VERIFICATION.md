@@ -65,6 +65,6 @@ Across v1, **86 incorrect-repair attempts were not accepted**: 48 were rejected 
 - **Restricted task semantics:** the independent state reconstruction is specific to this task's known optimizer, sampler and model, not arbitrary distributed ML programs.
 - **Limited attacks:** the red team was produced within the project and has no independent external security audit.
 - **Limited learning signal:** current repair menus contain exactly one working fix, and the development tasks are too easy for strong coding agents. [Agent comparison](../experiments/cross_agent_dev6/BENCHMARK_REPORT.md) · [Negative mutation pilot](../experiments/mutation_pilot/README.md).
-- **Reproducibility:** held-out seeds are withheld. Scored rollouts, live replay records, checksums and available scripts are in [results/](../evidence/results/) and the [release manifest](../evidence/RELEASE_MANIFEST.md); some executed Gloo test configurations have not been validated in an unrestricted public CI environment.
+- **Reproducibility:** held-out seeds are withheld. Scored rollouts, live replay records, checksums and available scripts are in [results/](../evidence/results/) and the [evidence index](../evidence/README.md); some executed Gloo test configurations have not been validated in an unrestricted public CI environment.
 
 **Engineering takeaway:** sandbox isolation lets the agent's repair run; launcher-owned evidence and independent update checks make that repair **gradable for training correctness**.

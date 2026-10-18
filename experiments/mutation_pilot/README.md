@@ -15,7 +15,7 @@ generalisation or RL.
 
 ## Layout
 - generator/mutate.py: operators, gold/alt/decoy patches. pilot/: snapshot execution, fingerprints, validation, freeze, agent protocol and scoring, vendored patch parser.
-- tasks.json (frozen definitions + freeze hash), receipts/ (per-task validation), results/ (evaluation, table, validation summary, verdict), prompt/PROMPT.md.
+- tasks.json (frozen definitions + freeze hash), results/ (evaluation, table, validation summary, verdict). The per-task validation receipts and the agent prompt were archived privately and are not published.
 - tests/: 31 offline tests (determinism, gold restores pristine bytes, arms valid and distinct, seed range). Seeds used: 40001-40008.
 
 ## Reproduce

@@ -1,6 +1,0 @@
-{
-  "label": "RANK_STALLED_BEFORE_COLLECTIVE",
-  "evidence_ids": ["E42e495", "Ed37337", "Eb14cb2", "Ee3232b", "Ee27047", "E18e015"],
-  "fix_claim": "Correct rank 1's shard directory from part-4 to part-1. Rank 1 completed step 6 but then waited for a missing shard, leaving its peers waiting in the step 7 collective.",
-  "patch": "--- a/job/config.yaml\n+++ b/job/config.yaml\n@@ -20,5 +20,5 @@\n   shard_dirs:\n     0: part-0\n-    1: part-4\n+    1: part-1\n     2: part-2\n     3: part-3\n"
-}

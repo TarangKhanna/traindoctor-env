@@ -99,7 +99,7 @@ The script runs a real four-process failing job, displays its diagnostic evidenc
 - **Task difficulty:** current tasks are easy for strong coding agents. In six development tasks, Claude Sonnet and Codex both recovered all six; Claude missed one evidence requirement. Codex also solved 24/24 attempts on eight procedurally generated tasks. These are **not useful model rankings**. [Agent comparison](experiments/cross_agent_dev6/BENCHMARK_REPORT.md) · [Task-generation pilot](experiments/mutation_pilot/README.md).
 - **Reward discrimination:** each v0.1 menu has just one working repair; V1 (diagnosis + evidence) and V2 agree on 97.7% of development rollouts. More challenging repair choices are needed to test whether verification improves *repair decisions*.
 - **Scope:** two synthetic families—collective mismatch / rank stall and checkpoint/sampler inconsistency. The test split is by seed, not by unseen mechanism. No claim about production NCCL/FSDP failures or arbitrary training programs.
-- **Validation:** six paired GRPO seeds but only one continued-SFT run; no outside verifier audit. Held-out seed values are withheld, so the exact evaluation set cannot be regenerated solely from this repository. Executed Gloo tests require a compatible, unrestricted environment. [Test status](docs/TESTING.md) · [Evidence/provenance index](evidence/RELEASE_MANIFEST.md).
+- **Validation:** six paired GRPO seeds but only one continued-SFT run; no outside verifier audit. Held-out seed values are withheld, so the exact evaluation set cannot be regenerated solely from this repository. Executed Gloo tests require a compatible, unrestricted environment. [Test status](docs/TESTING.md) · [Evidence index](evidence/README.md).
 
 ## Explore the implementation
 
@@ -107,7 +107,7 @@ The script runs a real four-process failing job, displays its diagnostic evidenc
 
 **RL research:** [Reward-design findings](docs/FINDINGS.md) · [Held-out model evaluation](evidence/results/TEST_REPORT.md) · [SFT/GRPO code](modal_train/).
 
-**Reproducibility:** [Installation and sandboxed replay](docs/QUICKSTART.md) · [Evidence manifest](evidence/RELEASE_MANIFEST.md) · [Complete documentation index](docs/README.md).
+**Reproducibility:** [Installation and sandboxed replay](docs/QUICKSTART.md) · [Evidence index and recompute commands](evidence/README.md) · [Complete documentation index](docs/README.md).
 
 **Terminology:** *Rank* = training worker process; *collective* = a communication operation such as `all_reduce` or `broadcast`; *reference run* = the known-correct job without the injected fault; *re-execution* = running a patched job; *independent update replay* = reconstructing expected optimizer/state updates from the known training rule.
 

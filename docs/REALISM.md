@@ -1,6 +1,6 @@
-# REALISM.md (DRAFT)
+# Realism: which faults map to published incidents
 
-Maps each fault in the design spec (docs/DESIGN_NOTES.md) to published evidence, to how the environment produces it, and what the CPU/Gloo version does not capture. Only sources actually opened are cited with quotes. Items seen only as search snippets are marked UNVERIFIED. Faults beyond the two implemented task families are candidates only.
+Maps each fault family (see [`TASKS.md`](TASKS.md)) to published evidence, to how the environment produces it, and what the CPU/Gloo version does not capture. Only sources actually opened are cited with quotes. Items seen only as search snippets are marked UNVERIFIED. Faults beyond the two implemented task families are candidates only.
 
 Sources opened (short keys):
 - **L3** Llama 3 paper, https://arxiv.org/pdf/2407.21783 (Sec 3.3.4, Table 5; text extracted locally)

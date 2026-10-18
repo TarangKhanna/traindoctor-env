@@ -9,7 +9,7 @@ TRAIN_SEEDS = range(20_000, 20_400)
 # A private run supplies it as TD_TEST_SEED_RANGE="lo:hi"; unset -> empty, so no public script can generate TEST episodes.
 _lo, _, _hi = os.environ.get("TD_TEST_SEED_RANGE", "0:0").partition(":")
 TEST_SEEDS_SEALED = range(int(_lo), int(_hi or _lo))
-BURNED_SEEDS = range(7001, 7009)   # seeds already spent in earlier sessions; must never train
+BURNED_SEEDS = range(7001, 7009)   # seeds used by earlier experiments; must never train
 
 
 def _disjoint(*rs):

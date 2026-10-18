@@ -97,7 +97,7 @@ def test_dev_reward_is_unreachable_from_eval_and_verifier_paths():
     allowed = {root / "modal_train" / "core.py", root / "modal_train" / "trainlib.py"}
     hits = {f for d in ("modal_train", "traindoctor_env", "audit", "rl", "adapters")
             for f in (root / d).rglob("*.py") if re.search(r"dev_reward|dev_episode|make_dev_reward_fn", f.read_text())}
-    # Owner-approved (2026-10-18), narrowly scoped: offline analysis scripts under modal_train/results/ may re-score
+    # Narrow exemption: offline analysis scripts under modal_train/results/ may re-score
     # saved DEV rollouts via dev_episode, but only if they label their output EXPLORATORY. Nothing else is exempt.
     res = root / "modal_train" / "results"
     hits = {f for f in hits if not (res in f.parents and "EXPLORATORY" in f.read_text())}

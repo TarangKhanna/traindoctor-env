@@ -1,6 +1,0 @@
-{
-  "label": "COLLECTIVE_DIVERGENCE",
-  "evidence_ids": ["Eb43f9a", "E3cd0af", "E45094c"],
-  "fix_claim": "Remove the rank-0 synchronization override so every rank uses all_reduce for every gradient bucket. This fixes the step-5 mismatch where rank 0 enters reduce while ranks 1 and 2 enter all_reduce.",
-  "patch": "--- a/job/config.yaml\n+++ b/job/config.yaml\n@@ -11,8 +11,7 @@\n sync:\n   mode: all_reduce\n   warmup_steps: 5\n-  per_rank:\n-    0: reduce_bcast\n+  per_rank: {}\n data:\n   root: data\n   num_samples: 96\n"
-}

@@ -1,9 +1,0 @@
-# Seed splits (rl/splits.py; disjointness asserted at import)
-
-> Historical note: this page was written when the Tier A prompt cap was 2,048 tokens. The cap was amended to 3,072 on 2026-10-18 (`docs/prereg/amendment_token_cap.md`) and `CAP_TOKENS = 3072` in `traindoctor_env/bundle.py` is current. The 2,048 figures below are historical.
-
-DEV 10000-10399 (selection, frozen-vs-trained comparison), TRAIN 20000-20399, TEST SEALED (private seed pool, not published; never generated or opened before the single run), BURNED 7001-7008 excluded. M1.5 dev seeds are not enumerated in this repo; the DEV range is the only reserved range here.
-Ordering caveat: rl/splits.py was written and imported before out/sft was generated but committed afterwards (1c41bd8 vs the generation run); no SFT example used a non-TRAIN seed (300 rows, seeds 20000+, 60 per kind, 0 skipped).
-Seed-only splits do NOT support held-out-mechanism generalization claims: TRAIN, DEV and TEST draw from the same five scenario kinds and templates.
-# Token audit (docs/token_audit.json, model's own tokenizers, bundle text only)
-CAP_TOKENS=2048 uses a 4-char heuristic. True counts: Qwen3 tokenizer on 16 DEV bundles min 1835 / median 2367 / max 2771, 9 of 16 over 2048; Gemma tokenizer median 2591, max 3015, 12 of 16 over. 300 TRAIN prompts (full Qwen3 prompt): median 2355, max 2868, 180 over 2048. Cap and prompts NOT changed; earlier 0.6B/4B/screen numbers are not superseded yet (a cap enforced on true tokens would need a compaction rule + hand-updated fixtures + rebaseline; decision needed).

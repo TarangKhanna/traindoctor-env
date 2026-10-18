@@ -9,7 +9,7 @@ The profile is DENY BY DEFAULT and allows only:
   network       loopback only (Gloo's rendezvous between ranks); the data service is an inherited socket, no port.
                 Gloo's pair connections use ephemeral loopback ports the launcher cannot know in advance and
                 Seatbelt filters on one port or `*`, never a range, so other loopback services are NOT closed off
-                (known residual, recorded in docs/DESIGN_NOTES.md)
+                (known residual)
   mach-lookup   MACH_LOOKUPS below, nothing else (in particular no LaunchServices, no AppleEvents)
 A path component named _private is unreadable even if some rule above would allow it. The reference, the metadata
 and the trusted ledger are not under the run directory in the first place.

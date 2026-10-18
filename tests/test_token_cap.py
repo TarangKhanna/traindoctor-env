@@ -1,4 +1,4 @@
-"""Tier A prompt length in TRUE Qwen3 tokens (the design spec (docs/DESIGN_NOTES.md): hard cap 3,072). Rules: (1) est_tokens is an upper bound
+"""Tier A prompt length in TRUE Qwen3 tokens (hard cap 3,072). Rules: (1) est_tokens is an upper bound
 of the real tokenizer's count on text of the shapes a bundle contains; (2) the chat-template + answer-format frame
 costs no more than PROMPT_OVERHEAD; (3) every executed bundle's real prompt is <= CAP_TOKENS. Rules 1-2 skip with a
 reason when the tokenizer is not in the offline HF cache; rule 3 also needs executed snapshots (Gloo)."""
@@ -69,7 +69,7 @@ SYNTH_SEEDS = range(10000, 10120)    # DEV seeds: make_scenario draws kind and 3
 
 def test_synthetic_bundles_fit_the_cap_in_true_tokens_for_task_b_at_3_and_4_ranks(tok):
     """No Gloo here, so records are synthesized in the executed format (tests/synth_snapshot.py; pessimistic: every rank of
-    the failed run records samples through the kill step). Rule: the certificate is never dropped (the design spec (docs/DESIGN_NOTES.md)), so
+    the failed run records samples through the kill step). Rule: the certificate is never dropped (evidence/prereg/amendment_token_cap.md), so
     the cap must admit it for every variant: no BundleTooLarge, estimate and real count both <= CAP_TOKENS."""
     from tests.synth_snapshot import synth_snapshot
     seen = set()

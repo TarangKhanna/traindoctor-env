@@ -42,5 +42,5 @@ Issues = "https://github.com/TarangKhanna/traindoctor-env/issues"
 include = ["traindoctor_env*", "jobs*", "rl*", "modal_train*", "audit*"]
 
 [tool.setuptools.package-data]
-jobs = ["template*/*", "runtime/*", "m2_candidates/*"]
+jobs = ["template*/*", "runtime/*"]
 modal_train = ["rates.json"]

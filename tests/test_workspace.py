@@ -58,7 +58,7 @@ def outputs(ep):
 
 
 def test_edit_relaunch_serves_fresh_artifacts_and_matches_the_batch_verdict(snapshot, menu_table):
-    """Rule (evidence/archive/specs/M1_NOTES.md, grading semantics): `relaunches` counts EVERY recovery attempt since the incident,
+    """Rule (grading semantics, docs/VERIFICATION.md): `relaunches` counts EVERY recovery attempt since the incident,
     the agent's workspace relaunches and the verification protocol's own run. The batch table has only the protocol
     run, so after one explicit relaunch the live verdict must equal it in everything except relaunches == table + 1."""
     snap = snapshot("A1_src")
