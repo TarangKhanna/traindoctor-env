@@ -2,7 +2,9 @@
 
 **TrainDoctor: An executable RL environment for debugging and repairing distributed ML training failures.**
 
-> **Research Preview v0.1.** Exploratory research code, two task families, no external review. Nothing here claims a new training algorithm or that RL improved repair selection (see Evidence).
+> **Research Preview v0.1.** Exploratory research code, two task families, no external review. No new training algorithm is claimed.
+>
+> What the training runs did show (sealed TEST, 4 faulted kinds, live-verified recovery): supervised fine-tuning on oracle traces raised verified recovery from 5.0% (base Qwen3-4B) to 17.2% (+12.2 points, CI [+6.9, +17.8]). GRPO with the replay-verified reward beat GRPO with a label-only reward by +10.4 points (CI [+5.8, +15.3]), but the gain comes from better evidence citation: label accuracy and the rate of choosing the recovering repair (71.4% vs 71.5%) did not change, and the verified-reward arm is not distinguishable from compute-matched continued SFT. See Evidence.
 
 An agent gets a failed multi-rank PyTorch/Gloo training job (logs, per-rank collective traces, config, source), proposes a repair, and a verifier decides whether training actually recovered with its computation intact. Failures are real CPU/Gloo processes, not canned text. Apache-2.0. Research code: results are exploratory (see [Limitations](#limitations)).
 
@@ -130,7 +132,7 @@ All numbers below are exploratory and come from committed files under `docs/resu
 - DEV split, exploratory: V2 arm minus V0 arm = +4.64 points, 95% CI [-0.69, +9.98]: inconclusive. Against compute-matched continued SFT (a single run) neither arm is a clear win. [`docs/results/SEEDS_3_5_REPORT.md`](docs/results/SEEDS_3_5_REPORT.md), [`docs/results/CONTROLS_REPORT.md`](docs/results/CONTROLS_REPORT.md)
 - Sealed TEST (100 episodes, run once; V2 from 369 live Modal Sandbox replays): **+10.36 percentage points** (bootstrap 95% CI [+5.83, +15.26]) on strict evidence-grounded, replay-verified end-to-end success, 4 faulted kinds. Label accuracy did not change (-0.10), and **repair-selection accuracy did not change (71.4% vs 71.5%)**: there is no demonstrated improvement in choosing the recovering repair. The gain is entirely in citing the right evidence, because every menu has exactly one recovering repair, so V2 is V1 plus that repair. An independent recount matched. [`docs/results/TEST_REPORT.md`](docs/results/TEST_REPORT.md), [`docs/results/test/AUDIT_RECOUNT.txt`](docs/results/test/AUDIT_RECOUNT.txt)
 
-Spend: about $8 of Modal credit for the whole v1 study ([`docs/results/LEDGER_ACTUAL_SUMMARY.txt`](docs/results/LEDGER_ACTUAL_SUMMARY.txt)).
+Spend: about $15.5 of Modal credit in total (the $8.04 figure in the linked summary is an earlier snapshot, taken before the sealed TEST and later runs; the ledger itself is not published).
 
 ## Limitations
 
