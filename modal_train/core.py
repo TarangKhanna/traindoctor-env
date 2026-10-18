@@ -10,7 +10,7 @@ from rl.first_update import classify, strip_special
 from rl.render import render
 from traindoctor_env.tiera import parse_answer, reward
 
-# HF (CUDA) ids -> the id rl.render knows, so Qwen3 gets our exact thinking-off template, byte-identical to the MLX path.
+# HF (CUDA) ids -> the id rl.render knows, so Qwen3 gets the exact thinking-off template, byte-identical to the MLX path.
 RENDER_ALIAS = {"Qwen/Qwen3-0.6B": "mlx-community/Qwen3-0.6B-4bit", "Qwen/Qwen3-4B": "mlx-community/Qwen3-4B-4bit"}
 
 

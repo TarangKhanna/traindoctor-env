@@ -48,7 +48,7 @@ Cost: incremental Modal spend from ledger rows tagged `xbench-` = $0.0625 (17 ac
 
 ## What the benchmark can and cannot distinguish
 - It separates a real repair from a non-repair: null controls score V0 only (label guessed from the answer is not enough), gold scores 6/6. The decomposition is informative: V0 6/6 for every agent and null, V1 separates evidence-citing from label-only (null 0/6), V2 adds live recovery.
-- It does **not** separate Claude Sonnet from Codex on these tasks. Both are at or near the ceiling; the only difference (t05) is an evidence-selection miss, one task, intervals overlap heavily (e.g. V2 5/6 vs 6/6), and no significance can be claimed. We do not claim either agent is better.
+- It does **not** separate Claude Sonnet from Codex on these tasks. Both are at or near the ceiling; the only difference (t05) is an evidence-selection miss, one task, intervals overlap heavily (e.g. V2 5/6 vs 6/6), and no significance can be claimed. Neither agent is claimed to be better.
 - Why: the DEV tasks have single-site, localisable bugs whose minimal fix is a few lines; both agents converge to the same edit. They do not require competing interventions, restart-is-wrong judgement, or multi-file repairs.
 - Not tested: unseen mechanisms, sealed TEST, tool-using (iterative) agents, multiple attempts / pass^k, exploit behaviour (no agent attempted any), Opus.
 - Design change needed for a discriminating benchmark: tasks with several plausible-but-wrong minimal fixes (decoys), faults whose evidence is spread across records, repairs spanning more than one file, cases where the surface fix passes a short run but fails sample accounting, and several attempts per task.

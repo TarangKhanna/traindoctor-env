@@ -36,7 +36,7 @@ def main():
                                        "Prompt v2 = neutral framing + NO_FAULT definition (traindoctor_env.tiera.reframe_v2).\n")
     worst = {}
     for name in ("train", "dev"):
-        eps = pickle.loads((src / f"{name}_eps.pkl").read_bytes())      # our own file, written by modal_train.prepare
+        eps = pickle.loads((src / f"{name}_eps.pkl").read_bytes())      # written by modal_train.prepare
         for e in eps:
             b = e[1]
             v1, v2 = render("mlx-community/Qwen3-4B-4bit", None, b), render("mlx-community/Qwen3-4B-4bit", None, b, "v2")

@@ -22,7 +22,7 @@ def peak_gb() -> float:
 
 
 def load_eps(data_dir: str, name: str) -> list:
-    return pickle.loads((Path(data_dir) / f"{name}_eps.pkl").read_bytes())  # written by modal_train.prepare, our own file
+    return pickle.loads((Path(data_dir) / f"{name}_eps.pkl").read_bytes())  # written by modal_train.prepare
 
 
 def load_tok(model: str):

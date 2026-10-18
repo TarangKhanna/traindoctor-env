@@ -4,7 +4,7 @@
 
 A training job can stop crashing and still be wrong: it may silently skip data, duplicate updates, restore the wrong optimizer state, or drop a worker. TrainDoctor gives an AI agent a **real multi-process PyTorch/Gloo failure**, lets it inspect evidence and propose a code/config repair, then checks whether the repaired computation is correct.
 
-**The engineering contribution is the recovery verifier—not gVisor.** TrainDoctor uses Modal's existing gVisor sandbox to run agent-edited code. We built the multi-rank failure/restart harness, a launcher-owned data server and checkpoint ledger, and **independent verification of the training state**.
+**The engineering contribution is the recovery verifier—not gVisor.** TrainDoctor uses Modal's existing gVisor sandbox to run agent-edited code. TrainDoctor adds a multi-rank failure/restart harness, a launcher-owned data server and checkpoint ledger, and **independent verification of the training state**.
 
 > **Research preview v0.1.** Two synthetic failure families, exploratory model results, and no independent security audit. This is neither a new RL algorithm nor a general-purpose verifier for arbitrary production training code.
 
@@ -43,7 +43,7 @@ For the precise trust model, update rules, and limitations, see the [verifier en
 
 ## What did models actually learn?
 
-We evaluated **Qwen3-4B** on **100 held-out incidents**: these scenarios were reserved for evaluation, and the protocol was fixed before evaluating them. The table below covers the four faulted kinds, excluding the healthy-job control. Training and evaluation used different seeds but **the same fault mechanisms**.
+**Qwen3-4B** was evaluated on **100 held-out incidents**: these scenarios were reserved for evaluation, and the protocol was fixed before evaluating them. The table below covers the four faulted kinds, excluding the healthy-job control. Training and evaluation used different seeds but **the same fault mechanisms**.
 
 **Full-task success (V2)** means *correct diagnosis + supporting evidence citations + a repair that passes real sandboxed execution checks*. This differs from **repair-selection accuracy**, which asks only whether the chosen repair recovers training.
 

@@ -1,6 +1,6 @@
 """Gate analysis: do distractor menus make V2 differ from V1? EXPLORATORY (dev_container tables, not verified recovery).
 
-Offline, no Modal. Inputs: a menu-v2 DEV cache (modal_train/cache_menu2/dev_eps.pkl, our own file written by modal_train.prepare)
+Offline, no Modal. Inputs: a menu-v2 DEV cache (modal_train/cache_menu2/dev_eps.pkl, written by modal_train.prepare)
 and saved eval jsons (modal_train.app::run_eval -> `completions`, G rollouts per episode in order).
   extract(eps, comps, G)   -> one record per rollout (verdict via the unchanged scorer on the transient dev view; chosen repair's
                               outcome and role from the episode's own menu/table)
@@ -144,7 +144,7 @@ def verdict(per_policy: dict[str, dict], sft_name: str = "esft_full") -> dict:
 
 def main(argv):
     cache, out, evals = Path(argv[0]), Path(argv[1]), [a.split("=", 1) for a in argv[2:]]
-    eps = pickle.loads((cache / "dev_eps.pkl").read_bytes())    # our own file, written by modal_train.prepare
+    eps = pickle.loads((cache / "dev_eps.pkl").read_bytes())    # written by modal_train.prepare
     per = {}
     for name, path in evals:
         d = json.load(open(path))

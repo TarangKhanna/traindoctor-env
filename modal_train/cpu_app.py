@@ -248,7 +248,7 @@ def assemble_test(tag: str, n: int) -> dict:
     sys.path.insert(0, "/work")
     res_vol.reload()
     d = Path(RES) / f"data_test_parts_{tag}"
-    eps = [pickle.loads((d / f"{i}.pkl").read_bytes()) for i in range(n)]    # our own build output
+    eps = [pickle.loads((d / f"{i}.pkl").read_bytes()) for i in range(n)]    # own build output
     out = Path(RES) / "data_test"; out.mkdir(parents=True, exist_ok=True)
     (out / "dev_eps.pkl").write_bytes(pickle.dumps(eps))                      # file name load_eps(.., "dev") expects
     (out / "raw_only").write_text("sealed TEST: raw completions only; scored by cpu_app.py::run_score\n")

@@ -1,6 +1,6 @@
-"""Per-model prompt rendering for screens. qwen3 = our hybrid template with thinking off (tiera.training_prompt);
+"""Per-model prompt rendering for screens. qwen3 = the hybrid template with thinking off (tiera.training_prompt);
 chat = the model's OWN tokenizer chat template over the same messages (Qwen3-4B-Instruct-2507, Gemma). No golden test
-for the 'chat' path: it is the tokenizer's own output, not bytes we own."""
+for the 'chat' path: it is the tokenizer's own output, not bytes this repo owns."""
 from __future__ import annotations
 
 from traindoctor_env.tiera import messages, training_prompt
