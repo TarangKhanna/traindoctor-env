@@ -44,7 +44,6 @@ Latency (agent time, not including verification): Codex 13.0-22.2 s per task, me
 
 Failures / exclusions: no infrastructure failures, no unparsable answers, no patch-apply failures, no out-of-scope edits, no world_size/timeout/exit-0 edits detected (static tags plus verifier `tampered`: none). Two earlier Codex attempts were discarded as harness failures, not agent failures: (1) first prompt wording told the agent it could not run commands, so it declined to read files; (2) the read-only bridge sandbox cannot start inside the nested sandbox (`sandbox-exec` not permitted), so file reading failed. Both were replaced by the inline-prompt protocol above, applied identically to both agents (raw outputs kept as `out/run1_old_prompt`, `out/run2_sandbox_fail` in the work dir, not in the public bundle).
 
-Cost: incremental Modal spend from ledger rows tagged `xbench-` = $0.0625 (17 actual rows, cpu-hour rate x 4 cpus x wall time); cap was $2. No unbooked rows found, so none appended. Replays of identical edits are cached and not re-run. Subscription usage (Claude Code, ChatGPT) is not metered by this harness.
 
 ## What the benchmark can and cannot distinguish
 - It separates a real repair from a non-repair: null controls score V0 only (label guessed from the answer is not enough), gold scores 6/6. The decomposition is informative: V0 6/6 for every agent and null, V1 separates evidence-citing from label-only (null 0/6), V2 adds live recovery.
@@ -56,16 +55,5 @@ Cost: incremental Modal spend from ledger rows tagged `xbench-` = $0.0625 (17 ac
 ## Conclusion (publication-ready)
 On six DEV-split TrainDoctor tasks (two collective-divergence variants, a pre-collective rank stall, a skipped-sample and a duplicated-sample checkpoint/sampler fault, and a healthy control), one attempt each at medium reasoning effort, Claude Sonnet and Codex (gpt-6.1-sol) both produced valid answers and repairs that recovered under live re-execution in a network-less Modal Sandbox in 6/6 tasks. Counting the full ladder, Codex scored V2 on 6/6 and Claude Sonnet on 5/6, the single miss being a citation set that omitted the required replayed-sample records although its patch recovered correctly; null (no-repair) controls scored 0/6 and gold 6/6. Their patches were identical in five of six tasks. With six tasks the intervals overlap broadly, the tasks sit at the ceiling, and no ranking is supported. The comparison is controlled on inputs and budgets, but isolation is instruction-based for Claude and sandbox-by-construction for Codex, and the result concerns DEV scenarios only, with no claim about unseen mechanisms. The benchmark verifies repairs reliably but needs harder, decoy-laden tasks to discriminate frontier agents.
 
-## Reproduce
-```
-cd <xbench dir>; PY=<repo>/.venv/bin/python   # torch 2.14.1; TD_KEY in out/td_key.txt
-$PY -I xbench.py build                          # snapshots (local, ~14 s each) + workspaces + prompts/
-# Codex lane (ChatGPT auth; SSL_CERT_FILE=/etc/ssl/cert.pem; hosts chatgpt.com, *.openai.com):
-$PY -I xbench.py run-codex
-# Claude lane: give each prompts/tNN.md to one subagent (model claude-sonnet-5-5, effort medium), save final message to answers/claude_sonnet/tNN.json
-# Scoring (Modal; TD_MODAL_SITE=<modalenv>/lib/python3.12/site-packages; hosts api.modal.com, *.modal.com, *.modal.host, *.modal-storage.com):
-$PY -I xbench.py controls
-$PY -I xbench.py score-all codex; $PY -I xbench.py score-all claude_sonnet
-$PY -I xbench.py table
-```
-Artifacts: answers/, out/results/, out/outcomes/, out/table.md, public/ (sanitized bundle).
+## Availability
+The harness, prompts, answers and replay outcomes are archived privately and not published; `results/` and `table.md` are the public record. The run is not re-executable from this repository.

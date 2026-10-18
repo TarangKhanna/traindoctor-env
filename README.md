@@ -70,7 +70,7 @@ The recovery-aware arm gained 10.36 percentage points over the label-only arm (9
 
 **Attacking the verifier.** None of 86 fake repairs (swallow the exception, exit 0, shrink the world, raise timeouts, forge logs) was accepted: 48 were rejected by a correctness invariant and 38 failed during execution, which shows those cheats do not run, not that an invariant covers them. The reference repair was accepted 5/5 and alternative valid repairs 9/10 (one false rejection, fixed in a prepared v1.1 verifier). I wrote the attacks; there was no external review. See [REDTEAM_TABLE.md](evidence/results/REDTEAM_TABLE.md).
 
-**Agent baselines.** On six development tasks, Claude Sonnet and Codex both produced patches that recovered all six; one Claude answer omitted a required evidence record (strict score 5/6 vs 6/6). The tasks are easy for strong agents and do not rank them ([report](experiments/cross_agent_dev6/BENCHMARK_REPORT.md)). A procedural-mutation pilot was stopped after Codex solved 24 of 24 attempts ([pilot](experiments/mutation_pilot/README.md)).
+**Agent baselines.** On six development tasks, Claude Sonnet and Codex both produced patches that recovered all six; one Claude answer omitted a required evidence record (strict score 5/6 vs 6/6). The tasks are easy for strong agents and do not rank them. Per-task results are published; prompts and transcripts are not ([report](experiments/cross_agent_dev6/BENCHMARK_REPORT.md)). A procedural-mutation pilot was stopped after Codex solved 24 of 24 attempts ([pilot](experiments/mutation_pilot/README.md)).
 
 ## Limitations
 
