@@ -4,9 +4,11 @@ An RL environment for debugging distributed PyTorch training jobs.
 
 TrainDoctor gives a coding agent a failed multi-process PyTorch (Gloo) training job and asks it to diagnose and fix it. Each repair is re-run in a sandbox. A verifier outside the sandbox then checks whether training actually recovered: which samples each committed step consumed, whether checkpoint, optimizer and sampler state were restored correctly, and whether all ranks agree.
 
-A job that exits cleanly is not necessarily repaired. In one task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce`, and every rank times out. Setting `world_size` from 4 to 1 removes the hang and the job completes, but it is no longer the same training run: the verifier reports the wrong worker count, 72 missing and 8 duplicated samples, and parameters that differ from the reference ([per-case table](https://github.com/TarangKhanna/traindoctor-research)).
+A job that exits cleanly is not necessarily repaired. In one task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce`, and every rank times out with the same error.
 
-![Four ranks: rank 2 calls broadcast while ranks 0, 1 and 3 call all_reduce, so every rank times out with the same error](docs/figures/fig_failure.svg)
+![Four ranks at step 6: rank 2 calls broadcast while ranks 0, 1 and 3 call all_reduce, so all four ranks time out with COLLECTIVE_TIMEOUT](docs/figures/fig_failure.svg)
+
+A tempting shortcut is to set `world_size` from 4 to 1 (fake repair F11). The hang disappears and the job completes, but it is no longer the same training run. In the quickstart scenario above (seed 123) the verifier reports the wrong worker count, 96 missing samples and parameters that differ from the reference. A separate red-team run on a different task instance (A1_src, replayed in a Modal sandbox) reported 72 missing and 8 duplicated samples for the same fake ([per-case table](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/REDTEAM_TABLE.md)). The two sets of counts come from different seeds and are not comparable.
 
 Preview (v0.1): two synthetic failure families. This repository is the environment and verifier; training and evaluation results are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research). [Quickstart](#quickstart) | [Tier A](#tier-a-interface-and-rewards) | [Results](#results) | [Limitations](#limitations)
 
@@ -58,7 +60,7 @@ The reward has three levels, each adding one requirement: V0 (correct diagnosis)
 
 ## Results
 
-The environment was used to train and evaluate Qwen3-4B with a label-only reward (V0) and the recovery-aware reward (V2), and to attack the verifier. In the exploratory comparison on a sealed test set, the V2 arm scored 10.36 percentage points higher than the V0 arm; the gain came from evidence grounding, not from better repair selection. None of 86 fake repairs was accepted, though 38 of those failed during execution rather than being caught by an invariant. Two strong coding agents solved all six development tasks, so those tasks are easy and do not rank agents. These results are produced and reproducible in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research), which holds the data, scripts and caveats; none of the training or evaluation code is in this repository.
+The environment was used to train and evaluate Qwen3-4B with a label-only reward (V0) and the recovery-aware reward (V2), and to attack the verifier. In the exploratory comparison on a held-out test set (its protocol was fixed before evaluation), the V2 arm scored 10.36 percentage points higher than the V0 arm; the gain came from evidence grounding, not from better repair selection. None of 86 fake repairs was accepted, though 38 of those failed during execution rather than being caught by an invariant. Two strong coding agents solved all six development tasks, so those tasks are easy and do not rank agents. These results are produced and reproducible in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research), which holds the data, scripts and caveats; none of the training or evaluation code is in this repository.
 
 ## Limitations
 
