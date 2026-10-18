@@ -26,3 +26,14 @@ prepare_opts.json
 /audit_out/
 /quickstart_out/
 LEARNINGS_PRIVATE.md
+
+# personal / job-search / session material: never commit to this public repo
+INTERVIEW*
+**/INTERVIEW*
+*PRIVATE*
+interview/
+resume*
+cv*
+.handoff/
+.research/
+HANDOFF*.md
