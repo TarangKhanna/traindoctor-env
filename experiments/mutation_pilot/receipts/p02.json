@@ -1,0 +1,144 @@
+{
+ "all_checks_pass": true,
+ "alt_note": "pass the whole bucket in the rank-keyed branch (keeps the branch, removes the divergence)",
+ "arms": {
+  "alt": {
+   "detail": "",
+   "exec_mode": "modal_sandbox",
+   "failing_invariants": [],
+   "lost_steps": 1,
+   "ok": true,
+   "path": "state_equal",
+   "status": "ok",
+   "verified": true,
+   "wall_s": 32.3
+  },
+  "decoy": {
+   "detail": "",
+   "exec_mode": "modal_sandbox",
+   "failing_invariants": [
+    "params",
+    "ranks",
+    "resumes",
+    "state_equal",
+    "transitions"
+   ],
+   "lost_steps": 1,
+   "ok": false,
+   "path": "",
+   "status": "ok",
+   "verified": false,
+   "wall_s": 31.0
+  },
+  "gold": {
+   "detail": "",
+   "exec_mode": "modal_sandbox",
+   "failing_invariants": [],
+   "lost_steps": 1,
+   "ok": true,
+   "path": "state_equal",
+   "status": "ok",
+   "verified": true,
+   "wall_s": 28.6
+  },
+  "noop": {
+   "detail": "",
+   "exec_mode": "modal_sandbox",
+   "failing_invariants": [
+    "completed",
+    "params",
+    "ranks",
+    "resumes",
+    "samples",
+    "state_equal",
+    "transitions"
+   ],
+   "lost_steps": 1,
+   "ok": false,
+   "path": "",
+   "status": "ok",
+   "verified": false,
+   "wall_s": 36.1
+  }
+ },
+ "checks": {
+  "alt_pass": true,
+  "broken_fails": true,
+  "decoy_completes_and_fails": true,
+  "gold_pass": true,
+  "noop_fails": true
+ },
+ "decoy_note": "skip the gradient sync of bucket 0 on every rank: the job completes but gradients are never averaged there",
+ "edits_key": {
+  "alt": "13a69d227ece2bac",
+  "decoy": "56f695c4dcaed4a6",
+  "gold": "1fbec6ba50bf465b",
+  "noop": "4f53cda18c2baa0c"
+ },
+ "fingerprint": {
+  "full": {
+   "first_ranks": [
+    1
+   ],
+   "first_step": 5,
+   "invariants": [
+    "completed",
+    "params",
+    "ranks",
+    "resumes",
+    "samples",
+    "state_equal",
+    "transitions"
+   ],
+   "runs": [
+    {
+     "error": "COLLECTIVE_TIMEOUT",
+     "from_scratch": true,
+     "resumed": false,
+     "status": "failed"
+    }
+   ],
+   "task": "A",
+   "what": "collective_signature_differs:numel",
+   "world": 4
+  },
+  "full_hash": "329461625ab9",
+  "mechanism": {
+   "invariants": [
+    "completed",
+    "params",
+    "ranks",
+    "resumes",
+    "samples",
+    "state_equal",
+    "transitions"
+   ],
+   "runs": [
+    {
+     "error": "COLLECTIVE_TIMEOUT",
+     "from_scratch": true,
+     "resumed": false,
+     "status": "failed"
+    }
+   ],
+   "task": "A",
+   "what": "collective_signature_differs:numel"
+  },
+  "mechanism_hash": "4a225c31ee89"
+ },
+ "incident": {
+  "meta": {
+   "frontier": 5,
+   "kill": null,
+   "task": "A"
+  },
+  "n_records": 104
+ },
+ "kind": "A_O1b",
+ "modal_cost_usd": 0.0199,
+ "mutant_sha256": "2f583f9445cf92aab3d7b7ef098828c7f277ea062f5a33f644e4e64f0d9406f1",
+ "operator": "O1",
+ "seed": 40001,
+ "task": "p02",
+ "variant": "b"
+}

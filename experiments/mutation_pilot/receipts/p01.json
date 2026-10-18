@@ -1,0 +1,155 @@
+{
+ "all_checks_pass": true,
+ "alt_note": "keep the background writer but write a temp file and rename it over the manifest",
+ "arms": {
+  "alt": {
+   "detail": "",
+   "exec_mode": "modal_sandbox",
+   "failing_invariants": [],
+   "lost_steps": 4,
+   "ok": true,
+   "path": "state_equal",
+   "status": "ok",
+   "verified": true,
+   "wall_s": 30.3
+  },
+  "decoy": {
+   "detail": "",
+   "exec_mode": "modal_sandbox",
+   "failing_invariants": [
+    "lost_work"
+   ],
+   "lost_steps": 8,
+   "ok": false,
+   "path": "",
+   "status": "ok",
+   "verified": false,
+   "wall_s": 31.6
+  },
+  "gold": {
+   "detail": "",
+   "exec_mode": "modal_sandbox",
+   "failing_invariants": [],
+   "lost_steps": 0,
+   "ok": true,
+   "path": "state_equal",
+   "status": "ok",
+   "verified": true,
+   "wall_s": 31.1
+  },
+  "noop": {
+   "detail": "",
+   "exec_mode": "modal_sandbox",
+   "failing_invariants": [
+    "completed",
+    "params",
+    "ranks",
+    "resumes",
+    "samples",
+    "state_equal",
+    "transitions"
+   ],
+   "lost_steps": 3,
+   "ok": false,
+   "path": "",
+   "status": "ok",
+   "verified": false,
+   "wall_s": 29.3
+  }
+ },
+ "checks": {
+  "alt_pass": true,
+  "broken_fails": true,
+  "decoy_completes_and_fails": true,
+  "gold_pass": true,
+  "noop_fails": true
+ },
+ "decoy_note": "make commit() tolerate an unreadable manifest by starting a fresh one",
+ "edits_key": {
+  "alt": "923ceaa45a3ecc11",
+  "decoy": "74ada1e336f7665a",
+  "gold": "b5c5c7f1cfbc4216",
+  "noop": "4f53cda18c2baa0c"
+ },
+ "fingerprint": {
+  "full": {
+   "first_ranks": [
+    0
+   ],
+   "first_step": 0,
+   "invariants": [
+    "completed",
+    "params",
+    "ranks",
+    "resumes",
+    "samples",
+    "state_equal",
+    "transitions"
+   ],
+   "runs": [
+    {
+     "error": "COLLECTIVE_TIMEOUT",
+     "from_scratch": true,
+     "resumed": false,
+     "status": "failed"
+    },
+    {
+     "error": "PYTHON_ERROR",
+     "from_scratch": true,
+     "resumed": false,
+     "status": "failed"
+    }
+   ],
+   "task": "B",
+   "what": "missing",
+   "world": 4
+  },
+  "full_hash": "0bfcf4495348",
+  "mechanism": {
+   "invariants": [
+    "completed",
+    "params",
+    "ranks",
+    "resumes",
+    "samples",
+    "state_equal",
+    "transitions"
+   ],
+   "runs": [
+    {
+     "error": "COLLECTIVE_TIMEOUT",
+     "from_scratch": true,
+     "resumed": false,
+     "status": "failed"
+    },
+    {
+     "error": "PYTHON_ERROR",
+     "from_scratch": true,
+     "resumed": false,
+     "status": "failed"
+    }
+   ],
+   "task": "B",
+   "what": "missing"
+  },
+  "mechanism_hash": "b20ea5cf0896"
+ },
+ "incident": {
+  "meta": {
+   "frontier": 4,
+   "kill": [
+    0,
+    7
+   ],
+   "task": "B"
+  },
+  "n_records": 238
+ },
+ "kind": "B_O3b",
+ "modal_cost_usd": 0.019,
+ "mutant_sha256": "3bd5b8461e491d897115656193e2b9bc14d1a6399affe0db1b59150db7389509",
+ "operator": "O3",
+ "seed": 40006,
+ "task": "p01",
+ "variant": "b"
+}
