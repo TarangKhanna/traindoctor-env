@@ -208,7 +208,7 @@ def run_audit(per_kind: int = 1, extra_non: int = 2, data: str = "data_menu2"):
     print(json.dumps(r, indent=1))
 
 
-# ===================== SEALED TEST (protocol: docs/prereg/test_protocol.md; run once) =====================
+# ===================== SEALED TEST (protocol: evidence/prereg/test_protocol.md; run once) =====================
 BUILD_ONE = r"""
 import hashlib, json, pickle, sys, tempfile
 from pathlib import Path

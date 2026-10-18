@@ -43,10 +43,10 @@ for f in sorted((ROOT / "docs/figures").glob("*.svg")):
 
 # 3. numbers
 R = (ROOT / "README.md").read_text()
-A = json.loads((ROOT / "docs/results/test/TEST_REPORT_analysis.json").read_text())
-RC = json.loads((ROOT / "docs/results/test/AUDIT_RECOUNT.json").read_text())
-RT = (ROOT / "docs/REDTEAM_TABLE.md").read_text()
-TR = (ROOT / "docs/results/TEST_REPORT.md").read_text()
+A = json.loads((ROOT / "evidence/results/test/TEST_REPORT_analysis.json").read_text())
+RC = json.loads((ROOT / "evidence/results/test/AUDIT_RECOUNT.json").read_text())
+RT = (ROOT / "evidence/results/REDTEAM_TABLE.md").read_text()
+TR = (ROOT / "evidence/results/TEST_REPORT.md").read_text()
 pt = A["policy_table"]
 mean = lambda a: sum(a) / len(a)
 pct = lambda k: 100 * pt[k]["v2_fault4"]

@@ -1,4 +1,4 @@
-"""Sealed-TEST analysis (frozen before any TEST rollout; protocol: docs/prereg/test_protocol.md).
+"""Sealed-TEST analysis (frozen before any TEST rollout; protocol: evidence/prereg/test_protocol.md).
 
 Input: a scored-rollouts JSON written by `modal_train/cpu_app.py::run_score`:
   {"rollouts": [{policy, ep, kind, valid, v0, v1, v2, claimed, replay, unsafe}, ...], ...}
@@ -19,7 +19,7 @@ import numpy as np
 KINDS = ["A1", "A2", "B_SKIP", "B_DUP", "B_OK"]
 FAULT_KINDS = ["A1", "A2", "B_SKIP", "B_DUP"]
 SEEDS = list(range(6))
-MMD = 7.2          # minimum meaningful difference, percentage points (docs/prereg/power_analysis_amendment.md)
+MMD = 7.2          # minimum meaningful difference, percentage points (evidence/prereg/power_analysis_amendment.md)
 BOOT_N = 10_000
 BOOT_SEED = 20261018
 

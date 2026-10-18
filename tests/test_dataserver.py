@@ -100,7 +100,7 @@ def test_the_salt_decides_the_samples_but_not_the_ids():
 
 
 def test_sampler_schedule_semantics():
-    """Documented in docs/specs/M1_NOTES.md: rank r owns ids with id % world == r, shuffled per epoch; position
+    """Documented in evidence/archive/specs/M1_NOTES.md: rank r owns ids with id % world == r, shuffled per epoch; position
     (epoch, index) is all a checkpoint needs to resume the same stream; an epoch covers the dataset once."""
     spec = DataSpec(3, 96, 4, 7)
     epoch = {r: [i for idx in range(spec.steps_per_epoch) for i in dataserver.schedule_ids(spec, r, 0, idx)] for r in range(3)}

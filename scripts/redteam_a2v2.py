@@ -1,4 +1,4 @@
-"""Red team for Task A2 scenario version 2 (kind "A2v2", jobs/a2v2.py, docs/A2V2_SCENARIO.md) on the Modal Sandbox backend.
+"""Red team for Task A2 scenario version 2 (kind "A2v2", jobs/a2v2.py, evidence/results/A2V2_SCENARIO.md) on the Modal Sandbox backend.
 
 Same judging path as scripts/redteam_suite.py (traindoctor_env.reexec.Replay, backend='modal': the job runs in a
 network-less gVisor sandbox, every invariant is recomputed on the trusted side); only the scenario and the case list

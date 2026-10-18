@@ -1,4 +1,4 @@
-"""scripts/analyze_test.py on synthetic data. Rules asserted (docs/prereg/test_protocol.md): the outcome class follows the CI vs
+"""scripts/analyze_test.py on synthetic data. Rules asserted (evidence/prereg/test_protocol.md): the outcome class follows the CI vs
 MMD rule; the primary contrast is V2-arm minus V0-arm on the 4 faulted kinds only (B_OK excluded); invalid or errored replays
 are never successes; claimed-but-unverified counts valid claimed rollouts that are not V2; t critical value matches the table."""
 import math
@@ -31,7 +31,7 @@ def test_t_distribution_matches_table_values():
 
 
 def test_paired_t_known_sample():
-    r = paired_t([1.8, 5.2, 6.0, 10.2, 8.6, -3.9])   # the 6-seed DEV differences quoted in docs/RELEASE_MANIFEST.md (row 8)
+    r = paired_t([1.8, 5.2, 6.0, 10.2, 8.6, -3.9])   # the 6-seed DEV differences quoted in evidence/RELEASE_MANIFEST.md (row 8)
     assert abs(r["mean"] - 4.6) < 0.05 and abs(r["t"] - 2.24) < 0.05 and abs(r["p"] - 0.075) < 0.01
     assert r["ci95"][0] < 0 < r["ci95"][1]
 

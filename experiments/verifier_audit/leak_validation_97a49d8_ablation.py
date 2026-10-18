@@ -1,4 +1,4 @@
-"""Ablation for the 97a49d8 validation: which menu text carries the residual menu-only signal? Run with PYTHONPATH=.:docs/audits."""
+"""Ablation for the 97a49d8 validation: which menu text carries the residual menu-only signal? Run with PYTHONPATH=.:experiments/verifier_audit."""
 import json
 import re
 from collections import Counter
@@ -37,5 +37,5 @@ flag = [("reduce_bcast" in "\n".join(it["text"] for it in e["items"] if it["slot
 truth = [e["kind"] == "A1" and e["variant"] == 1 for e in eps]
 out["A1cfg_flag_from_noop_exclude_context"] = dict(tp=sum(f and t for f, t in zip(flag, truth)), fp=sum(f and not t for f, t in zip(flag, truth)),
                                                    n_A1cfg=sum(truth), n=len(eps))
-Path("docs/audits/leak_validation_97a49d8_ablation.json").write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
+Path("experiments/verifier_audit/leak_validation_97a49d8_ablation.json").write_text(json.dumps(out, indent=1, sort_keys=True) + "\n")
 print(json.dumps(out, indent=1, sort_keys=True))

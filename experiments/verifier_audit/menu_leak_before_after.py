@@ -1,5 +1,5 @@
 """Before/after menu-leak numbers (pure Python). Before = traindoctor_env/bundle.py at commit e4b3d15 (signed +/- diff),
-after = working tree (neutral display). Usage: python docs/audits/menu_leak_before_after.py [out.json]
+after = working tree (neutral display). Usage: python experiments/verifier_audit/menu_leak_before_after.py [out.json]
 Held-out predictors, 400 DEV seeds: lookup learner on diff direction/variant text, and the n-gram logistic regression
 (5-fold across seeds). Accuracies are fractions of held-out menus where the top-scored item is the correct repair."""
 import importlib.util
@@ -44,6 +44,6 @@ if __name__ == "__main__":
     old = load_old()
     res = dict(seeds=[DEV_SEEDS.start, DEV_SEEDS.stop], before=summarize(report(DEV_SEEDS, old.make_menu)),
                after=summarize(report(DEV_SEEDS)))
-    out = Path(sys.argv[1] if len(sys.argv) > 1 else "docs/audits/menu_leak_before_after.json")
+    out = Path(sys.argv[1] if len(sys.argv) > 1 else "experiments/verifier_audit/menu_leak_before_after.json")
     out.write_text(json.dumps(res, indent=1, sort_keys=True) + "\n")
     print(json.dumps(res, indent=1, sort_keys=True))

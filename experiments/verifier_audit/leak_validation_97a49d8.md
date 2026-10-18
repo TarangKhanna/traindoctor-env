@@ -1,6 +1,6 @@
 # Re-validation after the menu-leak fix (code commit 97a49d8)
 
-> Historical note: this page was written when the Tier A prompt cap was 2,048 tokens. The cap was amended to 3,072 on 2026-10-18 (`docs/prereg/amendment_token_cap.md`) and `CAP_TOKENS = 3072` in `traindoctor_env/bundle.py` is current. The 2,048 figures below are historical.
+> Historical note: this page was written when the Tier A prompt cap was 2,048 tokens. The cap was amended to 3,072 on 2026-10-18 (`evidence/prereg/amendment_token_cap.md`) and `CAP_TOKENS = 3072` in `traindoctor_env/bundle.py` is current. The 2,048 figures below are historical.
 
 Follows `leak_validation_796ba23.md` (kept unchanged: it is the failure record). Scripts and JSON next to this file:
 `leak_validation_97a49d8.py/.json` (the 796ba23 validator re-run unchanged in logic), `_ablation.py` (copied, not re-run).

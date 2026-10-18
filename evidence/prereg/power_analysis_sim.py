@@ -1,8 +1,8 @@
-"""Power simulation for the V2-GRPO vs V0-GRPO primary endpoint (docs/prereg/power_analysis_amendment.md).
+"""Power simulation for the V2-GRPO vs V0-GRPO primary endpoint (evidence/prereg/power_analysis_amendment.md).
 
 Endpoint: overall live-verified recovery rate on DEV (400 prompts = 6 variant clusters 50/35/86/63/81/85; families A1=85,
 A2=86, B=229), paired by prompt, G samples per prompt per arm, S training seeds per arm. No model output is used: this is
-a generative simulation. SEED fixed below; output docs/prereg/power_analysis_results.json.
+a generative simulation. SEED fixed below; output evidence/prereg/power_analysis_results.json.
 
 Latent model on the logit scale (total prompt-level latent variance TAU2 = 1):
   logit p[arm, i, s] = b0 + u_c(i) + v_i + arm*(delta + a_c(i)) + r[arm, s]
@@ -123,4 +123,4 @@ if __name__ == "__main__":
                     null = simulate(base, 0.0, rho, S, G, REPS * 2)
                     out["cells"].append(dict(base=base, rho=rho, seeds=S, G=G, mdd_80=m, type1_at_zero=null, power_curve=pw))
                     print(base, rho, S, G, m, "type1", {k: round(v, 3) for k, v in null.items()}, f"{time.time()-t0:.0f}s", flush=True)
-    json.dump(out, open("docs/prereg/power_analysis_results.json", "w"), indent=1)
+    json.dump(out, open("evidence/prereg/power_analysis_results.json", "w"), indent=1)

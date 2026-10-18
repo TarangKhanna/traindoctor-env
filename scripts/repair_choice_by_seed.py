@@ -2,16 +2,16 @@
 """Per-policy share of faulted rollouts that chose the repair that actually recovers.
 
 Rule: a rollout "chose the recovering repair" iff its output parses to the required JSON schema and the (episode, repair)
-pair it names has an ok live sandbox replay (docs/results/test/test_replay_r*.json). Denominator: 320 faulted rollouts
+pair it names has an ok live sandbox replay (evidence/results/test/test_replay_r*.json). Denominator: 320 faulted rollouts
 (A1, A2, B_SKIP, B_DUP; 80 episodes x 4 samples) per policy. Same parser as scripts/audit_test_recount.py.
-Writes docs/results/test/AUDIT_RECOUNT.json and asserts the arm means equal the 71.41 / 71.46 printed in AUDIT_RECOUNT.txt.
+Writes evidence/results/test/AUDIT_RECOUNT.json and asserts the arm means equal the 71.41 / 71.46 printed in AUDIT_RECOUNT.txt.
 """
 import json
 import re
 import sys
 from pathlib import Path
 
-D = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent.parent / "docs/results/test"
+D = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent.parent / "evidence/results/test"
 SEEDS = range(6)
 F4 = {"A1", "A2", "B_SKIP", "B_DUP"}
 G = 4

@@ -22,4 +22,4 @@ The agent submits edits to permitted job files. Inside an isolated Modal Sandbox
 
 Two distinct operations matter: **re-execution** runs the modified job; **independent update reconstruction** calculates what the expected training state should be, given the reference algorithm and delivered samples.
 
-This research preview covers synthetic PyTorch/Gloo training with two failure families, **not arbitrary production FSDP/NCCL workflows**. See [verifier mechanisms](docs/VERIFICATION.md), [task definitions](docs/TASKS.md) and [results](docs/results/TEST_REPORT.md).
+This research preview covers synthetic PyTorch/Gloo training with two failure families, **not arbitrary production FSDP/NCCL workflows**. See [verifier mechanisms](docs/VERIFICATION.md), [task definitions](docs/TASKS.md) and [results](evidence/results/TEST_REPORT.md).

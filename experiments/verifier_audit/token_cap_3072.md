@@ -13,6 +13,6 @@ so length does not separate NO_FAULT from CKPT_SAMPLER_INCONSISTENT.
 Leak checks at the new cap: menu/config-only predictors do not read records, so the cap cannot change them;
 `leak_validation_97a49d8.py` re-run, output byte-identical to the committed JSON. Menu-only (5-fold, 400 seeds): label
 best 0.343 vs majority 0.36, kind5 best 0.22 vs 0.215; menu+config stumps reach 0.71 (label), known and unchanged
-(config is part of the bundle; docs/audits/config_visibility_note.md). `scripts/mutation_check_leak.py`: 17/17 mutants
+(config is part of the bundle; experiments/verifier_audit/config_visibility_note.md). `scripts/mutation_check_leak.py`: 17/17 mutants
 detected, undetected [], JSON unchanged. `pytest -m "not sweep and not executed"`: 98 passed, 8 failed, 8 skipped; the 8
 are Gloo/sandbox-exec (6 executed token_cap cases) and Metal (2 test_first_update) unavailability, as before.

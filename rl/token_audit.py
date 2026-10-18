@@ -16,4 +16,4 @@ for m in ["mlx-community/Qwen3-0.6B-4bit", "mlx-community/Qwen3-4B-Instruct-2507
         t = [len(tok.encode(r["prompt"])) for r in train]
         out["train_qwen3_prompt_tokens"] = dict(n=len(t), min=min(t), median=st.median(t), max=max(t), over_2048=sum(x > 2048 for x in t))
     print(m, {k: v for k, v in out[m].items() if k in ("over_2048_bundle", "min", "median", "max")})
-json.dump(out, open("docs/token_audit.json", "w"), indent=1)
+json.dump(out, open("evidence/archive/dev_json/token_audit.json", "w"), indent=1)

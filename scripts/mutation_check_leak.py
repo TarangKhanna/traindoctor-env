@@ -2,7 +2,7 @@
 
 Each mutant is applied in memory (monkeypatch / re-exec of one function's edited source) and undone afterwards; library
 code on disk is never changed. A test is adequate for a mutant only if it PASSES on the real code and FAILS on the
-mutant. Output: docs/audits/mutation_check_leak.json. Run: TD_KEY=... python scripts/mutation_check_leak.py
+mutant. Output: experiments/verifier_audit/mutation_check_leak.json. Run: TD_KEY=... python scripts/mutation_check_leak.py
 """
 from __future__ import annotations
 
@@ -192,7 +192,7 @@ def main():
         print(("DETECTED " if failing and len(caught) == len(must) else "MISSED   "), desc, "->", failing)
     res["undetected"] = [m["id"] for m in res["mutants"] if not m["detected_by_any"]]
     res["expected_not_detected"] = [m["id"] for m in res["mutants"] if not m["detected_by_expected"]]
-    out = ROOT / "docs/audits/mutation_check_leak.json"
+    out = ROOT / "experiments/verifier_audit/mutation_check_leak.json"
     out.write_text(json.dumps(res, indent=1, sort_keys=True) + "\n")
     print(out, "undetected:", res["undetected"], "expected_not_detected:", res["expected_not_detected"])
     return 1 if res["undetected"] or res["expected_not_detected"] else 0

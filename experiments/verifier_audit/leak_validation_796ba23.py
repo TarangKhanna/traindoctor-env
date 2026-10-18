@@ -1,5 +1,5 @@
 """Independent validation of commit 796ba23 (repair-menu leak closed?). CPU only, pure Python + numpy, no job executed.
-Usage: PYTHONPATH=. python docs/audits/leak_validation_796ba23.py  -> docs/audits/leak_validation_796ba23.json
+Usage: PYTHONPATH=. python experiments/verifier_audit/leak_validation_796ba23.py  -> experiments/verifier_audit/leak_validation_796ba23.json
 
 Part 1  alternative predictors on menu-only features (repair slot and label), 5-fold CV ACROSS seeds, DEV 10000..10399,
         label-permutation null, held-out counterfactual pairs, menu+config (no records) predictors.

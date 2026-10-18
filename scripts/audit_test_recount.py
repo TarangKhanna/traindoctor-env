@@ -6,7 +6,7 @@ from test_scored.json with consistency checks. V2 is recomputed from raw."""
 import json, sys, collections, hashlib
 import numpy as np
 
-D = sys.argv[1] if len(sys.argv) > 1 else "docs/results/test"
+D = sys.argv[1] if len(sys.argv) > 1 else "evidence/results/test"
 SEEDS = range(6)
 POL = ["base", "sft", "csft"] + [f"v0_s{s}" for s in SEEDS] + [f"v2_s{s}" for s in SEEDS]
 F4 = ["A1", "A2", "B_SKIP", "B_DUP"]
