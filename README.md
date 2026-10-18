@@ -1,114 +1,88 @@
 # TrainDoctor
 
-**An executable RL environment for diagnosing and repairing failed distributed PyTorch training jobs.**
+An RL environment for debugging distributed PyTorch training jobs.
 
-A training job can stop crashing and still be wrong: it may silently skip data, duplicate updates, restore the wrong optimizer state, or drop a worker. TrainDoctor gives an AI agent a **real multi-process PyTorch/Gloo failure**, lets it inspect evidence and propose a code/config repair, then checks whether the repaired computation is correct.
+TrainDoctor gives a coding agent a failed multi-process PyTorch (Gloo) training job and asks it to diagnose and fix it. Each repair is re-run in a sandbox. A verifier outside the sandbox then checks whether training actually recovered: which samples each committed step consumed, whether checkpoint, optimizer and sampler state were restored correctly, and whether all ranks agree.
 
-**The engineering contribution is the recovery verifier—not gVisor.** TrainDoctor uses Modal's existing gVisor sandbox to run agent-edited code. TrainDoctor adds a multi-rank failure/restart harness, a launcher-owned data server and checkpoint ledger, and **independent verification of the training state**.
+A job that exits cleanly is not necessarily repaired. In one task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce`, and every rank times out. Setting `world_size` from 4 to 1 removes the hang and the job completes, but it is no longer the same training run: the verifier reports the wrong worker count, 72 missing and 8 duplicated samples, and parameters that differ from the reference ([per-case table](evidence/results/REDTEAM_TABLE.md)).
 
-> **Research preview v0.1.** Two synthetic failure families, exploratory model results, and no independent security audit. This is neither a new RL algorithm nor a general-purpose verifier for arbitrary production training code.
+![Four ranks: rank 2 calls broadcast while ranks 0, 1 and 3 call all_reduce, so every rank times out with the same error](docs/figures/fig_failure.svg)
 
-[Quickstart](#try-a-real-failure-on-a-cpu) · [Docs index](docs/README.md) · [Architecture](ARCHITECTURE.md)
+Research preview (v0.1): two synthetic failure families and exploratory results. [Quickstart](#quickstart) | [Results](#experiments-and-results) | [Limitations](#limitations)
 
-## A successful job is not necessarily a repaired job
+## Quickstart
 
-In one task, rank 2 calls `broadcast` while the other three ranks call `all_reduce`. Every process eventually times out. The agent can identify the mismatched operation from the per-rank trace and repair it. [See the illustrated failure](docs/figures/fig_failure.svg).
-
-A tempting shortcut is to change `world_size` from **4 to 1**: no peers, no collective hang. **The job completes, but its training is incorrect.**
-
-| Patch in the sandboxed A1 example | Job completes? | What TrainDoctor checks |
-| --- | --- | --- |
-| Make every rank use the correct collective | Yes | **Accept:** correct workers, samples, and model state |
-| Reduce `world_size: 4 → 1` (fake repair F11) | Yes | **Reject:** wrong worker count, 72 missing and 8 duplicated samples, incorrect parameters |
-
-Those figures come from the **sandboxed A1_src red-team case**, not the separate local quickstart (which uses a different seed). [Inspect the case-by-case evidence](evidence/results/REDTEAM_TABLE.md).
-
-## How TrainDoctor verifies recovery
-
-**Isolating a patch is different from verifying its result.** The training process can write misleading logs and even fabricate checkpoints. TrainDoctor therefore keeps a separate execution record and checks it against a known-correct, fault-free run.
-
-![Trust-boundary diagram: an agent patch runs as untrusted PyTorch ranks in Modal's gVisor sandbox. A launcher-owned data server and checkpoint ledger inside the sandbox record evidence, which a separate verifier outside the sandbox checks against expected training state.](docs/figures/fig_trust_boundary.svg)
-
-*The launcher and data server are privileged **relative to the untrusted rank processes**, but remain **inside the sandbox**. The verifier is outside. Captured checkpoint contents are still treated as data to validate—not inherently trustworthy proof.*
-
-| Implemented component | Why it matters | Code |
-| --- | --- | --- |
-| **Trusted data delivery** | Supplies rank-specific, salted batches over private sockets; accounts for samples independently of job-written logs. Delivery by itself does **not** prove the sample entered a committed update. | [`jobs/dataserver.py`](jobs/dataserver.py) |
-| **Controlled failures and restarts** | Coordinates worker termination at step boundaries; records rank/process history and bounds work redone after recovery. | [`jobs/launcher.py`](jobs/launcher.py) |
-| **Protected checkpoint capture** | Copies checkpoints at commit boundaries into launcher-owned storage, with a run ledger. Their contents still have to pass verification. | [`jobs/trusted.py`](jobs/trusted.py) |
-| **Independent state checks** | Compares actual versus reference samples and checkpoints; reconstructs expected SGD/momentum updates from the batches delivered to ranks. | [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py) |
-| **Explicit reward components** | Reports correct diagnosis, supporting evidence, and successful verified repair separately. | [`traindoctor_env/verifiers.py`](traindoctor_env/verifiers.py) |
-
-For the precise trust model, update rules, and limitations, see the [verifier engineering deep dive](docs/VERIFICATION.md) and [architecture map](ARCHITECTURE.md).
-
-## What did models actually learn?
-
-**Qwen3-4B** was evaluated on **100 held-out incidents**: these scenarios were reserved for evaluation, and the protocol was fixed before evaluating them. The table below covers the four faulted kinds, excluding the healthy-job control. Training and evaluation used different seeds but **the same fault mechanisms**.
-
-**Full-task success (V2)** means *correct diagnosis + supporting evidence citations + a repair that passes real sandboxed execution checks*. This differs from **repair-selection accuracy**, which asks only whether the chosen repair recovers training.
-
-| Policy | Full-task success on faulted tasks |
-| --- | ---: |
-| Base model | 5.0% |
-| Supervised fine-tuning (SFT) on known-correct examples | 17.2% |
-| Continued SFT with approximately matched learner-update compute | 29.7% |
-| GRPO trained with diagnosis-only reward, mean of 6 seeds | 23.0% |
-| GRPO trained with stronger recovery-aware reward, mean of 6 seeds | **33.4%** |
-
-**The stronger reward changed evidence grounding, not repair choice.** Relative to diagnosis-only GRPO, full-task success increased by **10.36 percentage points** (95% bootstrap interval **+5.83 to +15.26**), yet both arms selected a working repair at essentially the same rate (**71.4% vs 71.5%**). The stronger arm also did **not** clearly outperform continued SFT (+3.7 points; interval −1.7 to +9.1), which was evaluated from a single checkpoint.
-
-![Two compact comparisons: stronger-reward GRPO scores 33.4% versus diagnosis-only GRPO at 23.0% on full-task success, while selecting a working repair at essentially identical rates, 71.5% versus 71.4%.](docs/figures/fig_reward_outcome.svg)
-
-*How reward was computed matters:* during training, the recovery-aware arm used **precomputed exploratory repair outcomes** from a development container; it did not run a fresh trusted sandbox replay for every training response. On the held-out evaluation, **369 unique scenario/repair pairs were rerun in Modal Sandboxes** and scored separately. Results are exploratory, not evidence of generalization to unseen fault mechanisms.
-
-[Full evaluation report and uncertainty](evidence/results/TEST_REPORT.md) · [Independent recount of available outputs](evidence/results/test/AUDIT_RECOUNT.txt) · [Six-seed development comparison](evidence/results/SEEDS_3_5_REPORT.md)
-
-### Could incorrect repairs fool the verifier?
-
-In the published adversarial audit, **0 of 86 attempted fake repairs were accepted**. That result needs qualification:
-
-| Outcome | Count |
-| --- | ---: |
-| Rejected by a specific correctness invariant | **48** |
-| Failed during execution, before usable recovery artifacts | **38** |
-| Accepted fake repairs | **0** |
-| Accepted known-correct reference repairs | **5/5** |
-| Accepted alternative legitimate repairs | **9/10** |
-
-The 38 execution failures **do not** demonstrate that an invariant would detect those cheats if they completed. One legitimate checkpoint-restore strategy was rejected because v1 enforced a storage format rather than equivalent recovery behavior. The attacks were created within this project, not by an external red team. The original full raw v1 JSON was lost; the [committed per-case table](evidence/results/REDTEAM_TABLE.md) is the surviving audit evidence.
-
-[Detailed red-team figure](docs/figures/fig_redteam_funnel.svg) · [Verifier false rejection and scope](docs/VERIFICATION.md)
-
-## Try a real failure on a CPU
-
-Requires Python 3.12. **No GPU, API key, or Modal account** for the local demonstration. It takes roughly 30 seconds *after dependencies install*.
+CPU only, Python 3.12 or 3.13, no GPU, API key or Modal account.
 
 ```bash
 git clone https://github.com/TarangKhanna/traindoctor-env
 cd traindoctor-env
-python3.12 -m venv .venv
-source .venv/bin/activate
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements-cpu.txt
 python scripts/quickstart.py --fake F11 --out quickstart_out
 ```
 
-The script runs a real four-process failing job, displays its diagnostic evidence, applies a known-correct fix and a fake fix, and shows their recovery checks. The **local result is explicitly UNVERIFIED** because modified code was run without OS-level isolation—even if the computed invariants pass. The [extended guide](docs/QUICKSTART.md) explains how to run the **trusted Modal Sandbox** path, with recorded [gold-versus-fake results](evidence/results/quickstart_verified_replay.txt).
+This builds a failed four-process job, applies the reference repair and the `world_size: 1` fake, and runs the recovery checks on both (about 30 seconds after installation). The local run prints `INVALID: unsandboxed re-execution` by design: the verifier does not count results from agent-edited code that ran without isolation. The verified path uses a Modal Sandbox ([docs/QUICKSTART.md](docs/QUICKSTART.md), [recorded replay](evidence/results/quickstart_verified_replay.txt)).
 
-## What remains limited
+## How recovery verification works
 
-- **Task difficulty:** current tasks are easy for strong coding agents. In six development tasks, Claude Sonnet and Codex both recovered all six; Claude missed one evidence requirement. Codex also solved 24/24 attempts on eight procedurally generated tasks. These are **not useful model rankings**. [Agent comparison](experiments/cross_agent_dev6/BENCHMARK_REPORT.md) · [Task-generation pilot](experiments/mutation_pilot/README.md).
-- **Reward discrimination:** each v0.1 menu has just one working repair; V1 (diagnosis + evidence) and V2 agree on 97.7% of development rollouts. More challenging repair choices are needed to test whether verification improves *repair decisions*.
-- **Scope:** two synthetic families—collective mismatch / rank stall and checkpoint/sampler inconsistency. The test split is by seed, not by unseen mechanism. No claim about production NCCL/FSDP failures or arbitrary training programs.
-- **Validation:** six paired GRPO seeds but only one continued-SFT run; no outside verifier audit. Held-out seed values are withheld, so the exact evaluation set cannot be regenerated solely from this repository. Executed Gloo tests require a compatible, unrestricted environment. [Test status](docs/TESTING.md) · [Evidence index](evidence/README.md).
+![An agent patch runs as untrusted ranks inside Modal's gVisor sandbox; a launcher-owned data server and checkpoint ledger record evidence; a verifier outside the sandbox checks it](docs/figures/fig_trust_boundary.svg)
 
-## Explore the implementation
+Modal's gVisor sandbox isolates the agent's code but says nothing about whether the result is correct. That is the verifier's job.
 
-**RL environment and verifier engineering:** [Threat model and invariants](docs/VERIFICATION.md) · [Architecture](ARCHITECTURE.md) · [Task types](docs/TASKS.md) · [Adding a task](docs/EXTENDING.md).
+Inside the sandbox, the launcher runs as root and the ranks as an unprivileged user. The launcher injects the worker failure, serves batches through a private-socket data server (sample identity comes from the socket, not from the job) and copies each checkpoint into its own ledger at commit time. The verifier runs outside and treats everything copied out as data. At each committed step it checks:
 
-**RL research:** [Reward-design findings](docs/FINDINGS.md) · [Held-out model evaluation](evidence/results/TEST_REPORT.md) · [SFT/GRPO code](modal_train/).
+- each scheduled sample was consumed once;
+- model, optimizer momentum and sampler position match the uninterrupted reference;
+- where a repair changes the checkpoint layout, each transition between committed states matches an independent replay of the SGD-with-momentum update on the batches the data server delivered;
+- lost work stays within one checkpoint interval, ranks agree, and protected files are untouched.
 
-**Reproducibility:** [Installation and sandboxed replay](docs/QUICKSTART.md) · [Evidence index and recompute commands](evidence/README.md) · [Complete documentation index](docs/README.md).
+The reward has three levels: V0 (correct diagnosis), V1 (plus cited evidence that was observed), V2 (plus a verified repair and no destructive action). The checks are specific to this small MLP, sampler and optimizer, not a general verifier for production code. Details: [docs/VERIFICATION.md](docs/VERIFICATION.md), [ARCHITECTURE.md](ARCHITECTURE.md).
 
-**Terminology:** *Rank* = training worker process; *collective* = a communication operation such as `all_reduce` or `broadcast`; *reference run* = the known-correct job without the injected fault; *re-execution* = running a patched job; *independent update replay* = reconstructing expected optimizer/state updates from the known training rule.
+## Tasks
 
-TrainDoctor is licensed under [Apache-2.0](LICENSE) ([NOTICE](NOTICE)). Citation metadata is in [CITATION.cff](CITATION.cff). Contributions of new failure modes, valid alternative repairs, and adversarial controls are welcome; see [SECURITY.md](SECURITY.md) for security reports.
+| Kind | Failure |
+| --- | --- |
+| A1 | A rank takes a different collective; all ranks time out |
+| A2 | One rank stalls before communication; all ranks time out |
+| B_SKIP, B_DUP | After a worker failure and restart, checkpoint and sampler disagree and samples are skipped or counted twice |
+| B_OK | Healthy job; the correct answer is no fault |
+
+See [docs/TASKS.md](docs/TASKS.md) and [docs/EXTENDING.md](docs/EXTENDING.md).
+
+## Experiments and results
+
+All results are exploratory. Raw results and checksums are in [`evidence/`](evidence/README.md).
+
+**Training.** Qwen3-4B was fine-tuned with SFT and then GRPO, with a label-only reward (V0) or the recovery-aware reward (V2), six paired seeds each, and scored once on a sealed test set of 100 incidents. Success means V2 on the faulted task kinds: correct diagnosis, supporting evidence and a repair that passes live sandbox replay.
+
+| Policy | Success |
+| --- | ---: |
+| Base model | 5.0% |
+| SFT | 17.2% |
+| Continued SFT, similar compute | 29.7% |
+| GRPO, label-only reward (mean of 6 seeds) | 23.0% |
+| GRPO, recovery-aware reward (mean of 6 seeds) | 33.4% |
+
+The recovery-aware arm gained 10.36 percentage points over the label-only arm (95% bootstrap interval +5.83 to +15.26; positive in all six seeds). The gain came from evidence grounding, not better repair selection: both arms chose the recovering repair at the same rate (71.4% vs 71.5%) and label accuracy did not change. Continued SFT is not clearly different from the recovery-aware arm (+3.7 points; interval −1.7 to +9.1) and is a single run. Training used precomputed outcomes from a development container; test scores come from 369 live sandbox replays. Report: [evidence/results/TEST_REPORT.md](evidence/results/TEST_REPORT.md).
+
+![Full-task success and working-repair selection for the two reward arms](docs/figures/fig_reward_outcome.svg)
+
+**Attacking the verifier.** None of 86 fake repairs (swallow the exception, exit 0, shrink the world, raise timeouts, forge logs) was accepted: 48 were rejected by a correctness invariant and 38 failed during execution, which shows those cheats do not run, not that an invariant covers them. The reference repair was accepted 5/5 and alternative valid repairs 9/10 (one false rejection, fixed in a prepared v1.1 verifier). I wrote the attacks; there was no external review. See [REDTEAM_TABLE.md](evidence/results/REDTEAM_TABLE.md).
+
+**Agent baselines.** On six development tasks, Claude Sonnet and Codex both produced patches that recovered all six; one Claude answer omitted a required evidence record (strict score 5/6 vs 6/6). The tasks are easy for strong agents and do not rank them ([report](experiments/cross_agent_dev6/BENCHMARK_REPORT.md)). A procedural-mutation pilot was stopped after Codex solved 24 of 24 attempts ([pilot](experiments/mutation_pilot/README.md)).
+
+## Limitations
+
+- Two synthetic task families; splits differ by seed, not by failure mechanism.
+- Each repair menu has one recovering option, so V1 and V2 agree on 97.7% of development rollouts. The results do not show that recovery-based reward improves repair selection.
+- Six paired seeds is a robustness minimum, not statistical power.
+- Verified replay needs a Modal account. The macOS `sandbox-exec` profile is a development convenience, not a security boundary.
+- Sealed test seeds are withheld (only their hash is published), so the test set cannot be regenerated here.
+- No claim about production NCCL/FSDP failures or arbitrary training programs.
+
+## Documentation
+
+Guides are in [docs/](docs/README.md), the benchmark and pilot in [`experiments/`](experiments/README.md), raw results and protocols in [`evidence/`](evidence/README.md). Issues and pull requests are welcome, especially new red-team cases and tasks with several plausible repairs. Security reports: [SECURITY.md](SECURITY.md).
+
+Apache-2.0 ([LICENSE](LICENSE), [NOTICE](NOTICE)). Citation: [CITATION.cff](CITATION.cff).
