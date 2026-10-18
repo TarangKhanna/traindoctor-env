@@ -315,7 +315,7 @@ def violations(rep: dict) -> list[str]:
 if __name__ == "__main__":
     import json
     import sys
-    out = Path(sys.argv[1] if len(sys.argv) > 1 else "experiments/verifier_audit/menu_leak_dev400.json")
+    out = Path(sys.argv[1] if len(sys.argv) > 1 else "menu_leak_dev400.json")
     rep = report()
     rep["violations"] = violations(rep)
     out.parent.mkdir(parents=True, exist_ok=True)

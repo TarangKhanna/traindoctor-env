@@ -4,11 +4,11 @@ An RL environment for debugging distributed PyTorch training jobs.
 
 TrainDoctor gives a coding agent a failed multi-process PyTorch (Gloo) training job and asks it to diagnose and fix it. Each repair is re-run in a sandbox. A verifier outside the sandbox then checks whether training actually recovered: which samples each committed step consumed, whether checkpoint, optimizer and sampler state were restored correctly, and whether all ranks agree.
 
-A job that exits cleanly is not necessarily repaired. In one task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce`, and every rank times out. Setting `world_size` from 4 to 1 removes the hang and the job completes, but it is no longer the same training run: the verifier reports the wrong worker count, 72 missing and 8 duplicated samples, and parameters that differ from the reference ([per-case table](evidence/results/REDTEAM_TABLE.md)).
+A job that exits cleanly is not necessarily repaired. In one task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce`, and every rank times out. Setting `world_size` from 4 to 1 removes the hang and the job completes, but it is no longer the same training run: the verifier reports the wrong worker count, 72 missing and 8 duplicated samples, and parameters that differ from the reference ([per-case table](https://github.com/TarangKhanna/traindoctor-research)).
 
 ![Four ranks: rank 2 calls broadcast while ranks 0, 1 and 3 call all_reduce, so every rank times out with the same error](docs/figures/fig_failure.svg)
 
-Research preview (v0.1): two synthetic failure families and exploratory results. [Quickstart](#quickstart) | [Results](#experiments-and-results) | [Limitations](#limitations)
+Preview (v0.1): two synthetic failure families. This repository is the environment and verifier; training and evaluation results are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research). [Quickstart](#quickstart) | [Tier A](#tier-a-interface-and-rewards) | [Results](#results) | [Limitations](#limitations)
 
 ## Quickstart
 
@@ -22,7 +22,7 @@ pip install -r requirements-cpu.txt
 python scripts/quickstart.py --fake F11 --out quickstart_out
 ```
 
-This builds a failed four-process job, applies the reference repair and the `world_size: 1` fake, and runs the recovery checks on both (about 30 seconds after installation). The local run prints `INVALID: unsandboxed re-execution` by design: the verifier does not count results from agent-edited code that ran without isolation. The verified path uses a Modal Sandbox ([docs/QUICKSTART.md](docs/QUICKSTART.md), [recorded replay](evidence/results/quickstart_verified_replay.txt)).
+This builds a failed four-process job, applies the reference repair and the `world_size: 1` fake, and runs the recovery checks on both (about 30 seconds after installation). The local run prints `INVALID: unsandboxed re-execution` by design: the verifier does not count results from agent-edited code that ran without isolation. The verified path uses a Modal Sandbox ([docs/QUICKSTART.md](docs/QUICKSTART.md)). To use the package from another project: `pip install ".[modal]"` from a clone.
 
 ## How recovery verification works
 
@@ -37,7 +37,7 @@ Inside the sandbox, the launcher runs as root and the ranks as an unprivileged u
 - where a repair changes the checkpoint layout, each transition between committed states matches an independent replay of the SGD-with-momentum update on the batches the data server delivered;
 - lost work stays within one checkpoint interval, ranks agree, and protected files are untouched.
 
-The reward has three levels: V0 (correct diagnosis), V1 (plus cited evidence that was observed), V2 (plus a verified repair and no destructive action). The checks are specific to this small MLP, sampler and optimizer, not a general verifier for production code. Details: [docs/VERIFICATION.md](docs/VERIFICATION.md), [ARCHITECTURE.md](ARCHITECTURE.md).
+The checks are specific to this small MLP, sampler and optimizer, not a general verifier for production code. Details: [docs/VERIFICATION.md](docs/VERIFICATION.md), [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ## Tasks
 
@@ -50,39 +50,26 @@ The reward has three levels: V0 (correct diagnosis), V1 (plus cited evidence tha
 
 See [docs/TASKS.md](docs/TASKS.md) and [docs/EXTENDING.md](docs/EXTENDING.md).
 
-## Experiments and results
+## Tier A interface and rewards
 
-All results are exploratory. Raw results and checksums are in [`evidence/`](evidence/README.md).
+Tier A is the single-turn form of the environment. `traindoctor_env.bundle.make_bundle` turns an executed snapshot into a compact text of evidence-id-tagged records plus a menu of repairs, capped at 3,072 Qwen3 tokens. `traindoctor_env.tiera` renders the chat prompt, parses the JSON answer (label, cited evidence ids, repair, whether it claims to have fixed the job) and scores it. Tier B is multi-turn: tools in `traindoctor_env/tools.py` expose the same snapshot and the agent edits the job's declared editable files, with the diff replay-verified.
 
-**Training.** Qwen3-4B was fine-tuned with SFT and then GRPO, with a label-only reward (V0) or the recovery-aware reward (V2), six paired seeds each, and scored once on a sealed test set of 100 incidents. Success means V2 on the faulted task kinds: correct diagnosis, supporting evidence and a repair that passes live sandbox replay.
+The reward has three levels, each adding one requirement: V0 (correct diagnosis), V1 (plus cited evidence that was observed and is diagnostic for the mechanism), V2 (plus a repair that passes sandboxed re-execution, and no destructive action). A format violation scores zero. `audit/menu_leak.py` checks that the bundle and menu do not leak the label.
 
-| Policy | Success |
-| --- | ---: |
-| Base model | 5.0% |
-| SFT | 17.2% |
-| Continued SFT, similar compute | 29.7% |
-| GRPO, label-only reward (mean of 6 seeds) | 23.0% |
-| GRPO, recovery-aware reward (mean of 6 seeds) | 33.4% |
+## Results
 
-The recovery-aware arm gained 10.36 percentage points over the label-only arm (95% bootstrap interval +5.83 to +15.26; positive in all six seeds). The gain came from evidence grounding, not better repair selection: both arms chose the recovering repair at the same rate (71.4% vs 71.5%) and label accuracy did not change. Continued SFT is not clearly different from the recovery-aware arm (+3.7 points; interval −1.7 to +9.1) and is a single run. Training used precomputed outcomes from a development container; test scores come from 369 live sandbox replays. Report: [evidence/results/TEST_REPORT.md](evidence/results/TEST_REPORT.md).
-
-![Full-task success and working-repair selection for the two reward arms](docs/figures/fig_reward_outcome.svg)
-
-**Attacking the verifier.** None of 86 fake repairs (swallow the exception, exit 0, shrink the world, raise timeouts, forge logs) was accepted: 48 were rejected by a correctness invariant and 38 failed during execution, which shows those cheats do not run, not that an invariant covers them. The reference repair was accepted 5/5 and alternative valid repairs 9/10 (one false rejection, fixed in a prepared v1.1 verifier). I wrote the attacks; there was no external review. See [REDTEAM_TABLE.md](evidence/results/REDTEAM_TABLE.md).
-
-**Agent baselines.** On six development tasks, Claude Sonnet and Codex both produced patches that recovered all six; one Claude answer omitted a required evidence record (strict score 5/6 vs 6/6). The tasks are easy for strong agents and do not rank them. Per-task results are published; prompts and transcripts are not ([report](experiments/cross_agent_dev6/BENCHMARK_REPORT.md)). A procedural-mutation pilot was stopped after Codex solved 24 of 24 attempts ([pilot](experiments/mutation_pilot/README.md)).
+The environment was used to train and evaluate Qwen3-4B with a label-only reward (V0) and the recovery-aware reward (V2), and to attack the verifier. In the exploratory comparison on a sealed test set, the V2 arm scored 10.36 percentage points higher than the V0 arm; the gain came from evidence grounding, not from better repair selection. None of 86 fake repairs was accepted, though 38 of those failed during execution rather than being caught by an invariant. Two strong coding agents solved all six development tasks, so those tasks are easy and do not rank agents. These results are produced and reproducible in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research), which holds the data, scripts and caveats; none of the training or evaluation code is in this repository.
 
 ## Limitations
 
 - Two synthetic task families; splits differ by seed, not by failure mechanism.
 - Each repair menu has one recovering option, so V1 and V2 agree on 97.7% of development rollouts. The results do not show that recovery-based reward improves repair selection.
-- Six paired seeds is a robustness minimum, not statistical power.
+- The training result rests on six paired seeds, a robustness minimum rather than statistical power, and is exploratory.
 - Verified replay needs a Modal account. The macOS `sandbox-exec` profile is a development convenience, not a security boundary.
-- Sealed test seeds are withheld (only their hash is published), so the test set cannot be regenerated here.
 - No claim about production NCCL/FSDP failures or arbitrary training programs.
 
 ## Documentation
 
-Guides are in [docs/](docs/README.md), the benchmark and pilot in [`experiments/`](experiments/README.md), raw results and protocols in [`evidence/`](evidence/README.md). Issues and pull requests are welcome, especially new red-team cases and tasks with several plausible repairs. Security reports: [SECURITY.md](SECURITY.md).
+Guides are in [docs/](docs/README.md). Issues and pull requests are welcome, especially new red-team cases and tasks with several plausible repairs. Security reports: [SECURITY.md](SECURITY.md).
 
 Apache-2.0 ([LICENSE](LICENSE), [NOTICE](NOTICE)). Citation: [CITATION.cff](CITATION.cff).

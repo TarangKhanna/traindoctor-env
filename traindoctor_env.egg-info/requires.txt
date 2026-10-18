@@ -1,0 +1,10 @@
+torch==2.14.1
+numpy==2.5.4
+pydantic==2.14.1
+
+[dev]
+pytest==9.1.1
+hypothesis==6.170.1
+
+[modal]
+modal

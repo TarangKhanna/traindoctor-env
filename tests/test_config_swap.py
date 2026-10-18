@@ -6,7 +6,7 @@ R1  A cause that is visible in the config follows the CONFIG when configs are sw
 R2  The set of config keys is identical for every kind (no field exists only to signal one cause).
 R3  No config key or string value contains a label/kind name or a generic fault word.
 R4  Every non-numeric config value the bug introduces is a value the job code really implements (it is a mechanism,
-    not a marker); the config keys that remain 1:1 with a cause are listed in experiments/verifier_audit/VERIFIER_AUDIT.md.
+    not a marker).
 """
 import re
 from pathlib import Path

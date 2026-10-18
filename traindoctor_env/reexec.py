@@ -235,7 +235,7 @@ def _format_ok(st: dict | None, c: dict, ref: dict, rc: dict) -> bool:
             and st["step"].tolist() == [c["step"]] and st["sampler"].tolist() == list(divmod(c["step"], spe)))
 
 
-FORMAT_CHECKS = ("v1", "v1.1")   # v1 (default, frozen): checkpoints must STORE the sampler position. v1.1 (opt-in, NOT active): the position is judged by behaviour, see evidence/results/VERIFIER_V11.md
+FORMAT_CHECKS = ("v1", "v1.1")   # v1 (default, frozen): checkpoints must STORE the sampler position. v1.1 (opt-in, NOT active): the position is judged by behaviour; see tests/test_verifier_v11.py
 
 
 def _format_ok_v11(st: dict | None, c: dict, ref: dict, rc: dict) -> bool:
