@@ -176,6 +176,18 @@ DEV split, 6 paired seeds: V2 arm minus V0 arm = +4.64 points, 95% CI [-0.69, +9
 
 Spend: about $15.5 of Modal credit in total at the time of writing (ledger not published).
 
+### Cross-agent benchmark (DEV, 6 tasks, exploratory)
+
+Claude Sonnet (`claude-sonnet-5-5`) and Codex (`gpt-6.1-sol`), both at medium reasoning effort on subscription CLIs (no API billing), got the same task text, one attempt per task, and no access to gold fixes, sealed TEST or verifier internals. Each patch was replayed in the Modal Sandbox.
+
+| agent | label | evidence | live-verified recovery (V2) |
+|---|---|---|---|
+| Codex | 6/6 | 6/6 | 6/6 |
+| Claude Sonnet | 6/6 | 5/6 | 5/6 (all 6 patches recovered; one answer omitted a required evidence record) |
+| gold / null controls | 6/6 / 6/6 | 6/6 / 0/6 | 6/6 / 0/6 |
+
+The tasks are at the ceiling (patches were identical in 5 of 6), so this does not rank the agents. It does show the verifier separates real repairs from non-repairs (null 0/6) and that these single-site tasks need harder, decoy-laden variants to discriminate frontier agents. Isolation was sandbox-by-construction for Codex and instruction-based for Claude; DEV seeds only; no claim about unseen mechanisms. Cost: $0.06 of Modal. Report, raw answers, replay outcomes and reproduction commands: [`docs/benchmarks/cross_agent_dev6/`](docs/benchmarks/cross_agent_dev6/BENCHMARK_REPORT.md).
+
 ## Scope and limitations
 
 - Two task families (A: inconsistent collectives vs a stalled rank; B: checkpoint/sampler inconsistency after restart). Splits are by seed, not by mechanism, so there is no claim about unseen failure mechanisms.

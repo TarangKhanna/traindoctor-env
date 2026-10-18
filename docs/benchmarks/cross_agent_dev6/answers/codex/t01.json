@@ -1,0 +1,6 @@
+{
+  "label": "COLLECTIVE_DIVERGENCE",
+  "evidence_ids": ["E576440", "E1024a9", "Eb777c8"],
+  "fix_claim": "Removed the rank-0-only broadcast at step 7 onward. All ranks now use the same gradient collective sequence, preventing the broadcast/all-reduce mismatch.",
+  "patch": "--- a/job/train.py\n+++ b/job/train.py\n@@ -77,11 +77,8 @@\n             comm.reduce(bucket, step, b)\n             comm.broadcast(bucket, step, b)\n             bucket.div_(comm.world)\n         else:\n-            if rank == 0 and step >= 7 and b == 0:\n-                comm.broadcast(bucket, step, b)\n-            else:\n-                comm.all_reduce(bucket, step, b)\n+            comm.all_reduce(bucket, step, b)\n \n \n def main() -> None:\n"
+}
