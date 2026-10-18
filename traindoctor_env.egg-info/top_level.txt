@@ -1,3 +1,0 @@
-audit
-jobs
-traindoctor_env

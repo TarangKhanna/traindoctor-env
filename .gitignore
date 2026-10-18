@@ -32,3 +32,5 @@ cv*
 .handoff/
 .research/
 HANDOFF*.md
+*.egg-info/
+build/
