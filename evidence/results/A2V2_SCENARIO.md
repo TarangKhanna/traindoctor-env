@@ -44,7 +44,7 @@ World 3, `Scenario(101, "A2v2", 0, 3, 31337)`, `backend="modal"`, exec_mode `mod
 | F04 | no | execution_failure | I1 no_completed_relaunch | I1 no_completed_relaunch; I2 final_checkpoint_not_committed; I4 ranks_inconsistent; samples gaps=0 dups=0; transitions_not_reproduced; I3 params_mismatch; restore_inconsistent; checkpoint_format_or_state | failed/COLLECTIVE_TIMEOUT |
 | X2 | no | invariant | transitions_not_reproduced | transitions_not_reproduced; I3 params_mismatch; restore_inconsistent; checkpoint_format_or_state | completed/None |
 
-F06 first errored in run v2a (the Modal sandbox lifetime ran out under 6-way parallel load; a fail-closed `error`, not a verified rejection) and was re-run alone (v2b_f06). Spend: $0.115 + $0.015 = $0.13 of the $0.50 cap. Raw rows: `modal_train/results/redteam_a2v2_v2a.json`, `redteam_a2v2_v2b_f06.json`.
+F06 first errored in the first run (the Modal sandbox lifetime ran out under 6-way parallel load; a fail-closed `error`, not a verified rejection) and was re-run alone. The raw per-case rows are archived privately and not published.
 
 Roles: S01/R1/S02 are consumer-side patches; F06/F11/F04/X2 come from the v1 catalog (X2 adapted to the v2 sampler so it can run); gold/alt1/alt2 are producer-side repairs.
 

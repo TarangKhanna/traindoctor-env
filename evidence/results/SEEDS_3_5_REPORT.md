@@ -1,4 +1,4 @@
-<!-- provenance: copied unmodified below this line from modal_train/results/SEEDS_3_5_REPORT.md (gitignored original) on 2026-10-18; exec_mode dev_container-EXPLORATORY; see docs/RELEASE_MANIFEST.md -->
+<!-- provenance: copied unmodified below this line from modal_train/results/SEEDS_3_5_REPORT.md (gitignored original) on 2026-10-18; exec_mode dev_container-EXPLORATORY -->
 # Seeds 3-5 and 6-seed paired report (EXPLORATORY dev_container, not verified recovery)
 
 48 DEV eps x G=8 = 384 samples per run; sft1 full init, 20 optimizer steps, G=8, lr 2e-5, seed shared within each V0/V2 pair; sealed TEST untouched. All 12 evals + csft re-scored with `analyze_exploratory.py` (source *_eval.json -> *_EXPLORATORY.json), so seed 0-2 values are from the same scorer as 3-5. Seed 0 = pilot (eg_v0/eg_v2).
