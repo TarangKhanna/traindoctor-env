@@ -1,5 +1,7 @@
 # Config visibility, label-encoding check, and what is NOT RUN
 
+> Historical note: this page was written when the Tier A prompt cap was 2,048 tokens. The cap was amended to 3,072 on 2026-10-18 (`docs/prereg/amendment_token_cap.md`) and `CAP_TOKENS = 3072` in `traindoctor_env/bundle.py` is current. The 2,048 figures below are historical.
+
 Code state: modal-cuda on 15bfd41. Tests: tests/test_config_swap.py (pure Python, 6 passed, 0.11 s).
 
 ## Findings

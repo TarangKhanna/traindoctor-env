@@ -1,4 +1,7 @@
 # Seed splits (rl/splits.py; disjointness asserted at import)
+
+> Historical note: this page was written when the Tier A prompt cap was 2,048 tokens. The cap was amended to 3,072 on 2026-10-18 (`docs/prereg/amendment_token_cap.md`) and `CAP_TOKENS = 3072` in `traindoctor_env/bundle.py` is current. The 2,048 figures below are historical.
+
 DEV 10000-10399 (selection, frozen-vs-trained comparison), TRAIN 20000-20399, TEST SEALED (private seed pool, not published; never generated or opened before the single run), BURNED 7001-7008 excluded. M1.5 dev seeds are not enumerated in this repo; the DEV range is the only reserved range here.
 Ordering caveat: rl/splits.py was written and imported before out/sft was generated but committed afterwards (1c41bd8 vs the generation run); no SFT example used a non-TRAIN seed (300 rows, seeds 20000+, 60 per kind, 0 skipped).
 Seed-only splits do NOT support held-out-mechanism generalization claims: TRAIN, DEV and TEST draw from the same five scenario kinds and templates.

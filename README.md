@@ -8,6 +8,8 @@ A training job can stop crashing and still be wrong: it may silently skip data, 
 
 > **Research preview v0.1.** Two synthetic failure families, exploratory model results, and no independent security audit. This is neither a new RL algorithm nor a general-purpose verifier for arbitrary production training code.
 
+[Quickstart](#try-a-real-failure-on-a-cpu) · [Docs index](docs/README.md) · [Architecture](ARCHITECTURE.md)
+
 ## A successful job is not necessarily a repaired job
 
 In one task, rank 2 calls `broadcast` while the other three ranks call `all_reduce`. Every process eventually times out. The agent can identify the mismatched operation from the per-rank trace and repair it. [See the illustrated failure](docs/figures/fig_failure.svg).
@@ -21,7 +23,7 @@ A tempting shortcut is to change `world_size` from **4 to 1**: no peers, no coll
 
 Those figures come from the **sandboxed A1_src red-team case**, not the separate local quickstart (which uses a different seed). [Inspect the case-by-case evidence](docs/REDTEAM_TABLE.md).
 
-## What makes the verifier trustworthy?
+## How TrainDoctor verifies recovery
 
 **Isolating a patch is different from verifying its result.** The training process can write misleading logs and even fabricate checkpoints. TrainDoctor therefore keeps a separate execution record and checks it against a known-correct, fault-free run.
 

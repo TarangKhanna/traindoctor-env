@@ -1,6 +1,6 @@
 # Quickstart (full)
 
-Moved from the top-level README. Commands are unchanged.
+Commands are copy-pasteable from a fresh clone.
 
 CPU only, no paid API, no Modal needed for steps 1-2. Python 3.12.
 

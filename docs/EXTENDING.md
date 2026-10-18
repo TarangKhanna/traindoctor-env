@@ -1,7 +1,5 @@
 # Using the packages and adding a task
 
-Moved from the top-level README.
-
 Install (CPU, Python 3.12): see [Quickstart](QUICKSTART.md). `pip install ".[dev]"` or `pip install git+https://github.com/TarangKhanna/traindoctor-env` makes the packages importable.
 
 Entry points:

@@ -1,4 +1,7 @@
 # Label-order confound (experimental flag `--shuffle-labels` in rl/model_screen.py; production prompt/fixtures unchanged)
+
+> Historical note: this page was written when the Tier A prompt cap was 2,048 tokens. The cap was amended to 3,072 on 2026-10-18 (`docs/prereg/amendment_token_cap.md`) and `CAP_TOKENS = 3072` in `traindoctor_env/bundle.py` is current. The 2,048 figures below are historical.
+
 Qwen3-4B-Instruct-2507, 8 DEV episodes x G=4, Labels line permuted per episode (seeded), strict gate.
 - Unshuffled: 30/30 valid answers = COLLECTIVE_DIVERGENCE (V0 .25, V2 .125, no spread).
 - Shuffled: 30/32 valid; COLLECTIVE_DIVERGENCE 20, RANK_STALLED_BEFORE_COLLECTIVE 10, never CKPT_SAMPLER_INCONSISTENT or NO_FAULT. V0 .094, V2 0, 1 group with V0 spread, 0 with V2 spread.

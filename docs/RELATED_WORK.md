@@ -1,7 +1,5 @@
 # Related work and differentiation
 
-Moved from the top-level README.
-
 Brief and non-exhaustive; claims are limited to what the linked pages say.
 - [AIOpsLab](https://arxiv.org/abs/2501.06706) and [Cloud-OpsBench](https://arxiv.org/abs/2603.00468): agent benchmarks for cloud/microservice operations (detection, localization, mitigation). TrainDoctor targets distributed ML training jobs and grades recovery with training-correctness invariants.
 - [DDBench](https://arxiv.org/abs/2608.14863): agentic repair of 60 historical bugs in open-source distributed systems, graded by a hidden test oracle. TrainDoctor uses executable multi-rank ML-training failures and re-executes the fix to check training state.

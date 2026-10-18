@@ -1,6 +1,6 @@
 # Known test failures
 
-Moved from the top-level README. The summary there is accurate to this page.
+The README summary matches this page.
 
 Run in a clean clone of this repository, fresh venv from `requirements-cpu.txt` (macOS arm64, Python 3.12, torch 2.14.1 CPU), 2026-10-19:
 

@@ -1,7 +1,5 @@
 # Tasks and tiers
 
-Moved from the top-level README.
-
 | kind | what happens | correct repair |
 |---|---|---|
 | A1 | same timeout on all ranks; a rank-dependent code path (or config entry) enters a different collective | remove the divergence |

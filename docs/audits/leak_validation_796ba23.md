@@ -1,5 +1,7 @@
 # Independent validation of 796ba23 (menu leak closed?)
 
+> Historical note: this page was written when the Tier A prompt cap was 2,048 tokens. The cap was amended to 3,072 on 2026-10-18 (`docs/prereg/amendment_token_cap.md`) and `CAP_TOKENS = 3072` in `traindoctor_env/bundle.py` is current. The 2,048 figures below are historical.
+
 Validator: separate agent, CPU only (no Gloo, no MLX, no modal). 400 DEV seeds 10000..10399, 5-fold CV across seeds,
 Wilson 95% CIs. Scripts and JSON next to this file: `leak_validation_796ba23.py/.json` (Parts 1, 3, id probe),
 `leak_validation_796ba23_ablation.py/.json` (source of the residual signal), `bundle_evidence_oracle_796ba23.py/.json`

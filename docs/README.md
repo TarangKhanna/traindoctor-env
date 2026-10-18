@@ -1,6 +1,6 @@
 # Docs: start here
 
-Plain-language map of everything under `docs/`. Nothing here was moved or edited except the new pages marked (new); evidence files are hash-checked (`results/SHA256SUMS`) and left exactly where they were.
+Plain-language map of everything under `docs/`. Evidence files are hash-checked (`results/SHA256SUMS`) and left exactly where they were.
 
 ## Reading paths
 
@@ -13,13 +13,13 @@ Plain-language map of everything under `docs/`. Nothing here was moved or edited
 
 | file | what it is | for whom |
 |---|---|---|
-| [`QUICKSTART.md`](QUICKSTART.md) (new) | full install, local and sandboxed quickstart, unit-test commands | anyone reproducing |
-| [`TASKS.md`](TASKS.md) (new) | the five task kinds and the two tiers | everyone |
-| [`VERIFICATION.md`](VERIFICATION.md) (new) | invariants, `exec_mode` trust table, red-team details | reviewers |
-| [`FINDINGS.md`](FINDINGS.md) (new) | the design lesson about reward information | researchers |
-| [`EXTENDING.md`](EXTENDING.md) (new) | using the packages, adding a task | contributors |
-| [`TESTING.md`](TESTING.md) (new) | known test failures and why | contributors |
-| [`RELATED_WORK.md`](RELATED_WORK.md) (new) | related work and how this differs | researchers |
+| [`QUICKSTART.md`](QUICKSTART.md) | full install, local and sandboxed quickstart, unit-test commands | anyone reproducing |
+| [`TASKS.md`](TASKS.md) | the five task kinds and the two tiers | everyone |
+| [`VERIFICATION.md`](VERIFICATION.md) | invariants, `exec_mode` trust table, red-team details | reviewers |
+| [`FINDINGS.md`](FINDINGS.md) | the design lesson about reward information | researchers |
+| [`EXTENDING.md`](EXTENDING.md) | using the packages, adding a task | contributors |
+| [`TESTING.md`](TESTING.md) | known test failures and why | contributors |
+| [`RELATED_WORK.md`](RELATED_WORK.md) | related work and how this differs | researchers |
 | [`REDTEAM_TABLE.md`](REDTEAM_TABLE.md) | raw red-team table, 107 cases (source of the funnel figure) | reviewers |
 | [`RELEASE_MANIFEST.md`](RELEASE_MANIFEST.md) | claim-by-claim map to files, commands, commits | auditors |
 | [`DESIGN_NOTES.md`](DESIGN_NOTES.md) | distilled design decisions | contributors |

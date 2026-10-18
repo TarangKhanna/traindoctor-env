@@ -1,5 +1,7 @@
 # Tokenizer cap and repair-menu fix (branch modal-cuda)
 
+> Historical note: this page was written when the Tier A prompt cap was 2,048 tokens. The cap was amended to 3,072 on 2026-10-18 (`docs/prereg/amendment_token_cap.md`) and `CAP_TOKENS = 3072` in `traindoctor_env/bundle.py` is current. The 2,048 figures below are historical.
+
 ## 1. Repair-menu leakage
 Before (docs/audits/leakage_dev400.json on m1-audit, 200 held-out seeds): touched keys identify the label and repair
 at 100% (stripped lengths 98%) against a 32.5% majority baseline.
