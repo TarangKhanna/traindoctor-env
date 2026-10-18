@@ -1,31 +1,25 @@
 # Architecture
 
-One page. For the research side see [`docs/README.md`](docs/README.md).
+TrainDoctor is an executable environment for diagnosing and repairing failed distributed training. **Modal/gVisor provides execution isolation; TrainDoctor provides the recovery verifier.**
 
-## Module map
+![Trust boundaries in TrainDoctor: untrusted rank processes, launcher-owned evidence inside Modal Sandbox, and independent verification outside.](docs/figures/fig_trust_boundary.svg)
 
-| path | role |
-|---|---|
-| `traindoctor_env/` | Core environment, plain Python (no OpenEnv, Inspect or MLX). `scenario.py` (what to run, and the hidden truth), `snapshot.py` (run the failing job once and freeze it), `tools.py` (agent-facing tool surface), `bundle.py` / `tiera.py` (single-turn prompt and reward), `reexec.py` (replay a fix and recompute invariants), `verifiers.py` (V0, V1, V2), `oracle.py` (reference solver). |
-| `jobs/` | The executable training job (`template/`), fault injection (`build.py`), the launcher and trusted data server, checkpoint manifest and resubmission logic, and the sandbox profile. |
-| `rl/` | Prompt rendering, seed splits, SFT data generation and local training probes. |
-| `modal_train/` | Modal (cloud) backend: SFT / GRPO / eval on GPUs and the network-less sandbox that runs the replays. Needs a Modal account. |
-| `audit/` | Menu-leak audit: can the answer be read off the repair menu alone. |
-| `scripts/` | Entry points: `quickstart.py`, `redteam_suite.py`, `analyze_test.py`, `audit_test_recount.py`, `make_figures.py`. |
-| `tests/` | pytest suite (rules from the spec, not snapshots of output; snapshot tests are named `test_snapshot_*`). |
-| `docs/`, `experiments/` | Write-ups and hash-checked evidence; see `docs/README.md`. |
+The agent submits edits to permitted job files. Inside an isolated Modal Sandbox, the patched PyTorch ranks run as an unprivileged user, while a launcher and private-socket data server manage rank identity, failure injection, batch delivery, run history and checkpoint captures. A separate verifier **outside** that sandbox checks the captured training state against a known-good reference. Copied checkpoints remain untrusted data until the independent checks pass.
 
-## Data flow
+## Code map
 
-```mermaid
-flowchart LR
-    S["Scenario seed"] --> J["Executed failing job<br/>(real multi-rank Gloo run)"]
-    J --> N["Snapshot<br/>logs, per-rank traces,<br/>config, source"]
-    N --> A["Agent<br/>reads evidence"]
-    A --> D["Diff<br/>(editable files only)"]
-    D --> X["Sandbox replay<br/>pristine job + diff, no network"]
-    X --> V["Trusted verifier<br/>recomputes invariants"]
-    V --> R["Reward<br/>V0 label, V1 evidence,<br/>V2 verified recovery"]
-```
+| Component | Implementation |
+| --- | --- |
+| Scenario definitions and observed evidence | [`traindoctor_env/scenario.py`](traindoctor_env/scenario.py), [`snapshot.py`](traindoctor_env/snapshot.py) |
+| Agent tools and diagnosis/repair tasks | [`traindoctor_env/tools.py`](traindoctor_env/tools.py), [`tiera.py`](traindoctor_env/tiera.py) |
+| Multi-rank training job | [`jobs/template/train.py`](jobs/template/train.py) |
+| Fault injection, timeout and restart control | [`jobs/launcher.py`](jobs/launcher.py) |
+| Trusted sample delivery and captured state | [`jobs/dataserver.py`](jobs/dataserver.py), [`trusted.py`](jobs/trusted.py) |
+| Sandboxed execution integration | [`modal_train/sandbox_backend.py`](modal_train/sandbox_backend.py) |
+| Reference state reconstruction and verification | [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py) |
+| Diagnosis/evidence/repair rewards | [`traindoctor_env/verifiers.py`](traindoctor_env/verifiers.py) |
+| SFT/GRPO experiments and evaluation | [`rl/`](rl/), [`modal_train/`](modal_train/) |
 
-The hidden truth (which fault was injected) lives only in the scenario and is never part of the snapshot the agent sees. The verifier runs outside the sandbox and reads only files copied out of it.
+Two distinct operations matter: **re-execution** runs the modified job; **independent update reconstruction** calculates what the expected training state should be, given the reference algorithm and delivered samples.
+
+This research preview covers synthetic PyTorch/Gloo training with two failure families, **not arbitrary production FSDP/NCCL workflows**. See [verifier mechanisms](docs/VERIFICATION.md), [task definitions](docs/TASKS.md) and [results](docs/results/TEST_REPORT.md).

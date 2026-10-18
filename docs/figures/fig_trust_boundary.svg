@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 730" width="560" height="730" role="img" aria-labelledby="title description">
+<title id="title">TrainDoctor isolation and correctness verification</title>
+<desc id="description">Agent submits a patch. Inside Modal gVisor sandbox, untrusted PyTorch ranks are separate from a launcher and private data server, which capture sample and checkpoint records. An external verifier checks the resulting computation against a known-correct reference.</desc>
+<style>
+text{font-family:Arial,Helvetica,sans-serif}
+.bg{fill:#f6f8fa}.box{fill:#fff;stroke:#a1aab4}.ink{fill:#1f2328}.sub{fill:#59636e}.sbox{fill:#eef4fd;stroke:#0969da}.untrusted{fill:#fff1ee;stroke:#cf222e}.owned{fill:#ebf3ff;stroke:#0969da}.outside{fill:#e8f7ec;stroke:#1a7f37}.arrow{stroke:#57606a}
+@media(prefers-color-scheme:dark){.bg{fill:#0d1117}.box{fill:#161b22;stroke:#697580}.ink{fill:#e6edf3}.sub{fill:#a7b0bc}.sbox{fill:#12253a;stroke:#58a6ff}.untrusted{fill:#301d23;stroke:#f85149}.owned{fill:#152a43;stroke:#58a6ff}.outside{fill:#132c20;stroke:#3fb950}.arrow{stroke:#a7b0bc}}
+</style>
+<rect class="bg" width="560" height="730" rx="12"/>
+<rect class="box" x="20" y="16" width="520" height="70" rx="10"/>
+<text class="ink" x="280" y="47" font-size="25" font-weight="700" text-anchor="middle">AI agent</text>
+<text class="sub" x="280" y="71" font-size="19" text-anchor="middle">Submits code / config repair</text>
+<path class="arrow" d="M280 86V107 M270 98L280 109L290 98" stroke-width="3" fill="none"/>
+<rect class="sbox" x="20" y="119" width="520" height="369" rx="12" stroke-width="2.5"/>
+<text class="ink" x="280" y="152" font-size="25" font-weight="700" text-anchor="middle">Modal Sandbox · gVisor</text>
+<text class="sub" x="280" y="179" font-size="18" text-anchor="middle">Isolated execution · no network / secrets</text>
+<rect class="untrusted" x="40" y="194" width="480" height="93" rx="9" stroke-width="1.6"/>
+<text class="ink" x="280" y="228" font-size="24" font-weight="700" text-anchor="middle">Untrusted training ranks</text>
+<text class="ink" x="280" y="259" font-size="20" text-anchor="middle">3–4 PyTorch/Gloo processes</text>
+<text class="sub" x="280" y="278" font-size="16" text-anchor="middle">Unprivileged user</text>
+<path class="arrow" d="M280 287V310 M270 300L280 311L290 300" stroke-width="3" fill="none"/>
+<rect class="owned" x="40" y="324" width="480" height="140" rx="9" stroke-width="1.6"/>
+<text class="ink" x="280" y="358" font-size="23" font-weight="700" text-anchor="middle">Launcher + data server</text>
+<text class="sub" x="280" y="385" font-size="17" text-anchor="middle">Privileged relative to rank processes</text>
+<text class="ink" x="280" y="414" font-size="19" text-anchor="middle">Sample delivery + worker history</text>
+<text class="ink" x="280" y="441" font-size="19" text-anchor="middle">Checkpoint capture + ledger</text>
+<path class="arrow" d="M280 488V521 M270 510L280 522L290 510" stroke-width="3" fill="none"/>
+<text class="sub" x="297" y="505" font-size="16">artifacts out</text>
+<rect class="outside" x="20" y="532" width="520" height="154" rx="12" stroke-width="2.5"/>
+<text class="ink" x="280" y="565" font-size="25" font-weight="700" text-anchor="middle">Verifier outside sandbox</text>
+<text class="ink" x="280" y="596" font-size="19" text-anchor="middle">Compares with known-good run</text>
+<text class="ink" x="280" y="623" font-size="19" text-anchor="middle">Recomputes expected state updates</text>
+<text class="ink" x="280" y="650" font-size="19" text-anchor="middle">Checks samples, ranks, checkpoints</text>
+<text class="ink" x="280" y="715" font-size="20" font-weight="700" text-anchor="middle">Isolation ≠ correctness</text>
+</svg>
