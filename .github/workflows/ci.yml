@@ -13,7 +13,10 @@ jobs:
           python -m pip install --upgrade pip
           pip install --extra-index-url https://download.pytorch.org/whl/cpu ".[dev]"
       - name: Unit tests (no Docker, Modal, Metal or macOS sandbox)
-        run: python -m pytest -q -rs --ignore=tests/test_first_update.py -m "not sweep and not executed"
+        run: |
+          set -o pipefail
+          python -m pytest -q -rs -rf --ignore=tests/test_first_update.py -m "not sweep and not executed" 2>&1 | tee pytest.log \
+            || { grep -E "^(FAILED|ERROR)" pytest.log | cut -c1-400 | while read -r l; do echo "::error::$l"; done; exit 1; }
       - name: Import smoke test of the installed package
         run: |
           cd "$RUNNER_TEMP" && python -I -c "import traindoctor_env, jobs, rl.splits; from modal_train import sandbox_backend"

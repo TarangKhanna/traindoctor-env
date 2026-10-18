@@ -10,6 +10,7 @@ import pytest
 os.environ.setdefault("TD_KEY", "test-suite-key")  # keys the data server's salt; tests never touch ~/.traindoctor
 
 import jobs.resubmit
+from jobs import sandbox
 from traindoctor_env.bundle import make_menu, outcome_table
 from traindoctor_env.scenario import Scenario
 from traindoctor_env.snapshot import execute, load_truth
@@ -77,6 +78,11 @@ def menu_table(snapshot):
     """name -> (menu, truth, table of real re-execution outcomes)."""
     cache = Cache()
 
+    if not sandbox.available():
+        # Rule: a verified outcome needs OS isolation. Where it cannot be applied (Linux CI) the table is not built
+        # with an unsandboxed opt-out (that would not be a verification); dependent tests skip instead.
+        pytest.skip("sandbox-exec cannot be applied here; verified outcome tables need OS isolation")
+
     def compute(name):
         snap = snapshot(name)
         truth = load_truth(snap)
@@ -93,7 +99,8 @@ def warm_up(request, limit_concurrent_jobs):
         yield
         return
     request.getfixturevalue("tmp_path_factory").getbasetemp()  # create it before any thread asks
-    pair, table = request.getfixturevalue("snapshot_pair"), request.getfixturevalue("menu_table")
+    pair = request.getfixturevalue("snapshot_pair")
+    table = request.getfixturevalue("menu_table") if sandbox.available() else (lambda name: None)
     stop = threading.Event()
 
     def run():
