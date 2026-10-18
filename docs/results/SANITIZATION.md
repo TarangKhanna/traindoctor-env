@@ -19,3 +19,5 @@ Files whose hash changed (original -> sanitized, first 12 hex digits):
 | `docs/results/redteam_isolate.json` | `26ba4488cff3` | `809400900ac7` |
 | `docs/results/redteam_modal_v11.json` | `3abc30d283bc` | `622a3b8d51b3` |
 | `docs/results/TEST_REPORT.md` | `8c00cea13b35` | `3385aa523fbc` |
+
+- **Derived file added after sanitization:** `docs/results/test/AUDIT_RECOUNT.json` (per-seed repair-choice rates, produced by `scripts/repair_choice_by_seed.py` from the committed scored/replay files; no other hashed file changed).
