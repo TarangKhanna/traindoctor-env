@@ -1,0 +1,45 @@
+INVALID verification: re-execution ran without OS isolation; ok forced False
+INVALID verification: re-execution ran without OS isolation; ok forced False
+== 1. failed job from seed 123: kind=A1 variant=0 world_size=4
+   124 public records (source=executed). What the agent sees:
+   E004893 job       [run0] resume_from=none started_at_step=0 -> failed last_step=5 error=COLLECTIVE_TIMEOUT
+   Edde9ac process   [run0] rank 0 failed exit=1 last_step=5 COLLECTIVE_TIMEOUT
+   Ef147be process   [run0] rank 1 failed exit=1 last_step=5 COLLECTIVE_TIMEOUT
+   Ec625f1 process   [run0] rank 2 failed exit=1 last_step=5 COLLECTIVE_TIMEOUT
+   Ebd3f6e process   [run0] rank 3 failed exit=1 last_step=5 COLLECTIVE_TIMEOUT
+   E5d239e scheduler submitted: run0 resume_from=none
+   E666c1f scheduler failed: run0 COLLECTIVE_TIMEOUT
+   E3b6981 trace     [run0] rank 0 step=6 seq=12 all_reduce bucket=0 numel=80 pending
+   Ef4a4f6 trace     [run0] rank 1 step=6 seq=12 all_reduce bucket=0 numel=80 pending
+   E077217 trace     [run0] rank 2 step=6 seq=12 broadcast bucket=0 numel=80 pending
+   E5d9a14 trace     [run0] rank 3 step=6 seq=12 all_reduce bucket=0 numel=80 pending
+   hidden ground truth (never shown to an agent): label=COLLECTIVE_DIVERGENCE {'bad_op': 'broadcast', 'rank': 2, 'step': 6}
+
+== 2. gold repair (oracle: label, cited evidence ids, source edit)
+   diagnosis=COLLECTIVE_DIVERGENCE evidence=['E077217', 'E3b6981']
+--- a/job/train.py
++++ b/job/train.py
+@@ -77,10 +77,7 @@
+             comm.broadcast(bucket, step, b)
+             bucket.div_(comm.world)
+         else:
+-            if rank == 2 and step >= 6 and b == 0:
+-                comm.broadcast(bucket, step, b)
+-            else:
+-                comm.all_reduce(bucket, step, b)
++            comm.all_reduce(bucket, step, b)
+ 
+ 
+ def main() -> None:
+
+== 3. re-run the repaired job LOCALLY (UNVERIFIED: not sandboxed)
+  [gold, local] exec_mode=local_unsandboxed sandboxed=False ok=False steps_completed=12 lost_steps=2 sample_gaps=0 sample_dups=0
+   invariants: params_match_reference=True, samples_match_reference=True, restores_consistent=True, no_duplicate_updates=True, ranks_consistent=True, ckpt_valid=True, states_match_reference=True
+   detail: INVALID: unsandboxed re-execution
+   -> the frozen verifier refuses to count this: re-executing agent-edited code without OS/gVisor isolation is not
+      verification, so ok is forced False (INVALID) although all invariants above hold. Use --modal for the verified path.
+
+   fake repair F11: world_size:1 collapse
+  [F11, local] exec_mode=local_unsandboxed sandboxed=False ok=False steps_completed=12 lost_steps=2 sample_gaps=96 sample_dups=0
+   invariants: params_match_reference=False, samples_match_reference=False, restores_consistent=True, no_duplicate_updates=True, ranks_consistent=True, ckpt_valid=True, states_match_reference=False
+   detail: INVALID: unsandboxed re-execution; I6 world size differs from the reference

@@ -1,0 +1,390 @@
+{
+ "baseline_real_code": {
+  "test_boosted_stumps_on_menu_only_features_do_not_beat_majority": "pass",
+  "test_bug_values_are_implemented_job_semantics": "pass",
+  "test_candidate_ids_are_not_a_public_function_of_seed_and_role": "pass",
+  "test_config_cause_is_a_function_of_the_config_only": "pass",
+  "test_config_key_sets_are_identical_for_every_kind": "pass",
+  "test_diff_text_direction_and_variant_text_are_at_chance": "pass",
+  "test_menu_structure_does_not_identify_the_repair_or_the_label": "pass",
+  "test_ngram_logistic_regression_on_menu_text_is_at_chance_across_seeds": "pass",
+  "test_no_label_or_fault_name_in_any_config_key_or_string_value": "pass",
+  "test_noop_and_exclude_items_carry_no_config_bug_text": "pass",
+  "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label": "pass",
+  "test_swapping_configs_moves_the_visible_cause_not_the_label": "pass"
+ },
+ "expected_not_detected": [],
+ "mutants": [
+  {
+   "description": "CS1 label-encoding key: extra config key only for A2",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_config_key_sets_are_identical_for_every_kind"
+   ],
+   "failing_tests": [
+    "test_config_key_sets_are_identical_for_every_kind"
+   ],
+   "id": "CS1",
+   "results": {
+    "test_bug_values_are_implemented_job_semantics": "pass",
+    "test_config_cause_is_a_function_of_the_config_only": "pass",
+    "test_config_key_sets_are_identical_for_every_kind": "FAIL(AssertionError)",
+    "test_no_label_or_fault_name_in_any_config_key_or_string_value": "pass",
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label": "pass",
+    "test_swapping_configs_moves_the_visible_cause_not_the_label": "pass"
+   },
+   "suite": "test_config_swap"
+  },
+  {
+   "description": "CS2 fault-word config key (stale_flag) for every kind",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_no_label_or_fault_name_in_any_config_key_or_string_value"
+   ],
+   "failing_tests": [
+    "test_no_label_or_fault_name_in_any_config_key_or_string_value"
+   ],
+   "id": "CS2",
+   "results": {
+    "test_bug_values_are_implemented_job_semantics": "pass",
+    "test_config_cause_is_a_function_of_the_config_only": "pass",
+    "test_config_key_sets_are_identical_for_every_kind": "pass",
+    "test_no_label_or_fault_name_in_any_config_key_or_string_value": "FAIL(AssertionError)",
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label": "pass",
+    "test_swapping_configs_moves_the_visible_cause_not_the_label": "pass"
+   },
+   "suite": "test_config_swap"
+  },
+  {
+   "description": "CS3 label name leaked into a config string value (data.root = label)",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_no_label_or_fault_name_in_any_config_key_or_string_value"
+   ],
+   "failing_tests": [
+    "test_no_label_or_fault_name_in_any_config_key_or_string_value"
+   ],
+   "id": "CS3",
+   "results": {
+    "test_bug_values_are_implemented_job_semantics": "pass",
+    "test_config_cause_is_a_function_of_the_config_only": "pass",
+    "test_config_key_sets_are_identical_for_every_kind": "pass",
+    "test_no_label_or_fault_name_in_any_config_key_or_string_value": "FAIL(AssertionError)",
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label": "pass",
+    "test_swapping_configs_moves_the_visible_cause_not_the_label": "pass"
+   },
+   "suite": "test_config_swap"
+  },
+  {
+   "description": "CS4 stop swapping: config-visible bug edits dropped (cause no longer in the config)",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_config_cause_is_a_function_of_the_config_only",
+    "test_swapping_configs_moves_the_visible_cause_not_the_label"
+   ],
+   "failing_tests": [
+    "test_config_cause_is_a_function_of_the_config_only",
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label",
+    "test_swapping_configs_moves_the_visible_cause_not_the_label"
+   ],
+   "id": "CS4",
+   "results": {
+    "test_bug_values_are_implemented_job_semantics": "pass",
+    "test_config_cause_is_a_function_of_the_config_only": "FAIL(AssertionError)",
+    "test_config_key_sets_are_identical_for_every_kind": "pass",
+    "test_no_label_or_fault_name_in_any_config_key_or_string_value": "pass",
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label": "FAIL(AssertionError)",
+    "test_swapping_configs_moves_the_visible_cause_not_the_label": "FAIL(KeyError)"
+   },
+   "suite": "test_config_swap"
+  },
+  {
+   "description": "CS5 cause follows the label: B_DUP scenarios also carry a foreign-shard config edit",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_config_cause_is_a_function_of_the_config_only"
+   ],
+   "failing_tests": [
+    "test_config_cause_is_a_function_of_the_config_only"
+   ],
+   "id": "CS5",
+   "results": {
+    "test_bug_values_are_implemented_job_semantics": "pass",
+    "test_config_cause_is_a_function_of_the_config_only": "FAIL(AssertionError)",
+    "test_config_key_sets_are_identical_for_every_kind": "pass",
+    "test_no_label_or_fault_name_in_any_config_key_or_string_value": "pass",
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label": "pass",
+    "test_swapping_configs_moves_the_visible_cause_not_the_label": "pass"
+   },
+   "suite": "test_config_swap"
+  },
+  {
+   "description": "CS6 repair does not remove the config cause (config fix edits become no-ops)",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label"
+   ],
+   "failing_tests": [
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label"
+   ],
+   "id": "CS6",
+   "results": {
+    "test_bug_values_are_implemented_job_semantics": "pass",
+    "test_config_cause_is_a_function_of_the_config_only": "pass",
+    "test_config_key_sets_are_identical_for_every_kind": "pass",
+    "test_no_label_or_fault_name_in_any_config_key_or_string_value": "pass",
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label": "FAIL(AssertionError)",
+    "test_swapping_configs_moves_the_visible_cause_not_the_label": "pass"
+   },
+   "suite": "test_config_swap"
+  },
+  {
+   "description": "CS7 config repair silently absent (fix returns no config edits)",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label"
+   ],
+   "failing_tests": [
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label"
+   ],
+   "id": "CS7",
+   "results": {
+    "test_bug_values_are_implemented_job_semantics": "pass",
+    "test_config_cause_is_a_function_of_the_config_only": "pass",
+    "test_config_key_sets_are_identical_for_every_kind": "pass",
+    "test_no_label_or_fault_name_in_any_config_key_or_string_value": "pass",
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label": "FAIL(AssertionError)",
+    "test_swapping_configs_moves_the_visible_cause_not_the_label": "pass"
+   },
+   "suite": "test_config_swap"
+  },
+  {
+   "description": "CS8 bug value not implemented by the job (reduce_bcast -> xor_mode)",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_bug_values_are_implemented_job_semantics"
+   ],
+   "failing_tests": [
+    "test_bug_values_are_implemented_job_semantics"
+   ],
+   "id": "CS8",
+   "results": {
+    "test_bug_values_are_implemented_job_semantics": "FAIL(AssertionError)",
+    "test_config_cause_is_a_function_of_the_config_only": "pass",
+    "test_config_key_sets_are_identical_for_every_kind": "pass",
+    "test_no_label_or_fault_name_in_any_config_key_or_string_value": "pass",
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label": "pass",
+    "test_swapping_configs_moves_the_visible_cause_not_the_label": "pass"
+   },
+   "suite": "test_config_swap"
+  },
+  {
+   "description": "CS9 shard-dir semantics not read by data.py (reference removed from template text)",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_bug_values_are_implemented_job_semantics"
+   ],
+   "failing_tests": [
+    "test_bug_values_are_implemented_job_semantics"
+   ],
+   "id": "CS9",
+   "results": {
+    "test_bug_values_are_implemented_job_semantics": "FAIL(AssertionError)",
+    "test_config_cause_is_a_function_of_the_config_only": "pass",
+    "test_config_key_sets_are_identical_for_every_kind": "pass",
+    "test_no_label_or_fault_name_in_any_config_key_or_string_value": "pass",
+    "test_swapped_config_is_repaired_by_the_donor_reverse_edit_regardless_of_label": "pass",
+    "test_swapping_configs_moves_the_visible_cause_not_the_label": "pass"
+   },
+   "suite": "test_config_swap"
+  },
+  {
+   "description": "ML1 buggy-text context for no-change item (796ba23 bug)",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_noop_and_exclude_items_carry_no_config_bug_text"
+   ],
+   "failing_tests": [
+    "test_noop_and_exclude_items_carry_no_config_bug_text"
+   ],
+   "id": "ML1",
+   "results": {
+    "test_boosted_stumps_on_menu_only_features_do_not_beat_majority": "pass",
+    "test_candidate_ids_are_not_a_public_function_of_seed_and_role": "pass",
+    "test_diff_text_direction_and_variant_text_are_at_chance": "pass",
+    "test_menu_structure_does_not_identify_the_repair_or_the_label": "pass",
+    "test_ngram_logistic_regression_on_menu_text_is_at_chance_across_seeds": "pass",
+    "test_noop_and_exclude_items_carry_no_config_bug_text": "FAIL(AssertionError)"
+   },
+   "suite": "test_menu_leak"
+  },
+  {
+   "description": "ML2 buggy-text context for the exclude item (pre-97a49d8: exclude drawn from the edit against the buggy files)",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_noop_and_exclude_items_carry_no_config_bug_text"
+   ],
+   "failing_tests": [
+    "test_noop_and_exclude_items_carry_no_config_bug_text"
+   ],
+   "id": "ML2",
+   "results": {
+    "test_boosted_stumps_on_menu_only_features_do_not_beat_majority": "pass",
+    "test_candidate_ids_are_not_a_public_function_of_seed_and_role": "pass",
+    "test_diff_text_direction_and_variant_text_are_at_chance": "pass",
+    "test_menu_structure_does_not_identify_the_repair_or_the_label": "pass",
+    "test_ngram_logistic_regression_on_menu_text_is_at_chance_across_seeds": "pass",
+    "test_noop_and_exclude_items_carry_no_config_bug_text": "FAIL(AssertionError)"
+   },
+   "suite": "test_menu_leak"
+  },
+  {
+   "description": "ML3 unkeyed candidate ids: old public sha256(seed:menu:role)",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_candidate_ids_are_not_a_public_function_of_seed_and_role"
+   ],
+   "failing_tests": [
+    "test_candidate_ids_are_not_a_public_function_of_seed_and_role",
+    "test_menu_structure_does_not_identify_the_repair_or_the_label"
+   ],
+   "id": "ML3",
+   "results": {
+    "test_boosted_stumps_on_menu_only_features_do_not_beat_majority": "pass",
+    "test_candidate_ids_are_not_a_public_function_of_seed_and_role": "FAIL(AssertionError)",
+    "test_diff_text_direction_and_variant_text_are_at_chance": "pass",
+    "test_menu_structure_does_not_identify_the_repair_or_the_label": "FAIL(AssertionError)",
+    "test_ngram_logistic_regression_on_menu_text_is_at_chance_across_seeds": "pass",
+    "test_noop_and_exclude_items_carry_no_config_bug_text": "pass"
+   },
+   "suite": "test_menu_leak"
+  },
+  {
+   "description": "ML4 key-independent ids (seed-only salt, new public formula)",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_candidate_ids_are_not_a_public_function_of_seed_and_role"
+   ],
+   "failing_tests": [
+    "test_candidate_ids_are_not_a_public_function_of_seed_and_role"
+   ],
+   "id": "ML4",
+   "results": {
+    "test_boosted_stumps_on_menu_only_features_do_not_beat_majority": "pass",
+    "test_candidate_ids_are_not_a_public_function_of_seed_and_role": "FAIL(AssertionError)",
+    "test_diff_text_direction_and_variant_text_are_at_chance": "pass",
+    "test_menu_structure_does_not_identify_the_repair_or_the_label": "pass",
+    "test_ngram_logistic_regression_on_menu_text_is_at_chance_across_seeds": "pass",
+    "test_noop_and_exclude_items_carry_no_config_bug_text": "pass"
+   },
+   "suite": "test_menu_leak"
+  },
+  {
+   "description": "ML5 position leak: correct item moved to the front after the shuffle",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_menu_structure_does_not_identify_the_repair_or_the_label"
+   ],
+   "failing_tests": [
+    "test_boosted_stumps_on_menu_only_features_do_not_beat_majority",
+    "test_menu_structure_does_not_identify_the_repair_or_the_label"
+   ],
+   "id": "ML5",
+   "results": {
+    "test_boosted_stumps_on_menu_only_features_do_not_beat_majority": "FAIL(AssertionError)",
+    "test_candidate_ids_are_not_a_public_function_of_seed_and_role": "pass",
+    "test_diff_text_direction_and_variant_text_are_at_chance": "pass",
+    "test_menu_structure_does_not_identify_the_repair_or_the_label": "FAIL(AssertionError)",
+    "test_ngram_logistic_regression_on_menu_text_is_at_chance_across_seeds": "pass",
+    "test_noop_and_exclude_items_carry_no_config_bug_text": "pass"
+   },
+   "suite": "test_menu_leak"
+  },
+  {
+   "description": "ML6 decoys drawn from edit direction: no neutral display (shown parts dropped)",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_menu_structure_does_not_identify_the_repair_or_the_label",
+    "test_boosted_stumps_on_menu_only_features_do_not_beat_majority"
+   ],
+   "failing_tests": [
+    "test_boosted_stumps_on_menu_only_features_do_not_beat_majority",
+    "test_menu_structure_does_not_identify_the_repair_or_the_label"
+   ],
+   "id": "ML6",
+   "results": {
+    "test_boosted_stumps_on_menu_only_features_do_not_beat_majority": "FAIL(AssertionError)",
+    "test_candidate_ids_are_not_a_public_function_of_seed_and_role": "pass",
+    "test_diff_text_direction_and_variant_text_are_at_chance": "pass",
+    "test_menu_structure_does_not_identify_the_repair_or_the_label": "FAIL(AssertionError)",
+    "test_ngram_logistic_regression_on_menu_text_is_at_chance_across_seeds": "pass",
+    "test_noop_and_exclude_items_carry_no_config_bug_text": "pass"
+   },
+   "suite": "test_menu_leak"
+  },
+  {
+   "description": "ML7 decoys only exist where the location is clean (empty decoy elsewhere shows structure)",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_menu_structure_does_not_identify_the_repair_or_the_label"
+   ],
+   "failing_tests": [
+    "test_boosted_stumps_on_menu_only_features_do_not_beat_majority",
+    "test_diff_text_direction_and_variant_text_are_at_chance",
+    "test_menu_structure_does_not_identify_the_repair_or_the_label",
+    "test_ngram_logistic_regression_on_menu_text_is_at_chance_across_seeds"
+   ],
+   "id": "ML7",
+   "results": {
+    "test_boosted_stumps_on_menu_only_features_do_not_beat_majority": "FAIL(AssertionError)",
+    "test_candidate_ids_are_not_a_public_function_of_seed_and_role": "pass",
+    "test_diff_text_direction_and_variant_text_are_at_chance": "FAIL(AssertionError)",
+    "test_menu_structure_does_not_identify_the_repair_or_the_label": "FAIL(AssertionError)",
+    "test_ngram_logistic_regression_on_menu_text_is_at_chance_across_seeds": "FAIL(AssertionError)",
+    "test_noop_and_exclude_items_carry_no_config_bug_text": "pass"
+   },
+   "suite": "test_menu_leak"
+  },
+  {
+   "description": "ML8 decoys rendered from their raw edits, only the true repair gets the neutral display",
+   "detected_by_any": true,
+   "detected_by_expected": true,
+   "expected_to_fail": [
+    "test_menu_structure_does_not_identify_the_repair_or_the_label"
+   ],
+   "failing_tests": [
+    "test_boosted_stumps_on_menu_only_features_do_not_beat_majority",
+    "test_diff_text_direction_and_variant_text_are_at_chance",
+    "test_menu_structure_does_not_identify_the_repair_or_the_label",
+    "test_ngram_logistic_regression_on_menu_text_is_at_chance_across_seeds"
+   ],
+   "id": "ML8",
+   "results": {
+    "test_boosted_stumps_on_menu_only_features_do_not_beat_majority": "FAIL(AssertionError)",
+    "test_candidate_ids_are_not_a_public_function_of_seed_and_role": "pass",
+    "test_diff_text_direction_and_variant_text_are_at_chance": "FAIL(AssertionError)",
+    "test_menu_structure_does_not_identify_the_repair_or_the_label": "FAIL(AssertionError)",
+    "test_ngram_logistic_regression_on_menu_text_is_at_chance_across_seeds": "FAIL(AssertionError)",
+    "test_noop_and_exclude_items_carry_no_config_bug_text": "pass"
+   },
+   "suite": "test_menu_leak"
+  }
+ ],
+ "undetected": []
+}

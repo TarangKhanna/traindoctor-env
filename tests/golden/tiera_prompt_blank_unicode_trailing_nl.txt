@@ -1,0 +1,12 @@
+<|im_start|>user
+Line one
+
+R7: grad_norm=1.5e3 — spike
+
+
+Output the single JSON object directly, with no markdown code fence and no text before or after it: {"label": <label>, "evidence": [<record ids>], "repair": <repair id>, "claims_fixed": <true|false>}<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

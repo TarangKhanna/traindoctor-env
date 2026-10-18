@@ -1,0 +1,19 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  unit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install CPU dependencies (pins equal uv.lock)
+        run: |
+          python -m pip install --upgrade pip
+          pip install --extra-index-url https://download.pytorch.org/whl/cpu ".[dev]"
+      - name: Unit tests (no Docker, Modal, Metal or macOS sandbox)
+        run: python -m pytest -q -rs --ignore=tests/test_first_update.py -m "not sweep and not executed"
+      - name: Import smoke test of the installed package
+        run: |
+          cd "$RUNNER_TEMP" && python -I -c "import traindoctor_env, jobs, rl.splits; from modal_train import sandbox_backend"

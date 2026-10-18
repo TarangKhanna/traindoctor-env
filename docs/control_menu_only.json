@@ -1,0 +1,203 @@
+{
+ "model": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+ "adapter": null,
+ "shuffle_labels": true,
+ "variant": "menu_only",
+ "episodes": 8,
+ "n": 32,
+ "swap_base_mb": 3894.56,
+ "swap_end_mb": 3894.56,
+ "load_s": 0.9899359159171581,
+ "gen_s": 198.2021933766082,
+ "peak_mlx_gb": 3.653782766,
+ "maxrss_gb": 2.862514176,
+ "tokens": 1501,
+ "prompt_len": 1053,
+ "tok_s": 7.573074618543288,
+ "strict": {
+  "valid": 32,
+  "unsafe": 12,
+  "v0": 0.53125,
+  "v1": 0.0,
+  "v2": 0.0,
+  "v2_std": 0.0,
+  "spread_v0": 2,
+  "spread_v2": 0,
+  "repair_ok_of_valid": 2,
+  "labels_valid": [
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    18
+   ],
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    11
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    3
+   ]
+  ],
+  "truth_labels": [
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    12
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    8
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    8
+   ],
+   [
+    "NO_FAULT",
+    4
+   ]
+  ],
+  "per_ep_label": [
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT"
+   ],
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT",
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "COLLECTIVE_DIVERGENCE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "COLLECTIVE_DIVERGENCE"
+   ],
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT"
+   ]
+  ]
+ },
+ "fence": {
+  "valid": 32,
+  "unsafe": 12,
+  "v0": 0.53125,
+  "v1": 0.0,
+  "v2": 0.0,
+  "v2_std": 0.0,
+  "spread_v0": 2,
+  "spread_v2": 0,
+  "repair_ok_of_valid": 2,
+  "labels_valid": [
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    18
+   ],
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    11
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    3
+   ]
+  ],
+  "truth_labels": [
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    12
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    8
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    8
+   ],
+   [
+    "NO_FAULT",
+    4
+   ]
+  ],
+  "per_ep_label": [
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT"
+   ],
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT",
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "COLLECTIVE_DIVERGENCE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "COLLECTIVE_DIVERGENCE"
+   ],
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT",
+    "CKPT_SAMPLER_INCONSISTENT"
+   ]
+  ]
+ }
+}

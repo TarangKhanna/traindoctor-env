@@ -1,0 +1,84 @@
+{
+ "model": "mlx-community/Qwen3-4B-4bit",
+ "episodes": 8,
+ "n": 32,
+ "swap_base_mb": 5634.19,
+ "swap_end_mb": 5602.19,
+ "load_s": 0.36796237528324127,
+ "gen_s": 513.3567784996703,
+ "peak_mlx_gb": 4.186629178,
+ "maxrss_gb": 2.862399488,
+ "tokens": 3344,
+ "prompt_len": 1905,
+ "tok_s": 6.5139882047980935,
+ "strict": {
+  "valid": 28,
+  "unsafe": 4,
+  "v0": 0.25,
+  "v1": 0.0,
+  "v2": 0.0,
+  "v2_std": 0.0,
+  "spread_v0": 0,
+  "spread_v2": 0,
+  "repair_ok_of_valid": 5,
+  "labels_valid": [
+   [
+    "COLLECTIVE_DIVERGENCE",
+    28
+   ]
+  ],
+  "truth_labels": [
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    12
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    8
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    8
+   ],
+   [
+    "NO_FAULT",
+    4
+   ]
+  ]
+ },
+ "fence": {
+  "valid": 28,
+  "unsafe": 4,
+  "v0": 0.25,
+  "v1": 0.0,
+  "v2": 0.0,
+  "v2_std": 0.0,
+  "spread_v0": 0,
+  "spread_v2": 0,
+  "repair_ok_of_valid": 5,
+  "labels_valid": [
+   [
+    "COLLECTIVE_DIVERGENCE",
+    28
+   ]
+  ],
+  "truth_labels": [
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    12
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    8
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    8
+   ],
+   [
+    "NO_FAULT",
+    4
+   ]
+  ]
+ }
+}

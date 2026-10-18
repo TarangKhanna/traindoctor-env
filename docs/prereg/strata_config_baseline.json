@@ -1,0 +1,43 @@
+{
+ "dev_counts": {
+  "n": 400,
+  "strata": {
+   "config_obvious": 136,
+   "evidence_ambiguous": 264
+  },
+  "variants": {
+   "A1_cfg": 50,
+   "A1_src": 35,
+   "A2": 86,
+   "B_DUP": 81,
+   "B_OK": 85,
+   "B_SKIP": 63
+  }
+ },
+ "train": {
+  "config_obvious": {
+   "by_variant": {
+    "A1_cfg": 50,
+    "A2": 74
+   },
+   "label_acc": 1.0,
+   "n": 124
+  },
+  "evidence_ambiguous": {
+   "by_variant": {
+    "A1_src": 50,
+    "B_DUP": 74,
+    "B_OK": 79,
+    "B_SKIP": 73
+   },
+   "label_acc": 0.532608695652174,
+   "n": 276
+  },
+  "overall": {
+   "fallback_label": "CKPT_SAMPLER_INCONSISTENT",
+   "label_acc": 0.6775,
+   "majority_label_acc": 0.3675,
+   "n": 400
+  }
+ }
+}

@@ -1,0 +1,190 @@
+{
+ "steps": {
+  "network_probe": {
+   "rc": 0,
+   "result": {
+    "https_example_com": "FAILED: URLError: <urlopen error [Errno -3] Temporary failure in name resolution>",
+    "dns_example_com": "FAILED: gaierror: [Errno -3] Temporary failure in name resolution",
+    "loopback": "OK",
+    "torch": "2.14.1+cpu"
+   },
+   "stderr": "",
+   "wall_s": 16.510099172592163
+  }
+ },
+ "task": "A2",
+ "rows": [
+  {
+   "id": "gold",
+   "run": 1,
+   "backend_info": {
+    "sandbox_id": "sb-01M57J911R4C15X1R9C81K1VY8",
+    "entry_rc": 0,
+    "entry_stdout": "{\"ok\": true, \"status\": \"completed\", \"error_class\": null, \"stderr\": {}}\n",
+    "entry_stderr": "",
+    "wall_s": 23.413679838180542,
+    "out_bytes": 143360
+   },
+   "accepted": true,
+   "exec_mode": "modal_sandbox",
+   "sandboxed": true,
+   "invariant": "ok",
+   "detail": "",
+   "outcome": {
+    "ok": true,
+    "bit_identical": false,
+    "params_match_reference": true,
+    "samples_match_reference": true,
+    "restores_consistent": true,
+    "no_duplicate_updates": true,
+    "lost_steps": 1,
+    "ranks_consistent": true,
+    "tampered": [],
+    "detail": "",
+    "steps_completed": 12,
+    "ckpt_valid": true,
+    "sample_gaps": 0,
+    "sample_dups": 0,
+    "states_match_reference": true,
+    "transitions_consistent": true,
+    "path": "state_equal",
+    "relaunches": 1,
+    "sandboxed": true,
+    "exec_mode": "modal_sandbox",
+    "fault_not_injected": false
+   },
+   "wall_s": 25.423324823379517
+  },
+  {
+   "id": "F06",
+   "run": 2,
+   "backend_info": {
+    "sandbox_id": "sb-01M57J9QJ0TX164JD9XA49GM9X",
+    "entry_rc": 0,
+    "entry_stdout": "{\"ok\": false, \"status\": \"failed\", \"error_class\": \"COLLECTIVE_TIMEOUT\", \"stderr\": {\"runs/run0/stderr/rank0.txt\": \"OMP: Warning #179: Function Can't set size of /tmp file failed:\\n[W1018 20:12:20.000238000 socket.cpp:764] [c10d] The client socket has failed to connect to [localhost]:61949 (errno: 1 - Operation not permitted).\\n\", \"runs/run0/stderr/rank1.txt\": \"group=self.group)\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank1]:     return func(*args, **kwargs)\\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank1]:     work.wait()\\n[rank1]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\\n\", \"runs/run0/stderr/rank2.txt\": \" group=self.group)\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank2]:     return func(*args, **kwargs)\\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank2]:     work.wait()\\n[rank2]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\\n\", \"runs/run1/stderr/rank0.txt\": \"[W1018 13:13:14.931661589 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3\\n\", \"runs/run1/stderr/rank1.txt\": \"rank1]:   File \\\"job/train.py\\\", line 48, in fn\\n[rank1]:     dist.all_reduce(t, group=self.group)\\n[rank1]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank1]:     return func(*args, **kwargs)\\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank1]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank1]:     work.wait()\\n[rank1]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:129] Timed out waiting 20000ms for send operation to complete\\n\", \"runs/run1/stderr/rank2.txt\": \"[rank2]:   File \\\"job/train.py\\\", line 48, in fn\\n[rank2]:     dist.all_reduce(t, group=self.group)\\n[rank2]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank2]:     return func(*args, **kwargs)\\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank2]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank2]:     work.wait()\\n[rank2]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:78] Timed out waiting 20000ms for recv operation to complete\\n\"}}\n",
+    "entry_stderr": "",
+    "wall_s": 62.619621992111206,
+    "out_bytes": 112640
+   },
+   "accepted": false,
+   "exec_mode": "modal_sandbox",
+   "sandboxed": true,
+   "invariant": "I1 no_completed_relaunch",
+   "detail": "",
+   "outcome": {
+    "ok": false,
+    "bit_identical": false,
+    "params_match_reference": false,
+    "samples_match_reference": false,
+    "restores_consistent": false,
+    "no_duplicate_updates": false,
+    "lost_steps": 1,
+    "ranks_consistent": false,
+    "tampered": [],
+    "detail": "",
+    "steps_completed": 0,
+    "ckpt_valid": false,
+    "sample_gaps": 0,
+    "sample_dups": 0,
+    "states_match_reference": false,
+    "transitions_consistent": false,
+    "path": "",
+    "relaunches": 1,
+    "sandboxed": true,
+    "exec_mode": "modal_sandbox",
+    "fault_not_injected": false
+   },
+   "wall_s": 64.64700388908386
+  },
+  {
+   "id": "F11",
+   "run": 3,
+   "backend_info": {
+    "sandbox_id": "sb-01M57JBPSS97BH1W70AXRYFF2H",
+    "entry_rc": 0,
+    "entry_stdout": "{\"ok\": false, \"status\": \"watchdog_killed\", \"error_class\": null, \"stderr\": {\"runs/run0/stderr/rank0.txt\": \"OMP: Warning #179: Function Can't set size of /tmp file failed:\\n[W1018 20:12:20.000238000 socket.cpp:764] [c10d] The client socket has failed to connect to [localhost]:61949 (errno: 1 - Operation not permitted).\\n\", \"runs/run0/stderr/rank1.txt\": \"group=self.group)\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank1]:     return func(*args, **kwargs)\\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank1]:     work.wait()\\n[rank1]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\\n\", \"runs/run0/stderr/rank2.txt\": \" group=self.group)\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank2]:     return func(*args, **kwargs)\\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank2]:     work.wait()\\n[rank2]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\\n\", \"runs/run1/stderr/rank0.txt\": \"[W1018 13:14:19.749960835 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3\\n\"}}\n",
+    "entry_stderr": "",
+    "wall_s": 30.165643215179443,
+    "out_bytes": 102400
+   },
+   "accepted": false,
+   "exec_mode": "modal_sandbox",
+   "sandboxed": true,
+   "invariant": "I1 no_completed_relaunch",
+   "detail": "",
+   "outcome": {
+    "ok": false,
+    "bit_identical": false,
+    "params_match_reference": false,
+    "samples_match_reference": false,
+    "restores_consistent": false,
+    "no_duplicate_updates": false,
+    "lost_steps": 0,
+    "ranks_consistent": false,
+    "tampered": [],
+    "detail": "",
+    "steps_completed": 0,
+    "ckpt_valid": false,
+    "sample_gaps": 0,
+    "sample_dups": 0,
+    "states_match_reference": false,
+    "transitions_consistent": false,
+    "path": "",
+    "relaunches": 1,
+    "sandboxed": true,
+    "exec_mode": "modal_sandbox",
+    "fault_not_injected": false
+   },
+   "wall_s": 32.197381019592285
+  },
+  {
+   "id": "gold",
+   "run": 4,
+   "backend_info": {
+    "sandbox_id": "sb-01M57JCPT3WP00Q2AW9K27QPA5",
+    "entry_rc": 0,
+    "entry_stdout": "{\"ok\": true, \"status\": \"completed\", \"error_class\": null, \"stderr\": {}}\n",
+    "entry_stderr": "",
+    "wall_s": 32.76194906234741,
+    "out_bytes": 143360
+   },
+   "accepted": true,
+   "exec_mode": "modal_sandbox",
+   "sandboxed": true,
+   "invariant": "ok",
+   "detail": "",
+   "outcome": {
+    "ok": true,
+    "bit_identical": false,
+    "params_match_reference": true,
+    "samples_match_reference": true,
+    "restores_consistent": true,
+    "no_duplicate_updates": true,
+    "lost_steps": 1,
+    "ranks_consistent": true,
+    "tampered": [],
+    "detail": "",
+    "steps_completed": 12,
+    "ckpt_valid": true,
+    "sample_gaps": 0,
+    "sample_dups": 0,
+    "states_match_reference": true,
+    "transitions_consistent": true,
+    "path": "state_equal",
+    "relaunches": 1,
+    "sandboxed": true,
+    "exec_mode": "modal_sandbox",
+    "fault_not_injected": false
+   },
+   "wall_s": 35.44271183013916
+  }
+ ],
+ "checks": {
+  "gold_accepted_modal": true,
+  "F06_rejected": true,
+  "F11_rejected": true,
+  "gold_deterministic": true
+ },
+ "total_wall_s": 186.54665899276733,
+ "ledger_total_usd": 5.7639596570611
+}

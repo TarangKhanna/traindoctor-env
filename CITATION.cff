@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "TrainDoctor: An executable RL environment for debugging and repairing distributed ML training failures"
+type: software
+authors:
+  - family-names: Khanna
+    given-names: Tarang
+repository-code: "https://github.com/TarangKhanna/traindoctor-env"
+license: Apache-2.0
+version: 0.1.0
+date-released: "2026-10-19"
+abstract: >-
+  An environment in which an agent diagnoses and repairs a failed multi-rank
+  PyTorch/Gloo training job, with a verifier that re-executes the proposed
+  repair in a disposable sandbox and checks that training recovered with its
+  computation intact (committed-sample accounting, restored checkpoint,
+  optimizer and sampler state, rank consistency), not merely that the job
+  exits cleanly. Two task families, exploratory RL results, and a red-team
+  audit of the verifier are included; results are exploratory and the audit
+  was not independently reviewed.
+keywords:
+  - reinforcement learning
+  - RL environment
+  - LLM agents
+  - distributed training
+  - verifiers

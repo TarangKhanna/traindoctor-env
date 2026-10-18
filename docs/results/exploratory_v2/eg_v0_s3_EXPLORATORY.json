@@ -1,0 +1,63 @@
+{
+ "label": "EXPLORATORY dev_container, not verified recovery",
+ "n": 384,
+ "groups": 48,
+ "G": 8,
+ "v2_exploratory": 0.15885416666666666,
+ "v0": 0.5859375,
+ "v1": 0.16666666666666666,
+ "valid_rate": 0.9947916666666666,
+ "per_kind": {
+  "A1": {
+   "n": 80,
+   "v2": 0.15,
+   "v0": 0.5625,
+   "v1": 0.1875
+  },
+  "A2": {
+   "n": 80,
+   "v2": 0.225,
+   "v0": 0.4125,
+   "v1": 0.225
+  },
+  "B_SKIP": {
+   "n": 80,
+   "v2": 0.15,
+   "v0": 0.925,
+   "v1": 0.15
+  },
+  "B_DUP": {
+   "n": 72,
+   "v2": 0.2222222222222222,
+   "v0": 0.9166666666666666,
+   "v1": 0.2222222222222222
+  },
+  "B_OK": {
+   "n": 72,
+   "v2": 0.041666666666666664,
+   "v0": 0.09722222222222222,
+   "v1": 0.041666666666666664
+  }
+ },
+ "mixed_group_frac_v2": 0.5,
+ "mixed_group_frac_v0": 0.6666666666666666,
+ "reward_hist_v2": {
+  "0.0": 323,
+  "1.0": 61
+ },
+ "reward_hist_v0": {
+  "1.0": 225,
+  "0.0": 159
+ },
+ "oracle_repair_chosen": 224,
+ "reasons": {
+  "wrong_repair_or_evidence": 164,
+  "ok": 61,
+  "wrong_label": 157,
+  "bad_schema_or_unknown_id": 2
+ },
+ "mean_completion_tokens": 50.2578125,
+ "total_completion_tokens": 19299,
+ "adapter": "/results/g_v0_s3/adapter",
+ "gen_tok_s": 98.84304293482074
+}

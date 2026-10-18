@@ -1,0 +1,2022 @@
+{
+ "stage": "eval",
+ "split": "dev",
+ "prompt_version": "v1",
+ "adapter": "/results/g_v2_s5/adapter",
+ "variant": "none",
+ "g": 4,
+ "wall_s": 310.385126317,
+ "gen_tok_s": 65.88588906516793,
+ "peak_gb": 13.995819008,
+ "summary": null,
+ "completions": [
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E4f1e83\", \"Ec380b4\"], \"repair\": \"R3a70f\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E4f1e83\", \"Ec380b4\"], \"repair\": \"R3a70f\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E07fbbf\", \"Ec380b4\"], \"repair\": \"R3a70f\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E07fbbf\", \"E4f1e83\"], \"repair\": \"R61bfd\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E810cac\", \"Ebcece4\"], \"repair\": \"R61fd9\", \"claims_fixed\": true}",
+   "ntok": 47
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E087c6e\", \"Ebcece4\"], \"repair\": \"R61fd9\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1e5544\", \"Ebcece4\"], \"repair\": \"R61fd9\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1e5544\", \"Ebcece4\"], \"repair\": \"R61fd9\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E72352e\", \"E8033b4\"], \"repair\": \"R923fc\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"Ea93ebf\", \"E31998c\"], \"repair\": \"R4a166\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"Ea93ebf\", \"E31998c\"], \"repair\": \"R4a166\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"Ea93ebf\", \"E31998c\"], \"repair\": \"R4a166\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E04adcf\", \"E9b1869\"], \"repair\": \"Rf96ea\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E01ccce\", \"E653c87\"], \"repair\": \"Rf96ea\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E04adcf\", \"E40574e\"], \"repair\": \"Rf96ea\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E04adcf\", \"E9b1869\"], \"repair\": \"Rf96ea\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E824c2a\", \"E36b67c\"], \"repair\": \"R23b40\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E3b0055\", \"Eb7ef66\"], \"repair\": \"R23b40\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E20818c\", \"Ebdf30d\"], \"repair\": \"R23b40\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E000000\", \"E000002\"], \"repair\": \"R23b40\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E158386\", \"E07782d\"], \"repair\": \"R43e11\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E07782d\", \"E734e8c\"], \"repair\": \"Redc28\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E734e8c\", \"E07782d\"], \"repair\": \"R9d2d2\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E07782d\", \"E734e8c\"], \"repair\": \"R9d2d2\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E2c469a\", \"Ef4be07\"], \"repair\": \"R344a9\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E2c469a\", \"Ef4be07\"], \"repair\": \"R02fca\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"NO_FAULT\", \"evidence\": [\"E96f676\", \"E2c469a\"], \"repair\": \"R73d37\", \"claims_fixed\": true}",
+   "ntok": 47
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1764e2\", \"E67253f\"], \"repair\": \"R70334\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E3f0bc7\", \"Ebc3e6a\"], \"repair\": \"R0526e\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"Ebc3e6a\", \"E59a7b4\"], \"repair\": \"R0526e\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E6b70de\", \"E3f0bc7\"], \"repair\": \"R0526e\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"Ebc3e6a\", \"E59a7b4\"], \"repair\": \"R0526e\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E08b239\", \"E17e0f7\"], \"repair\": \"R3b1f0\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E08b239\", \"E17e0f7\"], \"repair\": \"R3b1f0\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E08b239\", \"E17e0f7\"], \"repair\": \"R3b1f0\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E08b239\", \"E17e0f7\"], \"repair\": \"R3b1f0\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E11a7a2\", \"E9c71e6\"], \"repair\": \"R920ad\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E03b774\", \"Eddeba6\"], \"repair\": \"R920ad\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E11a7a2\", \"E9c71e6\"], \"repair\": \"R920ad\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E03b774\", \"Eddeba6\"], \"repair\": \"R920ad\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E5299fe\", \"E7db2dd\"], \"repair\": \"R22f1b\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E08d57b\", \"E3f1f1f\"], \"repair\": \"Rcb84e\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E5299fe\", \"E7db2dd\"], \"repair\": \"R22f1b\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E5299fe\", \"E7db2dd\"], \"repair\": \"R22f1b\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"Ee1a81f\", \"Eb3eb75\"], \"repair\": \"R12ff0\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"Ee1a81f\", \"Eb3eb75\"], \"repair\": \"R12ff0\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"Ee1a81f\", \"Eb3eb75\"], \"repair\": \"R12ff0\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"Ee1a81f\", \"Eb3eb75\"], \"repair\": \"R12ff0\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0214cf\", \"Eec57f3\"], \"repair\": \"R69b6d\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0214cf\", \"Eec57f3\"], \"repair\": \"R69b6d\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0214cf\", \"Eec57f3\"], \"repair\": \"R69b6d\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0214cf\", \"Eec57f3\"], \"repair\": \"R69b6d\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1a1da5\", \"Ece42dc\"], \"repair\": \"R36cbb\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1a1da5\", \"Ece42dc\"], \"repair\": \"R36cbb\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E732352\", \"Ece42dc\"], \"repair\": \"R36cbb\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E732352\", \"E005780\"], \"repair\": \"R36cbb\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0f74aa\", \"E3a67e3\"], \"repair\": \"R606b1\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0f74aa\", \"E4bfbb9\"], \"repair\": \"R606b1\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1721ef\", \"E3e0ea0\"], \"repair\": \"R606b1\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0f74aa\", \"Eb54da7\"], \"repair\": \"R606b1\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E24eb51\", \"Eb0fcd0\"], \"repair\": \"R5926b\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E24eb51\", \"E5b2721\"], \"repair\": \"R5926b\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E5b2721\", \"E60544d\"], \"repair\": \"R74088\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E60544d\", \"E5b2721\"], \"repair\": \"R74088\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E02fa29\", \"E797142\"], \"repair\": \"R2d35c\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E099137\", \"E6ad371\"], \"repair\": \"R2d35c\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E02fa29\", \"E44878b\"], \"repair\": \"R2d35c\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"E2c4d82\", \"E448758\"], \"repair\": \"Rbec8d\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E14cb3f\", \"E815202\"], \"repair\": \"R563cc\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E003a34\", \"E14cb3f\"], \"repair\": \"R563cc\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E003a34\", \"E14cb3f\"], \"repair\": \"R563cc\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E14cb3f\", \"E815202\"], \"repair\": \"R563cc\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E060da6\", \"Eb3d2d8\"], \"repair\": \"R996fb\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E060da6\", \"Eb3d2d8\"], \"repair\": \"R996fb\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E060da6\", \"Eb3d2d8\"], \"repair\": \"R996fb\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E060da6\", \"Eb3d2d8\"], \"repair\": \"R996fb\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0bd4cb\", \"E32d8eb\"], \"repair\": \"Rd8394\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E35c15d\", \"E0bd4cb\"], \"repair\": \"Rd8394\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0bd4cb\", \"E32d8eb\"], \"repair\": \"Rd8394\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0bd4cb\", \"E1dd25e\"], \"repair\": \"Rd8394\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E8e7431\", \"Ed9b44b\"], \"repair\": \"R67049\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E097c56\", \"E481aab\", \"Ea29770\"], \"repair\": \"R4c55c\", \"claims_fixed\": true}",
+   "ntok": 60
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"NO_FAULT\", \"evidence\": [\"E097c56\", \"E481aab\"], \"repair\": \"R77285\", \"claims_fixed\": true}",
+   "ntok": 45
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E8e7431\", \"Ed9b44b\"], \"repair\": \"R46b65\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E020a7e\", \"E33762e\"], \"repair\": \"Rfacc3\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E020a7e\", \"E33762e\"], \"repair\": \"Rfacc3\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"NO_FAULT\", \"evidence\": [\"E33762e\", \"E854bdb\"], \"repair\": \"Rcf686\", \"claims_fixed\": true}",
+   "ntok": 44
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"E33762e\", \"E854bdb\"], \"repair\": \"Rf60ea\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E04aef06\", \"E787eca\"], \"repair\": \"R50f85\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E4f911c\", \"E66eb80\"], \"repair\": \"R50f85\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E66eb80\", \"E4f911c\"], \"repair\": \"R50f85\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E4f911c\", \"E66eb80\"], \"repair\": \"R50f85\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E014292\", \"E745c73\"], \"repair\": \"R0dcb0\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E014292\", \"E745c73\"], \"repair\": \"R0dcb0\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E014292\", \"E745c73\"], \"repair\": \"R0dcb0\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E705703\", \"E014292\"], \"repair\": \"R0dcb0\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0418c2\", \"E59512c\"], \"repair\": \"R58e31\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0418c2\", \"E59512c\"], \"repair\": \"R58e31\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0418c2\", \"E59512c\"], \"repair\": \"R58e31\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E59512c\", \"E0418c2\"], \"repair\": \"R58e31\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E11cf9a\", \"E9f539f\"], \"repair\": \"R22452\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E9f539f\", \"E0e155c\"], \"repair\": \"R22452\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E9f539f\", \"E11cf9a\"], \"repair\": \"R22452\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E09238b\", \"E9f539f\"], \"repair\": \"R22452\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"E993ca2\", \"Eb89d97\"], \"repair\": \"R93622\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"E02b2f8\", \"Eb89d97\"], \"repair\": \"R93622\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E02b2f8\", \"E02b2f8\"], \"repair\": \"R67cf0\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E02b2f8\", \"E101d02\"], \"repair\": \"R67cf0\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1096ed\", \"Eb12c75\"], \"repair\": \"R7a7d0\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0ad34e\", \"E1096ed\"], \"repair\": \"R7a7d0\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E3efc31\", \"E0ad34e\"], \"repair\": \"R7a7d0\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E3efc31\", \"E0ad34e\"], \"repair\": \"R7a7d0\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E8969e7\", \"E6da24b\"], \"repair\": \"R4424a\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E6da24b\", \"E8969e7\"], \"repair\": \"R4424a\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E175ca7\", \"E6eef02\"], \"repair\": \"R4424a\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E175ca7\", \"E6eef02\"], \"repair\": \"R4424a\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E178db8\", \"E0c1259\"], \"repair\": \"R52447\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E7f605f\", \"E178db8\"], \"repair\": \"R52447\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E7f605f\", \"E178db8\"], \"repair\": \"R52447\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E7f605f\", \"E178db8\"], \"repair\": \"R52447\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E268249\", \"Ed7564e\"], \"repair\": \"R8b022\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0bf887\", \"Eed4f48\"], \"repair\": \"R63632\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E268249\", \"Ed7564e\"], \"repair\": \"R02fad\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"NO_FAULT\", \"evidence\": [\"E0bf887\", \"Eed4f48\"], \"repair\": \"R5e3bd\", \"claims_fixed\": true}",
+   "ntok": 44
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E4f27b6\", \"E5045c7\"], \"repair\": \"R420e3\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E4f27b6\", \"E5045c7\"], \"repair\": \"R420e3\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E31a333\", \"E5045c7\"], \"repair\": \"R420e3\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"E9fd782\", \"E6ffb7f\"], \"repair\": \"R4a096\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1d41e9\", \"E8e4a02\"], \"repair\": \"R53b86\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E01b409\", \"E7cf358\"], \"repair\": \"R53b86\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0f296b\", \"E2f43a2\"], \"repair\": \"R53b86\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0f296b\", \"E2f43a2\"], \"repair\": \"R53b86\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E07156d\", \"E40e1e3\"], \"repair\": \"Raf9d4\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E07156d\", \"E40e1e3\"], \"repair\": \"Raf9d4\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E07156d\", \"E40e1e3\"], \"repair\": \"Raf9d4\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E07156d\", \"E40e1e3\"], \"repair\": \"Raf9d4\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E021996\", \"E10e834\"], \"repair\": \"Rbc896\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E021996\", \"E10e834\"], \"repair\": \"Rbc896\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E021996\", \"E10e834\"], \"repair\": \"Rbc896\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E10e834\", \"E0f5141\"], \"repair\": \"Rbc896\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E2647fc\", \"Ef68691\"], \"repair\": \"R283c4\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E2647fc\", \"Eb08d7e\"], \"repair\": \"R283c4\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E875720\", \"E2190de\"], \"repair\": \"Rb393f\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E875720\", \"E33e571\"], \"repair\": \"Rb393f\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0422f9\", \"E0be94d\"], \"repair\": \"R16d20\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0be94d\", \"Ed6d3ac\"], \"repair\": \"R16d20\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"Ee88a2c\", \"E0be94d\"], \"repair\": \"R1441b\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"Ee88a2c\", \"Ebd5a7e\"], \"repair\": \"R1441b\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0489a5\", \"E99f8ee\"], \"repair\": \"Rb23e1\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E99f8ee\", \"E0489a5\"], \"repair\": \"Rb23e1\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0489a5\", \"E99f8ee\"], \"repair\": \"Rb23e1\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E99f8ee\", \"E0489a5\"], \"repair\": \"Rb23e1\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E4bed45\", \"E25d2f0\"], \"repair\": \"Rdb9e6\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E25d2f0\", \"E85251f\"], \"repair\": \"Rdb9e6\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E4bed45\", \"Eb8e722\"], \"repair\": \"Rdb9e6\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E25d2f0\", \"E85251f\"], \"repair\": \"Rdb9e6\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E083f1b\", \"E3c816d\"], \"repair\": \"R70f1e\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E083f1b\", \"E3c816d\"], \"repair\": \"R70f1e\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E17c9a3\", \"E33af87\"], \"repair\": \"R70f1e\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E083f1b\", \"E3c816d\"], \"repair\": \"R70f1e\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E458a97\", \"Efaea10\"], \"repair\": \"Rb849b\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E99763b\", \"Eb04455\"], \"repair\": \"R35748\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1718b7\", \"E99763b\"], \"repair\": \"R35748\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E458a97\", \"Efaea10\"], \"repair\": \"Rb849b\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E06a90b\", \"E6a3074\"], \"repair\": \"Rfc99a\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"E460a5e\", \"E21b487\"], \"repair\": \"R72201\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"NO_FAULT\", \"evidence\": [\"E460a5e\", \"E6a3074\"], \"repair\": \"Re9dd8\", \"claims_fixed\": true}",
+   "ntok": 45
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"E460a5e\", \"E6a3074\"], \"repair\": \"R72201\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E4c1cad\", \"E4ba48f\"], \"repair\": \"R71055\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0e6556\", \"E3562aa\"], \"repair\": \"R71055\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E17a1f5\", \"E49e990\"], \"repair\": \"R71055\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E4c1cad\", \"E4ba48f\"], \"repair\": \"R71055\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E07896c\", \"E2631c3\"], \"repair\": \"R0da95\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1ac149\", \"E2631c3\"], \"repair\": \"R0da95\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E07896c\", \"E2631c3\"], \"repair\": \"R0da95\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E07896c\", \"E261b31\"], \"repair\": \"R0da95\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E036ba2\", \"E780708\"], \"repair\": \"Ra5f79\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1a1184\", \"E780708\"], \"repair\": \"Ra5f79\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1a1184\", \"E780708\"], \"repair\": \"Ra5f79\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1a1184\", \"E780708\"], \"repair\": \"Ra5f79\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E076bae\", \"E22c993\"], \"repair\": \"R3cb37\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E5c3729\", \"E658fd8\"], \"repair\": \"R95c53\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E5c3729\", \"E658fd8\"], \"repair\": \"R95c53\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E076bae\", \"E2d49d8\"], \"repair\": \"R3cb37\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"E851f72\", \"E9c2b57\"], \"repair\": \"R4f517\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0a2042\", \"E0fe8da\"], \"repair\": \"R61b10\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0a2042\", \"Ebab6a9\"], \"repair\": \"R61b10\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E9c2b57\", \"E7566d5\"], \"repair\": \"R4f517\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E47dac9\", \"E9d8918\"], \"repair\": \"R97042\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E9d8918\", \"E497069\"], \"repair\": \"R97042\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E790359\", \"E47dac9\"], \"repair\": \"R97042\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E790359\", \"E47dac9\"], \"repair\": \"R97042\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0198d2\", \"E266970\"], \"repair\": \"R53a00\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E844449\", \"Ef7e05c\"], \"repair\": \"R53a00\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E8aa7ea\", \"Ef7e05c\"], \"repair\": \"R53a00\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0198d2\", \"E18d45a\"], \"repair\": \"R53a00\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E2cc028\", \"E2e2b2a\"], \"repair\": \"R2df54\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E83ac6b\", \"E2cc028\"], \"repair\": \"R2df54\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E83ac6b\", \"E2cc028\"], \"repair\": \"R2df54\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E83ac6b\", \"E2cc028\"], \"repair\": \"R2df54\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E081f84\", \"E3a9fbb\"], \"repair\": \"R75fe0\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E081f84\", \"E586eaf\"], \"repair\": \"R75fe0\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E081f84\", \"E586eaf\"], \"repair\": \"R75fe0\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E081f84\", \"Eb5566d\"], \"repair\": \"R332fc\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"E6e2d9a\", \"E1f59f6\"], \"repair\": \"R8938a\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E33b866\", \"E398fe9\"], \"repair\": \"R43e30\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E34778e\", \"E398fe9\"], \"repair\": \"R43e30\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E33b866\", \"E34778e\"], \"repair\": \"R43e30\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1b2ab5\", \"E7c1099\"], \"repair\": \"Rc76eb\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E00b432\", \"E406f74\"], \"repair\": \"Rc76eb\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E2412cc\", \"E070c41\"], \"repair\": \"Rc76eb\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1b2ab5\", \"E7c1099\"], \"repair\": \"Rc76eb\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0784d8\", \"E92889f\"], \"repair\": \"Rd8562\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E02de6d\", \"Eca6620\"], \"repair\": \"Rd8562\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E02de6d\", \"Eca6620\"], \"repair\": \"Rd8562\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E02de6d\", \"Eca6620\"], \"repair\": \"Rd8562\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E9082a2\", \"E700a2e\"], \"repair\": \"Rb202d\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E06c413\", \"E9e7677\"], \"repair\": \"Rb202d\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"NO_FAULT\", \"evidence\": [\"E06c413\", \"Ed0d6cf\"], \"repair\": \"Rf9da5\", \"claims_fixed\": true}",
+   "ntok": 44
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E06c413\", \"E9082a2\"], \"repair\": \"Rb202d\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E100012\", \"E100013\"], \"repair\": \"R1b67c\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"Ea1e891\", \"E38e9f3\"], \"repair\": \"R1b67c\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E1a1e891\", \"E38e9f3\"], \"repair\": \"R1b67c\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E151871\", \"E6a07fb\"], \"repair\": \"Rf1b68\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"NO_FAULT\", \"evidence\": [\"E227333\", \"E9123ed\"], \"repair\": \"R2e51e\", \"claims_fixed\": true}",
+   "ntok": 46
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"NO_FAULT\", \"evidence\": [\"E227333\", \"Ed94e99\"], \"repair\": \"R2e51e\", \"claims_fixed\": true}",
+   "ntok": 46
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"E227333\", \"Eadb739\"], \"repair\": \"Re2cdd\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"E227333\", \"E11d1d9\"], \"repair\": \"Re2cdd\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1794b8\", \"E8127d7\"], \"repair\": \"R0a61e\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E27085f\", \"E7d583c\"], \"repair\": \"R0a61e\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1794b8\", \"E8127d7\"], \"repair\": \"R0a61e\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1794b8\", \"E8127d7\"], \"repair\": \"R0a61e\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E845600\", \"E3d5735\"], \"repair\": \"R98417\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E01a42b\", \"E3d5735\"], \"repair\": \"R98417\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E9c2c16\", \"Eef2d29\"], \"repair\": \"R98417\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E9c2c16\", \"Eef2d29\"], \"repair\": \"R98417\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E076e81\", \"E9c9d9e\"], \"repair\": \"Ra97fe\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E076e81\", \"E8a471f\"], \"repair\": \"Ra97fe\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E076e81\", \"E8a471f\"], \"repair\": \"Ra97fe\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E076e81\", \"E8a471f\"], \"repair\": \"Ra97fe\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E70d983\", \"E63157d\"], \"repair\": \"R7c64f\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E70d983\", \"E63157d\"], \"repair\": \"R7c64f\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E70d983\", \"E63157d\"], \"repair\": \"R7c64f\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E70d983\", \"E63157d\"], \"repair\": \"R7c64f\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E2be397\", \"E5a2f79\"], \"repair\": \"R46794\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E2be397\", \"E5a2f79\"], \"repair\": \"R46794\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E2be397\", \"E5a2f79\"], \"repair\": \"R46794\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E2be397\", \"E5a2f79\"], \"repair\": \"R46794\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E4843f1\", \"E7d68cb\"], \"repair\": \"R9b34e\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E12a42\", \"E0ddef6\"], \"repair\": \"R9b34e\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E417403\", \"E54b9b4\"], \"repair\": \"R9b34e\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E17c177\", \"E17c177\"], \"repair\": \"R9b34e\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E00663e\", \"E8c900b\"], \"repair\": \"R7793b\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E00663e\", \"E8c900b\"], \"repair\": \"R7793b\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E00663e\", \"E8c900b\"], \"repair\": \"R7793b\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E00663e\", \"E8c900b\"], \"repair\": \"R7793b\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E6925cd\", \"E7dfd79\"], \"repair\": \"R759e4\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E60f5dc\", \"Ec74523\"], \"repair\": \"R759e4\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E60f5dc\", \"E6925cd\"], \"repair\": \"R759e4\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E6925cd\", \"E7dfd79\"], \"repair\": \"R759e4\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E4fc01c\", \"Ededbdd\"], \"repair\": \"Rc4cf6\", \"claims_fixed\": true}",
+   "ntok": 46
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E4fc01c\", \"Ededbdd\"], \"repair\": \"Rc4cf6\", \"claims_fixed\": true}",
+   "ntok": 46
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E4fc01c\", \"Ededbdd\"], \"repair\": \"Rc4cf6\", \"claims_fixed\": true}",
+   "ntok": 46
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E05ed06\", \"E207ff1\"], \"repair\": \"R8b008\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E7c9f74\", \"E91d0b6\"], \"repair\": \"Rcb2b6\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E044660\", \"E7c9f74\"], \"repair\": \"Rcb2b6\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"NO_FAULT\", \"evidence\": [\"E044660\", \"E969379\"], \"repair\": \"R12327\", \"claims_fixed\": true}",
+   "ntok": 47
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E7c9f74\", \"E044660\"], \"repair\": \"Rcb2b6\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E702c69\", \"E08e04b\"], \"repair\": \"Rc5cb5\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E08e04b\", \"E702c69\"], \"repair\": \"Rc5cb5\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E08e04b\", \"E702c69\"], \"repair\": \"Rc5cb5\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E7c7eb3\", \"E702c69\"], \"repair\": \"Rc5cb5\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0e4278\", \"E3b8732\"], \"repair\": \"R03710\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E689aa2\", \"Ec2e1a3\"], \"repair\": \"R03710\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E468f17\", \"E7a4150\"], \"repair\": \"R03710\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E11777b\", \"E75a9a1\"], \"repair\": \"R03710\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E884f6b\", \"E7621e9\"], \"repair\": \"Ra6375\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E884f6b\", \"E7621e9\"], \"repair\": \"Ra6375\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E2c274c\", \"E7617d2\"], \"repair\": \"Ra6375\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E884f6b\", \"E7621e9\"], \"repair\": \"Ra6375\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E12c3ac\", \"Efd3715\"], \"repair\": \"Rbb19b\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E12c3ac\", \"Efd3715\"], \"repair\": \"Rbb19b\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"Efe8f0b\", \"E1881a4\"], \"repair\": \"Rd6e20\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"Efe8f0b\", \"E1881a4\"], \"repair\": \"Rd6e20\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"Edd9a32\", \"E835a2d\"], \"repair\": \"Ra6f45\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"E835a2d\", \"Edd9a32\"], \"repair\": \"Ra6f45\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"NO_FAULT\", \"evidence\": [\"E835a2d\", \"E4a0801\"], \"repair\": \"Re21b8\", \"claims_fixed\": true}",
+   "ntok": 46
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"Edd9a32\", \"E835a2d\"], \"repair\": \"Ra6f45\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E12d344\", \"Ef332f0\"], \"repair\": \"R1d167\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0ad7d8\", \"E12d344\"], \"repair\": \"R1d167\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E12d344\", \"Ed9f7f7\"], \"repair\": \"R1d167\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0ad7d8\", \"E12d344\"], \"repair\": \"R1d167\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E067ef6\", \"E170aa0\"], \"repair\": \"Rc6954\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E067ef6\", \"E170aa0\"], \"repair\": \"Rc6954\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E067ef6\", \"E170aa0\"], \"repair\": \"Rc6954\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0c107b\", \"Eecb01c\"], \"repair\": \"Rc6954\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E000d7c\", \"E745451\"], \"repair\": \"R6d4d9\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E000d7c\", \"E745451\"], \"repair\": \"R6d4d9\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1fe8fb\", \"E745451\"], \"repair\": \"R6d4d9\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E7fe5a0\", \"Eb0a9b2\"], \"repair\": \"R6d4d9\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0d0cde\", \"E8e5e98\"], \"repair\": \"Re7816\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0d0cde\", \"E8e5e98\"], \"repair\": \"Re7816\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"NO_FAULT\", \"evidence\": [\"E1f3f4d\", \"E0d0cde\"], \"repair\": \"Rfe649\", \"claims_fixed\": true}",
+   "ntok": 45
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E1a57af\", \"E99b217\"], \"repair\": \"R0d65c\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1e631b\", \"E2fe1bf\"], \"repair\": \"R10fc3\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E19ab63\", \"E99faf8\"], \"repair\": \"R10fc3\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E19ab63\", \"E99faf8\"], \"repair\": \"R10fc3\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"Ec1c65b\", \"E703619\"], \"repair\": \"R10fc3\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E65b112\", \"E1e44c2\"], \"repair\": \"R6c7f0\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0e72c4\", \"E473089\"], \"repair\": \"R6c7f0\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1e44c2\", \"E349a38\"], \"repair\": \"R6c7f0\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0e72c4\", \"E1da573\"], \"repair\": \"R6c7f0\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E035949\", \"E1ea457\"], \"repair\": \"R3178d\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E165a67\", \"E5bd336\"], \"repair\": \"R3178d\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E035949\", \"Edde64e\"], \"repair\": \"R3178d\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E035949\", \"Edde64e\"], \"repair\": \"R3178d\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E006825\", \"E7c7b28\"], \"repair\": \"R0bae2\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E006825\", \"Ecb76cc\"], \"repair\": \"R0bae2\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E7c7b28\", \"E8d8905\"], \"repair\": \"R0bae2\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E006825\", \"E66a519\"], \"repair\": \"R0bae2\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E9e5ac1\", \"Ed885d3\"], \"repair\": \"R7d8c1\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"NO_FAULT\", \"evidence\": [\"E1f1012\", \"Ee726b5\"], \"repair\": \"Rcd225\", \"claims_fixed\": true}",
+   "ntok": 46
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E9e5ac1\", \"Ed885d3\"], \"repair\": \"R7d8c1\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E2158fb\", \"E538248\"], \"repair\": \"R06047\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E9085ac\", \"Ea47d10\"], \"repair\": \"R6104a\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E01c4d7\", \"E01c4d6\"], \"repair\": \"R6104a\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0004a\", \"E9085ac\"], \"repair\": \"R6104a\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E9085ac\", \"Ea47d10\"], \"repair\": \"R6104a\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E070849\", \"E51deb3\"], \"repair\": \"R1838f\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E070849\", \"Ee65231\"], \"repair\": \"R1838f\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E070849\", \"E3329db\"], \"repair\": \"R1838f\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E070849\", \"E06abfe\"], \"repair\": \"R1838f\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0e12d5\", \"Ef79580\"], \"repair\": \"R884ac\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0f77ce\", \"Ef79580\"], \"repair\": \"R884ac\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0e12d5\", \"E7081ba\"], \"repair\": \"R884ac\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0e12d5\", \"E7081ba\"], \"repair\": \"R884ac\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E04ca54\", \"Eb03e87\"], \"repair\": \"R0afbd\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E8c70ab\", \"Eb81a48\"], \"repair\": \"R0afbd\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E8c70ab\", \"Eb81a48\"], \"repair\": \"R0afbd\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E19d0af\", \"Efcdb99\"], \"repair\": \"R0afbd\", \"claims_fixed\": true}",
+   "ntok": 48
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E01771c\", \"E66c957\"], \"repair\": \"R27760\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E01771c\", \"Ea227c2\"], \"repair\": \"R07fb7\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E01771c\", \"E66c957\"], \"repair\": \"R27760\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"E01771c\", \"E6138cd\"], \"repair\": \"R27760\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E3a1759\", \"E548c3c\"], \"repair\": \"Rf413f\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E3a1759\", \"E548c3c\"], \"repair\": \"Rf413f\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E3a1759\", \"E0c1da3\"], \"repair\": \"Rf413f\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E3a1759\", \"E548c3c\"], \"repair\": \"Rf413f\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E683c39\", \"E5daa99\"], \"repair\": \"Rb50e7\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"Ebc6bd3\", \"Ef79ae5\"], \"repair\": \"Rb50e7\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E7120b0\", \"E9254d2\"], \"repair\": \"Rb50e7\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E9254d2\", \"Ef9b4b6\"], \"repair\": \"Rb50e7\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E094a15\", \"E2c46b0\"], \"repair\": \"Ra4330\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E094a15\", \"E08c550\"], \"repair\": \"Ra4330\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E094a15\", \"Ece5f00\"], \"repair\": \"Ra4330\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E094a15\", \"Ece5f00\"], \"repair\": \"Ra4330\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0c07af\", \"Ecd3df6\"], \"repair\": \"R6bbdb\", \"claims_fixed\": true}",
+   "ntok": 48
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0c07af\", \"Ecd3df6\"], \"repair\": \"R6bbdb\", \"claims_fixed\": true}",
+   "ntok": 48
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0ed059\", \"E10aaa6\"], \"repair\": \"R6bbdb\", \"claims_fixed\": true}",
+   "ntok": 48
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0ed059\", \"E10aaa6\"], \"repair\": \"R6bbdb\", \"claims_fixed\": true}",
+   "ntok": 48
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"Ec7380c\", \"Ecdc9dd\"], \"repair\": \"R60354\", \"claims_fixed\": true}",
+   "ntok": 48
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"Ecdc9dd\", \"E79677d\"], \"repair\": \"R60354\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"NO_FAULT\", \"evidence\": [\"E79677d\", \"Ef575bf\"], \"repair\": \"R88667\", \"claims_fixed\": true}",
+   "ntok": 45
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"Ec7380c\", \"Ecdc9dd\"], \"repair\": \"R60354\", \"claims_fixed\": true}",
+   "ntok": 48
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E534963\", \"E8ee0f6\"], \"repair\": \"R657d6\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"RANK_STALLED_BEFORE_COLLECTIVE\", \"evidence\": [\"E8ee0f6\", \"E3a2863\"], \"repair\": \"Rbfcd5\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E534963\", \"E8ee0f6\"], \"repair\": \"R657d6\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E3a2863\", \"E899139\"], \"repair\": \"R657d6\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1c47ec\", \"E392b32\"], \"repair\": \"Rb1c02\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E392b32\", \"E7f6014\"], \"repair\": \"Rb1c02\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E7f6014\", \"E392b32\"], \"repair\": \"Rb1c02\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E392b32\", \"E7f6014\"], \"repair\": \"Rb1c02\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E061911\", \"E2cfe60\"], \"repair\": \"Rfd6be\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E061911\", \"E2cfe60\"], \"repair\": \"Rfd6be\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E061911\", \"E2cfe60\"], \"repair\": \"Rfd6be\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E061911\", \"E2cfe60\"], \"repair\": \"Rfd6be\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E16f02b\", \"Eca52ec\"], \"repair\": \"R25889\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E053ade\", \"E7444c3\"], \"repair\": \"R25889\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E16f02b\", \"Eca52ec\"], \"repair\": \"R25889\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E16f02b\", \"Eca52ec\"], \"repair\": \"R25889\", \"claims_fixed\": true}",
+   "ntok": 51
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"Ea1815e\", \"Ef8852f\"], \"repair\": \"R4ced3\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"Ea1815e\", \"Ef8852f\"], \"repair\": \"R0cb3d\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"COLLECTIVE_DIVERGENCE\", \"evidence\": [\"Ea1815e\", \"Ef8852f\"], \"repair\": \"Rad0de\", \"claims_fixed\": true}",
+   "ntok": 48
+  },
+  {
+   "kind": "A1",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E1faa93\", \"Ea2d10a\"], \"repair\": \"Rbaef7\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E208b61\", \"E4a3107\"], \"repair\": \"R9315f\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E208b61\", \"E4a3107\"], \"repair\": \"R9315f\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E00000\", \"E110340\"], \"repair\": \"R9315f\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "A2",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E08b61\", \"E4a3107\"], \"repair\": \"R9315f\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E6b9abd\", \"Ecbbd64\"], \"repair\": \"R1fde5\", \"claims_fixed\": true}",
+   "ntok": 48
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E06b094\", \"Ea2389d\"], \"repair\": \"R1fde5\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0f9cae\", \"E11a9ba\"], \"repair\": \"R1fde5\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "B_SKIP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E6b9abd\", \"Ecbbd64\"], \"repair\": \"R1fde5\", \"claims_fixed\": true}",
+   "ntok": 48
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E94f84f\", \"E45aa27\"], \"repair\": \"Rb8493\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E408373\", \"E9a52f3\"], \"repair\": \"Rb8493\", \"claims_fixed\": true}",
+   "ntok": 53
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E44a882\", \"E45aa27\"], \"repair\": \"Rb8493\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_DUP",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E44a882\", \"E45aa27\"], \"repair\": \"Rb8493\", \"claims_fixed\": true}",
+   "ntok": 52
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"Ece0081\", \"E3409c9\"], \"repair\": \"R2abc9\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E16e4df\", \"Ece0081\"], \"repair\": \"R2abc9\", \"claims_fixed\": true}",
+   "ntok": 49
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"Ece0081\", \"E3409c9\"], \"repair\": \"R2abc9\", \"claims_fixed\": true}",
+   "ntok": 50
+  },
+  {
+   "kind": "B_OK",
+   "text": "{\"label\": \"CKPT_SAMPLER_INCONSISTENT\", \"evidence\": [\"E0abf31\", \"Ece0081\"], \"repair\": \"R2abc9\", \"claims_fixed\": true}",
+   "ntok": 49
+  }
+ ],
+ "run_id": "test_v2_s5",
+ "fn": "eval",
+ "container_s": 323.56899857521057,
+ "finished": 1792341868.2295563,
+ "gpu_info": {
+  "name": "NVIDIA L40S",
+  "total_gb": 47.695921152
+ }
+}

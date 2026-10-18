@@ -1,0 +1,70 @@
+{
+ "n_bundles_tested": 60,
+ "seed_range": 100000,
+ "brute_force": {
+  "sha256(salt|menu-id|role) [true form, guessed key]": {
+   "keys_tried": 10,
+   "hits_ge3_roles": 0
+  },
+  "sha256(seed|menu-id|role)": {
+   "keys_tried": 1,
+   "hits_ge3_roles": 0
+  },
+  "sha256(seed:role)": {
+   "keys_tried": 1,
+   "hits_ge3_roles": 0
+  },
+  "sha256(role+seed)": {
+   "keys_tried": 1,
+   "hits_ge3_roles": 0
+  },
+  "md5(seed|role)": {
+   "keys_tried": 1,
+   "hits_ge3_roles": 0
+  },
+  "sha1(seed|role)": {
+   "keys_tried": 1,
+   "hits_ge3_roles": 0
+  },
+  "sha256(sha256(seed)|role)": {
+   "keys_tried": 1,
+   "hits_ge3_roles": 0
+  }
+ },
+ "positive_control_with_real_key": {
+  "bundles_recovered": 60,
+  "of": 60
+ },
+ "id_property_chi2_of_correct_item": {
+  "first_hex_nibble": {
+   "chi2": 21.12,
+   "df": 15,
+   "note": "df+3*sqrt(2df) rule of thumb: leak if chi2 >> 31.4"
+  },
+  "parity": {
+   "chi2": 0.005,
+   "df": 1,
+   "note": "df+3*sqrt(2df) rule of thumb: leak if chi2 >> 5.2"
+  },
+  "rank_of_id_in_bundle": {
+   "chi2": 5.619999999999999,
+   "df": 5,
+   "note": "df+3*sqrt(2df) rule of thumb: leak if chi2 >> 14.5"
+  },
+  "position_in_menu": {
+   "chi2": 10.285,
+   "df": 5,
+   "note": "df+3*sqrt(2df) rule of thumb: leak if chi2 >> 14.5"
+  }
+ },
+ "distinct_ids_per_role": {
+  "exclude_rank": 799,
+  "decoy_perrank": 731,
+  "decoy_sync": 722,
+  "decoy_ckpt": 483,
+  "decoy_shard": 617,
+  "correct": 800,
+  "noop": 646
+ },
+ "n_bundles": 800
+}

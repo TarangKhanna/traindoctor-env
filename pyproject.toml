@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "traindoctor-env"
+version = "0.1.0"
+description = "Executable, RL-trainable environment for diagnosing and repairing failed distributed-training jobs."
+requires-python = "==3.12.*"
+license = "Apache-2.0"
+readme = "README.md"
+authors = [{ name = "Tarang Khanna" }]
+keywords = ["reinforcement-learning", "rl-environment", "llm-agents", "distributed-training", "pytorch", "verifier", "sandbox"]
+dependencies = [
+    "torch==2.14.1",
+    "numpy==2.5.4",
+    "pydantic==2.14.1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest==9.1.1", "hypothesis==6.170.1"]
+# research stack used by rl/ and modal_train/ (Apple Silicon for mlx); versions equal uv.lock
+rl = [
+    "mlx==0.31.2",
+    "mlx-lm==0.31.3",
+    "inspect-ai==0.3.281",
+    "openai==3.31.0",
+    "pyarrow==26.0.0",
+    "openenv==0.9.0",
+    "inductive-mlxrl @ git+https://github.com/inductiveML/mlxrl@25054948b19461569e25f8b657ca041b4bc7740b",
+]
+modal = ["modal"]
+
+[tool.uv]
+package = false
+
+[project.urls]
+Repository = "https://github.com/TarangKhanna/traindoctor-env"
+Issues = "https://github.com/TarangKhanna/traindoctor-env/issues"
+
+[tool.setuptools.packages.find]
+include = ["traindoctor_env*", "jobs*", "rl*", "modal_train*", "audit*"]
+
+[tool.setuptools.package-data]
+jobs = ["template*/*", "runtime/*", "m2_candidates/*"]
+modal_train = ["rates.json"]

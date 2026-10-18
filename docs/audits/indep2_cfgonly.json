@@ -1,0 +1,70 @@
+{
+ "nat.config_only.slot.gb_stumps": {
+  "acc": 0.70125,
+  "ci": [
+   0.6686317988630357,
+   0.7319446331106269
+  ],
+  "majority": 0.39625,
+  "nfeat": 27
+ },
+ "nat.config_only.slot.rf": {
+  "acc": 0.71,
+  "ci": [
+   0.677611469552128,
+   0.7403813290290848
+  ],
+  "majority": 0.39625,
+  "nfeat": 27
+ },
+ "nat.menu_no_config_comparison.slot.gb_stumps": {
+  "acc": 0.3875,
+  "ci": [
+   0.3543543098904552,
+   0.42172097658389496
+  ],
+  "majority": 0.39625
+ },
+ "nat.config_comparison_only.slot.gb_stumps": {
+  "acc": 0.705,
+  "ci": [
+   0.6724785293143667,
+   0.7355620597768174
+  ],
+  "majority": 0.39625
+ },
+ "cf.config_only.slot.gb_stumps": {
+  "acc": 0.6666666666666666,
+  "ci": [
+   0.6394998725950839,
+   0.692769754904082
+  ],
+  "majority": 0.3333333333333333,
+  "nfeat": 27
+ },
+ "cf.config_only.slot.rf": {
+  "acc": 0.6666666666666666,
+  "ci": [
+   0.6394998725950839,
+   0.692769754904082
+  ],
+  "majority": 0.3333333333333333,
+  "nfeat": 27
+ },
+ "cf.menu_no_config_comparison.slot.gb_stumps": {
+  "acc": 0.29833333333333334,
+  "ci": [
+   0.27312319968650256,
+   0.32483055103950653
+  ],
+  "majority": 0.3333333333333333
+ },
+ "cf.config_comparison_only.slot.gb_stumps": {
+  "acc": 0.6666666666666666,
+  "ci": [
+   0.6394998725950839,
+   0.692769754904082
+  ],
+  "majority": 0.3333333333333333
+ }
+}

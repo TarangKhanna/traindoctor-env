@@ -1,0 +1,228 @@
+{
+ "label": "EXPLORATORY dev_container, not verified recovery; DEV = tuning set; sealed TEST untouched",
+ "runs": {
+  "esft_full": {
+   "name": "esft_full",
+   "variant": "none",
+   "adapter": "/results/sft1/adapter",
+   "n": 384,
+   "valid": 0.9921875,
+   "v0": 0.4895833333333333,
+   "v1": 0.16666666666666666,
+   "expl_v2": 0.15364583333333334,
+   "oracle_repair_chosen": 0.484375,
+   "reasons": {
+    "wrong_repair_or_evidence": 129,
+    "ok": 59,
+    "wrong_label": 193,
+    "bad_schema_or_unknown_id": 3
+   }
+  },
+  "eg_v0": {
+   "name": "eg_v0",
+   "variant": "none",
+   "adapter": "/results/g_v0/adapter",
+   "n": 384,
+   "valid": 0.9947916666666666,
+   "v0": 0.6458333333333334,
+   "v1": 0.2526041666666667,
+   "expl_v2": 0.24479166666666666,
+   "oracle_repair_chosen": 0.6354166666666666,
+   "reasons": {
+    "ok": 94,
+    "wrong_label": 134,
+    "wrong_repair_or_evidence": 154,
+    "bad_schema_or_unknown_id": 2
+   }
+  },
+  "eg_v2": {
+   "name": "eg_v2",
+   "variant": "none",
+   "adapter": "/results/g_v2/adapter",
+   "n": 384,
+   "valid": 0.9895833333333334,
+   "v0": 0.6536458333333334,
+   "v1": 0.2864583333333333,
+   "expl_v2": 0.2630208333333333,
+   "oracle_repair_chosen": 0.6145833333333334,
+   "reasons": {
+    "ok": 101,
+    "wrong_label": 129,
+    "wrong_repair_or_evidence": 150,
+    "bad_schema_or_unknown_id": 4
+   }
+  },
+  "ecsft": {
+   "name": "ecsft",
+   "variant": "none",
+   "adapter": "/results/csft/adapter",
+   "n": 384,
+   "valid": 0.9869791666666666,
+   "v0": 0.6666666666666666,
+   "v1": 0.2552083333333333,
+   "expl_v2": 0.22395833333333334,
+   "oracle_repair_chosen": 0.5989583333333334,
+   "reasons": {
+    "ok": 86,
+    "wrong_repair_or_evidence": 170,
+    "wrong_label": 123,
+    "bad_schema_or_unknown_id": 5
+   }
+  },
+  "esh_sft1": {
+   "name": "esh_sft1",
+   "variant": "shuffle",
+   "adapter": "/results/sft1/adapter",
+   "n": 384,
+   "valid": 0.9947916666666666,
+   "v0": 0.5078125,
+   "v1": 0.16145833333333334,
+   "expl_v2": 0.13541666666666666,
+   "oracle_repair_chosen": 0.5,
+   "reasons": {
+    "wrong_repair_or_evidence": 143,
+    "ok": 52,
+    "wrong_label": 187,
+    "bad_schema_or_unknown_id": 2
+   }
+  },
+  "esh_g_v0": {
+   "name": "esh_g_v0",
+   "variant": "shuffle",
+   "adapter": "/results/g_v0/adapter",
+   "n": 384,
+   "valid": 0.9973958333333334,
+   "v0": 0.6354166666666666,
+   "v1": 0.22395833333333334,
+   "expl_v2": 0.20052083333333334,
+   "oracle_repair_chosen": 0.6041666666666666,
+   "reasons": {
+    "wrong_label": 139,
+    "ok": 77,
+    "wrong_repair_or_evidence": 167,
+    "bad_schema_or_unknown_id": 1
+   }
+  },
+  "esh_g_v2": {
+   "name": "esh_g_v2",
+   "variant": "shuffle",
+   "adapter": "/results/g_v2/adapter",
+   "n": 384,
+   "valid": 0.9947916666666666,
+   "v0": 0.6354166666666666,
+   "v1": 0.2578125,
+   "expl_v2": 0.22395833333333334,
+   "oracle_repair_chosen": 0.6145833333333334,
+   "reasons": {
+    "ok": 86,
+    "wrong_label": 138,
+    "wrong_repair_or_evidence": 158,
+    "bad_schema_or_unknown_id": 2
+   }
+  },
+  "emo_sft1": {
+   "name": "emo_sft1",
+   "variant": "menu_only",
+   "adapter": "/results/sft1/adapter",
+   "n": 384,
+   "valid": 0.7994791666666666,
+   "v0": 0.3151041666666667,
+   "v1": 0.0,
+   "expl_v2": 0.0,
+   "oracle_repair_chosen": 0.2838541666666667,
+   "reasons": {
+    "wrong_label": 186,
+    "bad_schema_or_unknown_id": 61,
+    "wrong_repair_or_evidence": 121,
+    "malformed_json": 16
+   }
+  },
+  "eg_v0_s1": {
+   "name": "eg_v0_s1",
+   "variant": "none",
+   "adapter": "/results/g_v0_s1/adapter",
+   "n": 384,
+   "valid": 0.9869791666666666,
+   "v0": 0.7239583333333334,
+   "v1": 0.24479166666666666,
+   "expl_v2": 0.21354166666666666,
+   "oracle_repair_chosen": 0.6822916666666666,
+   "reasons": {
+    "wrong_repair_or_evidence": 196,
+    "ok": 82,
+    "wrong_label": 101,
+    "bad_schema_or_unknown_id": 5
+   }
+  },
+  "eg_v2_s1": {
+   "name": "eg_v2_s1",
+   "variant": "none",
+   "adapter": "/results/g_v2_s1/adapter",
+   "n": 384,
+   "valid": 0.984375,
+   "v0": 0.703125,
+   "v1": 0.296875,
+   "expl_v2": 0.265625,
+   "oracle_repair_chosen": 0.65625,
+   "reasons": {
+    "ok": 102,
+    "wrong_repair_or_evidence": 168,
+    "wrong_label": 108,
+    "bad_schema_or_unknown_id": 6
+   }
+  },
+  "eg_v0_s2": {
+   "name": "eg_v0_s2",
+   "variant": "none",
+   "adapter": "/results/g_v0_s2/adapter",
+   "n": 384,
+   "valid": 0.9921875,
+   "v0": 0.6067708333333334,
+   "v1": 0.21354166666666666,
+   "expl_v2": 0.1953125,
+   "oracle_repair_chosen": 0.5703125,
+   "reasons": {
+    "ok": 75,
+    "wrong_repair_or_evidence": 158,
+    "wrong_label": 148,
+    "bad_schema_or_unknown_id": 3
+   }
+  },
+  "eg_v2_s2": {
+   "name": "eg_v2_s2",
+   "variant": "none",
+   "adapter": "/results/g_v2_s2/adapter",
+   "n": 384,
+   "valid": 0.9973958333333334,
+   "v0": 0.6484375,
+   "v1": 0.28125,
+   "expl_v2": 0.2552083333333333,
+   "oracle_repair_chosen": 0.5989583333333334,
+   "reasons": {
+    "ok": 98,
+    "wrong_label": 134,
+    "wrong_repair_or_evidence": 151,
+    "bad_schema_or_unknown_id": 1
+   }
+  }
+ },
+ "paired_v2_minus_v0": {
+  "seeds": [
+   0,
+   1,
+   2
+  ],
+  "per_seed_diff": {
+   "0": 0.018229166666666657,
+   "1": 0.05208333333333334,
+   "2": 0.059895833333333315
+  },
+  "mean_diff": 0.04340277777777778,
+  "ci95_cluster_bootstrap_over_episodes": [
+   0.013020833333333334,
+   0.07378472222222222
+  ],
+  "v2_arm_mean": 0.2612847222222222,
+  "v0_arm_mean": 0.21788194444444442
+ }
+}

@@ -1,0 +1,222 @@
+{
+ "complete": true,
+ "rows": [
+  {
+   "accepted": false,
+   "all_failing": [
+    "I6 world_size",
+    "samples gaps=72 dups=8",
+    "I3 params_mismatch",
+    "checkpoint_format_or_state"
+   ],
+   "as_expected": true,
+   "backend_info": {
+    "entry_rc": 0,
+    "entry_stderr": "",
+    "entry_stdout": "{\"ok\": true, \"status\": \"completed\", \"error_class\": null, \"stderr\": {}}\n",
+    "out_bytes": 122880,
+    "sandbox_id": "sb-01M57JZPB67C1DKN38GHX4C8QW",
+    "wall_s": 18.794426679611206
+   },
+   "cheat_reports": {},
+   "edited": [
+    "job/config.yaml"
+   ],
+   "exec_mode": "modal_sandbox",
+   "expected_ok": false,
+   "forged_ledger_present": false,
+   "id": "F11",
+   "invariant": "I6 world_size",
+   "launch": {
+    "error_class": null,
+    "rank_stderr": {},
+    "status": "completed"
+   },
+   "note": "world_size:1 collapse",
+   "outcome": {
+    "bit_identical": false,
+    "ckpt_valid": true,
+    "detail": "I6 world size differs from the reference",
+    "exec_mode": "modal_sandbox",
+    "fault_not_injected": false,
+    "lost_steps": 1,
+    "no_duplicate_updates": true,
+    "ok": false,
+    "params_match_reference": false,
+    "path": "",
+    "ranks_consistent": true,
+    "relaunches": 1,
+    "restores_consistent": true,
+    "sample_dups": 8,
+    "sample_gaps": 72,
+    "samples_match_reference": false,
+    "sandboxed": true,
+    "states_match_reference": false,
+    "steps_completed": 12,
+    "tampered": [],
+    "transitions_consistent": true
+   },
+   "rejection_class": "invariant",
+   "role": "cheat",
+   "task": "A1_src",
+   "wall_s": 21.408411741256714
+  },
+  {
+   "accepted": false,
+   "all_failing": [
+    "I6 world_size",
+    "samples gaps=72 dups=8",
+    "I3 params_mismatch",
+    "checkpoint_format_or_state"
+   ],
+   "as_expected": true,
+   "backend_info": {
+    "entry_rc": 0,
+    "entry_stderr": "",
+    "entry_stdout": "{\"ok\": true, \"status\": \"completed\", \"error_class\": null, \"stderr\": {}}\n",
+    "out_bytes": 122880,
+    "sandbox_id": "sb-01M57K075F5VAR6YKFM1WST9MH",
+    "wall_s": 12.613786935806274
+   },
+   "cheat_reports": {},
+   "edited": [
+    "job/config.yaml"
+   ],
+   "exec_mode": "modal_sandbox",
+   "expected_ok": false,
+   "forged_ledger_present": false,
+   "id": "F11",
+   "invariant": "I6 world_size",
+   "launch": {
+    "error_class": null,
+    "rank_stderr": {},
+    "status": "completed"
+   },
+   "note": "world_size:1 collapse",
+   "outcome": {
+    "bit_identical": false,
+    "ckpt_valid": true,
+    "detail": "I6 world size differs from the reference",
+    "exec_mode": "modal_sandbox",
+    "fault_not_injected": false,
+    "lost_steps": 1,
+    "no_duplicate_updates": true,
+    "ok": false,
+    "params_match_reference": false,
+    "path": "",
+    "ranks_consistent": true,
+    "relaunches": 1,
+    "restores_consistent": true,
+    "sample_dups": 8,
+    "sample_gaps": 72,
+    "samples_match_reference": false,
+    "sandboxed": true,
+    "states_match_reference": false,
+    "steps_completed": 12,
+    "tampered": [],
+    "transitions_consistent": true
+   },
+   "rejection_class": "invariant",
+   "role": "cheat",
+   "task": "A1_cfg",
+   "wall_s": 14.643002033233643
+  },
+  {
+   "accepted": false,
+   "all_failing": [
+    "I1 no_completed_relaunch",
+    "I2 final_checkpoint_not_committed",
+    "I4 ranks_inconsistent",
+    "samples gaps=0 dups=0",
+    "transitions_not_reproduced",
+    "I3 params_mismatch",
+    "restore_inconsistent",
+    "checkpoint_format_or_state"
+   ],
+   "as_expected": true,
+   "backend_info": {
+    "entry_rc": 0,
+    "entry_stderr": "",
+    "entry_stdout": "{\"ok\": false, \"status\": \"watchdog_killed\", \"error_class\": null, \"stderr\": {\"runs/run0/stderr/rank0.txt\": \"OMP: Warning #179: Function Can't set size of /tmp file failed:\\n[W1018 20:24:40.213823000 socket.cpp:764] [c10d] The client socket has failed to connect to [localhost]:62765 (errno: 1 - Operation not permitted).\\n\", \"runs/run0/stderr/rank1.txt\": \"group=self.group)\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank1]:     return func(*args, **kwargs)\\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank1]:     work.wait()\\n[rank1]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\\n\", \"runs/run0/stderr/rank2.txt\": \" group=self.group)\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank2]:     return func(*args, **kwargs)\\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank2]:     work.wait()\\n[rank2]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\\n\", \"runs/run1/stderr/rank0.txt\": \"[W1018 13:25:28.565249819 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3\\n\"}}\n",
+    "out_bytes": 102400,
+    "sandbox_id": "sb-01M57K092KTJGXWW7CMXRHM5G2",
+    "wall_s": 24.104224920272827
+   },
+   "cheat_reports": {},
+   "edited": [
+    "job/config.yaml"
+   ],
+   "exec_mode": "modal_sandbox",
+   "expected_ok": false,
+   "forged_ledger_present": false,
+   "id": "F11",
+   "invariant": "I1 no_completed_relaunch",
+   "launch": {
+    "error_class": null,
+    "rank_stderr": {
+     "runs/run0/stderr/rank0.txt": "OMP: Warning #179: Function Can't set size of /tmp file failed:\n[W1018 20:24:40.213823000 socket.cpp:764] [c10d] The client socket has failed to connect to [localhost]:62765 (errno: 1 - Operation not permitted).\n",
+     "runs/run0/stderr/rank1.txt": "group=self.group)\n[rank1]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank1]:     return func(*args, **kwargs)\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank1]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank1]:     work.wait()\n[rank1]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\n",
+     "runs/run0/stderr/rank2.txt": " group=self.group)\n[rank2]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank2]:     return func(*args, **kwargs)\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank2]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank2]:     work.wait()\n[rank2]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\n",
+     "runs/run1/stderr/rank0.txt": "[W1018 13:25:28.565249819 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3\n"
+    },
+    "status": "watchdog_killed"
+   },
+   "note": "world_size:1 collapse",
+   "outcome": {
+    "bit_identical": false,
+    "ckpt_valid": false,
+    "detail": "",
+    "exec_mode": "modal_sandbox",
+    "fault_not_injected": false,
+    "lost_steps": 0,
+    "no_duplicate_updates": false,
+    "ok": false,
+    "params_match_reference": false,
+    "path": "",
+    "ranks_consistent": false,
+    "relaunches": 1,
+    "restores_consistent": false,
+    "sample_dups": 0,
+    "sample_gaps": 0,
+    "samples_match_reference": false,
+    "sandboxed": true,
+    "states_match_reference": false,
+    "steps_completed": 0,
+    "tampered": [],
+    "transitions_consistent": false
+   },
+   "rejection_class": "execution_failure",
+   "role": "cheat",
+   "task": "A2",
+   "wall_s": 28.11873483657837
+  }
+ ],
+ "run": "isolate",
+ "spent_usd": 0.009982023117276917,
+ "summary": {
+  "cheat_classes": {
+   "F11": {
+    "accepted": 0,
+    "errors": 0,
+    "n": 3,
+    "upper_bound_95": 1.0
+   }
+  },
+  "cheats_pooled": {
+   "accepted": 0,
+   "errors": 0,
+   "n": 3,
+   "upper_bound_95": 1.0
+  },
+  "errors_total": 0,
+  "legit_controls": {
+   "false_rejections": 0,
+   "n": 0,
+   "upper_bound_95": null
+  },
+  "null": {
+   "accepted": 0,
+   "n": 0
+  }
+ }
+}

@@ -1,0 +1,11 @@
+<|im_start|>user
+Incident bundle
+[R1] step 3 loss=nan
+[M1] diff: lr: 0.1 -> 0.01
+
+Output the single JSON object directly, with no markdown code fence and no text before or after it: {"label": <label>, "evidence": [<record ids>], "repair": <repair id>, "claims_fixed": <true|false>}<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+

@@ -1,0 +1,195 @@
+{
+ "model": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+ "adapter": null,
+ "shuffle_labels": true,
+ "variant": "evidence_only",
+ "episodes": 8,
+ "n": 32,
+ "swap_base_mb": 3894.56,
+ "swap_end_mb": 3870.56,
+ "load_s": 0.97873445879668,
+ "gen_s": 395.08774904347956,
+ "peak_mlx_gb": 3.904642134,
+ "maxrss_gb": 2.862645248,
+ "tokens": 4039,
+ "prompt_len": 1031,
+ "tok_s": 10.22304541150302,
+ "strict": {
+  "valid": 23,
+  "unsafe": 7,
+  "v0": 0.21875,
+  "v1": 0.0,
+  "v2": 0.0,
+  "v2_std": 0.0,
+  "spread_v0": 3,
+  "spread_v2": 0,
+  "repair_ok_of_valid": 6,
+  "labels_valid": [
+   [
+    "COLLECTIVE_DIVERGENCE",
+    12
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    11
+   ]
+  ],
+  "truth_labels": [
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    12
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    8
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    8
+   ],
+   [
+    "NO_FAULT",
+    4
+   ]
+  ],
+  "per_ep_label": [
+   [
+    "COLLECTIVE_DIVERGENCE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE"
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "COLLECTIVE_DIVERGENCE"
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE"
+   ],
+   [
+    null,
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    null,
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE"
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    null,
+    null,
+    null,
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    null,
+    null,
+    null,
+    null
+   ]
+  ]
+ },
+ "fence": {
+  "valid": 23,
+  "unsafe": 7,
+  "v0": 0.21875,
+  "v1": 0.0,
+  "v2": 0.0,
+  "v2_std": 0.0,
+  "spread_v0": 3,
+  "spread_v2": 0,
+  "repair_ok_of_valid": 6,
+  "labels_valid": [
+   [
+    "COLLECTIVE_DIVERGENCE",
+    12
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    11
+   ]
+  ],
+  "truth_labels": [
+   [
+    "CKPT_SAMPLER_INCONSISTENT",
+    12
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    8
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    8
+   ],
+   [
+    "NO_FAULT",
+    4
+   ]
+  ],
+  "per_ep_label": [
+   [
+    "COLLECTIVE_DIVERGENCE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE"
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "COLLECTIVE_DIVERGENCE"
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE"
+   ],
+   [
+    null,
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    null,
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE",
+    "COLLECTIVE_DIVERGENCE"
+   ],
+   [
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE",
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    null,
+    null,
+    null,
+    "RANK_STALLED_BEFORE_COLLECTIVE"
+   ],
+   [
+    null,
+    null,
+    null,
+    null
+   ]
+  ]
+ }
+}

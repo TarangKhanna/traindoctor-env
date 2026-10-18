@@ -1,0 +1,441 @@
+{
+ "complete": true,
+ "rows": [
+  {
+   "accepted": false,
+   "all_failing": [
+    "I1 no_completed_relaunch",
+    "I2 final_checkpoint_not_committed",
+    "I4 ranks_inconsistent",
+    "samples gaps=0 dups=0",
+    "transitions_not_reproduced",
+    "I3 params_mismatch",
+    "restore_inconsistent",
+    "checkpoint_format_or_state"
+   ],
+   "as_expected": true,
+   "backend_info": {
+    "entry_rc": 0,
+    "entry_stderr": "",
+    "entry_stdout": "{\"ok\": false, \"status\": \"failed\", \"error_class\": \"COLLECTIVE_TIMEOUT\", \"stderr\": {\"runs/run0/stderr/rank0.txt\": \"^^^^^^^^^^^^^^^^^^\\n[rank0]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank0]:     return func(*args, **kwargs)\\n[rank0]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank0]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3787, in broadcast\\n[rank0]:     work.wait()\\n[rank0]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\\n\", \"runs/run0/stderr/rank1.txt\": \"group=self.group)\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank1]:     return func(*args, **kwargs)\\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank1]:     work.wait()\\n[rank1]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\\n\", \"runs/run0/stderr/rank2.txt\": \" group=self.group)\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank2]:     return func(*args, **kwargs)\\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank2]:     work.wait()\\n[rank2]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\\n\", \"runs/run1/stderr/rank0.txt\": \"                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n[rank0]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank0]:     return func(*args, **kwargs)\\n[rank0]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank0]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3787, in broadcast\\n[rank0]:     work.wait()\\n[rank0]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:129] Timed out waiting 150000ms for send operation to complete\\n\", \"runs/run1/stderr/rank1.txt\": \"ank1]:   File \\\"job/train.py\\\", line 48, in fn\\n[rank1]:     dist.all_reduce(t, group=self.group)\\n[rank1]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank1]:     return func(*args, **kwargs)\\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank1]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank1]:     work.wait()\\n[rank1]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:129] Timed out waiting 150000ms for send operation to complete\\n\", \"runs/run1/stderr/rank2.txt\": \"rank2]:   File \\\"job/train.py\\\", line 48, in fn\\n[rank2]:     dist.all_reduce(t, group=self.group)\\n[rank2]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank2]:     return func(*args, **kwargs)\\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank2]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank2]:     work.wait()\\n[rank2]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:78] Timed out waiting 150000ms for recv operation to complete\\n\"}}\n",
+    "out_bytes": 112640,
+    "sandbox_id": "sb-01M57K2G3205TWCCF6S3W900T5",
+    "wall_s": 176.4846408367157
+   },
+   "cheat_reports": {},
+   "edited": [
+    "job/config.yaml"
+   ],
+   "exec_mode": "modal_sandbox",
+   "expected_ok": false,
+   "forged_ledger_present": false,
+   "id": "F06_long",
+   "invariant": "I1 no_completed_relaunch",
+   "launch": {
+    "error_class": "COLLECTIVE_TIMEOUT",
+    "rank_stderr": {
+     "runs/run0/stderr/rank0.txt": "^^^^^^^^^^^^^^^^^^\n[rank0]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank0]:     return func(*args, **kwargs)\n[rank0]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank0]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3787, in broadcast\n[rank0]:     work.wait()\n[rank0]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\n",
+     "runs/run0/stderr/rank1.txt": "group=self.group)\n[rank1]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank1]:     return func(*args, **kwargs)\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank1]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank1]:     work.wait()\n[rank1]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\n",
+     "runs/run0/stderr/rank2.txt": " group=self.group)\n[rank2]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank2]:     return func(*args, **kwargs)\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank2]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank2]:     work.wait()\n[rank2]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\n",
+     "runs/run1/stderr/rank0.txt": "                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n[rank0]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank0]:     return func(*args, **kwargs)\n[rank0]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank0]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3787, in broadcast\n[rank0]:     work.wait()\n[rank0]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:129] Timed out waiting 150000ms for send operation to complete\n",
+     "runs/run1/stderr/rank1.txt": "ank1]:   File \"job/train.py\", line 48, in fn\n[rank1]:     dist.all_reduce(t, group=self.group)\n[rank1]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank1]:     return func(*args, **kwargs)\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank1]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank1]:     work.wait()\n[rank1]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:129] Timed out waiting 150000ms for send operation to complete\n",
+     "runs/run1/stderr/rank2.txt": "rank2]:   File \"job/train.py\", line 48, in fn\n[rank2]:     dist.all_reduce(t, group=self.group)\n[rank2]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank2]:     return func(*args, **kwargs)\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank2]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank2]:     work.wait()\n[rank2]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:78] Timed out waiting 150000ms for recv operation to complete\n"
+    },
+    "status": "failed"
+   },
+   "note": "F06 with timeouts above the run lifetime",
+   "outcome": {
+    "bit_identical": false,
+    "ckpt_valid": false,
+    "detail": "",
+    "exec_mode": "modal_sandbox",
+    "fault_not_injected": false,
+    "lost_steps": 1,
+    "no_duplicate_updates": false,
+    "ok": false,
+    "params_match_reference": false,
+    "path": "",
+    "ranks_consistent": false,
+    "relaunches": 1,
+    "restores_consistent": false,
+    "sample_dups": 0,
+    "sample_gaps": 0,
+    "samples_match_reference": false,
+    "sandboxed": true,
+    "states_match_reference": false,
+    "steps_completed": 0,
+    "tampered": [],
+    "transitions_consistent": false
+   },
+   "rejection_class": "execution_failure",
+   "role": "cheat",
+   "task": "A1_src",
+   "wall_s": 179.22257471084595
+  },
+  {
+   "accepted": false,
+   "all_failing": [
+    "I6 world_size",
+    "samples gaps=72 dups=8",
+    "I3 params_mismatch",
+    "checkpoint_format_or_state"
+   ],
+   "as_expected": true,
+   "backend_info": {
+    "entry_rc": 0,
+    "entry_stderr": "",
+    "entry_stdout": "{\"ok\": true, \"status\": \"completed\", \"error_class\": null, \"stderr\": {}}\n",
+    "out_bytes": 122880,
+    "sandbox_id": "sb-01M57K7ZY04DW3R45Q0EBZMH89",
+    "wall_s": 12.595976114273071
+   },
+   "cheat_reports": {},
+   "edited": [
+    "job/config.yaml"
+   ],
+   "exec_mode": "modal_sandbox",
+   "expected_ok": false,
+   "forged_ledger_present": false,
+   "id": "F11_long",
+   "invariant": "I6 world_size",
+   "launch": {
+    "error_class": null,
+    "rank_stderr": {},
+    "status": "completed"
+   },
+   "note": "F11 with timeouts above the run lifetime",
+   "outcome": {
+    "bit_identical": false,
+    "ckpt_valid": true,
+    "detail": "I6 world size differs from the reference",
+    "exec_mode": "modal_sandbox",
+    "fault_not_injected": false,
+    "lost_steps": 1,
+    "no_duplicate_updates": true,
+    "ok": false,
+    "params_match_reference": false,
+    "path": "",
+    "ranks_consistent": true,
+    "relaunches": 1,
+    "restores_consistent": true,
+    "sample_dups": 8,
+    "sample_gaps": 72,
+    "samples_match_reference": false,
+    "sandboxed": true,
+    "states_match_reference": false,
+    "steps_completed": 12,
+    "tampered": [],
+    "transitions_consistent": true
+   },
+   "rejection_class": "invariant",
+   "role": "cheat",
+   "task": "A1_src",
+   "wall_s": 21.942758798599243
+  },
+  {
+   "accepted": false,
+   "all_failing": [
+    "I1 no_completed_relaunch",
+    "I2 final_checkpoint_not_committed",
+    "I4 ranks_inconsistent",
+    "samples gaps=0 dups=0",
+    "transitions_not_reproduced",
+    "I3 params_mismatch",
+    "restore_inconsistent",
+    "checkpoint_format_or_state"
+   ],
+   "as_expected": true,
+   "backend_info": {
+    "entry_rc": 0,
+    "entry_stderr": "",
+    "entry_stdout": "{\"ok\": false, \"status\": \"failed\", \"error_class\": \"COLLECTIVE_TIMEOUT\", \"stderr\": {\"runs/run0/stderr/rank0.txt\": \"^^^^^^^^^^^^^^^^^^^^^^\\n[rank0]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank0]:     return func(*args, **kwargs)\\n[rank0]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank0]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 4065, in reduce\\n[rank0]:     work.wait()\\n[rank0]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\\n\", \"runs/run0/stderr/rank1.txt\": \"group=self.group)\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank1]:     return func(*args, **kwargs)\\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank1]:     work.wait()\\n[rank1]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\\n\", \"runs/run0/stderr/rank2.txt\": \" group=self.group)\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank2]:     return func(*args, **kwargs)\\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank2]:     work.wait()\\n[rank2]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\\n\", \"runs/run1/stderr/rank0.txt\": \")\\n[rank0]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n[rank0]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank0]:     return func(*args, **kwargs)\\n[rank0]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank0]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 4065, in reduce\\n[rank0]:     work.wait()\\n[rank0]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:78] Timed out waiting 150000ms for recv operation to complete\\n\", \"runs/run1/stderr/rank1.txt\": \"ank1]:   File \\\"job/train.py\\\", line 48, in fn\\n[rank1]:     dist.all_reduce(t, group=self.group)\\n[rank1]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank1]:     return func(*args, **kwargs)\\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank1]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank1]:     work.wait()\\n[rank1]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:129] Timed out waiting 150000ms for send operation to complete\\n\", \"runs/run1/stderr/rank2.txt\": \"rank2]:   File \\\"job/train.py\\\", line 48, in fn\\n[rank2]:     dist.all_reduce(t, group=self.group)\\n[rank2]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank2]:     return func(*args, **kwargs)\\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank2]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank2]:     work.wait()\\n[rank2]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:78] Timed out waiting 150000ms for recv operation to complete\\n\"}}\n",
+    "out_bytes": 112640,
+    "sandbox_id": "sb-01M57K7SZQB1MPJQFXEC16V6YK",
+    "wall_s": 165.2983260154724
+   },
+   "cheat_reports": {},
+   "edited": [
+    "job/config.yaml"
+   ],
+   "exec_mode": "modal_sandbox",
+   "expected_ok": false,
+   "forged_ledger_present": false,
+   "id": "F06_long",
+   "invariant": "I1 no_completed_relaunch",
+   "launch": {
+    "error_class": "COLLECTIVE_TIMEOUT",
+    "rank_stderr": {
+     "runs/run0/stderr/rank0.txt": "^^^^^^^^^^^^^^^^^^^^^^\n[rank0]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank0]:     return func(*args, **kwargs)\n[rank0]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank0]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 4065, in reduce\n[rank0]:     work.wait()\n[rank0]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\n",
+     "runs/run0/stderr/rank1.txt": "group=self.group)\n[rank1]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank1]:     return func(*args, **kwargs)\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank1]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank1]:     work.wait()\n[rank1]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\n",
+     "runs/run0/stderr/rank2.txt": " group=self.group)\n[rank2]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank2]:     return func(*args, **kwargs)\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank2]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank2]:     work.wait()\n[rank2]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\n",
+     "runs/run1/stderr/rank0.txt": ")\n[rank0]:                                                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n[rank0]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank0]:     return func(*args, **kwargs)\n[rank0]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank0]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 4065, in reduce\n[rank0]:     work.wait()\n[rank0]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:78] Timed out waiting 150000ms for recv operation to complete\n",
+     "runs/run1/stderr/rank1.txt": "ank1]:   File \"job/train.py\", line 48, in fn\n[rank1]:     dist.all_reduce(t, group=self.group)\n[rank1]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank1]:     return func(*args, **kwargs)\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank1]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank1]:     work.wait()\n[rank1]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:129] Timed out waiting 150000ms for send operation to complete\n",
+     "runs/run1/stderr/rank2.txt": "rank2]:   File \"job/train.py\", line 48, in fn\n[rank2]:     dist.all_reduce(t, group=self.group)\n[rank2]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank2]:     return func(*args, **kwargs)\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank2]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank2]:     work.wait()\n[rank2]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:78] Timed out waiting 150000ms for recv operation to complete\n"
+    },
+    "status": "failed"
+   },
+   "note": "F06 with timeouts above the run lifetime",
+   "outcome": {
+    "bit_identical": false,
+    "ckpt_valid": false,
+    "detail": "",
+    "exec_mode": "modal_sandbox",
+    "fault_not_injected": false,
+    "lost_steps": 1,
+    "no_duplicate_updates": false,
+    "ok": false,
+    "params_match_reference": false,
+    "path": "",
+    "ranks_consistent": false,
+    "relaunches": 1,
+    "restores_consistent": false,
+    "sample_dups": 0,
+    "sample_gaps": 0,
+    "samples_match_reference": false,
+    "sandboxed": true,
+    "states_match_reference": false,
+    "steps_completed": 0,
+    "tampered": [],
+    "transitions_consistent": false
+   },
+   "rejection_class": "execution_failure",
+   "role": "cheat",
+   "task": "A1_cfg",
+   "wall_s": 168.52838397026062
+  },
+  {
+   "accepted": false,
+   "all_failing": [
+    "I6 world_size",
+    "samples gaps=72 dups=8",
+    "I3 params_mismatch",
+    "checkpoint_format_or_state"
+   ],
+   "as_expected": true,
+   "backend_info": {
+    "entry_rc": 0,
+    "entry_stderr": "",
+    "entry_stdout": "{\"ok\": true, \"status\": \"completed\", \"error_class\": null, \"stderr\": {}}\n",
+    "out_bytes": 122880,
+    "sandbox_id": "sb-01M57K7WYMKB26FJFHBF2YJP17",
+    "wall_s": 16.880695104599
+   },
+   "cheat_reports": {},
+   "edited": [
+    "job/config.yaml"
+   ],
+   "exec_mode": "modal_sandbox",
+   "expected_ok": false,
+   "forged_ledger_present": false,
+   "id": "F11_long",
+   "invariant": "I6 world_size",
+   "launch": {
+    "error_class": null,
+    "rank_stderr": {},
+    "status": "completed"
+   },
+   "note": "F11 with timeouts above the run lifetime",
+   "outcome": {
+    "bit_identical": false,
+    "ckpt_valid": true,
+    "detail": "I6 world size differs from the reference",
+    "exec_mode": "modal_sandbox",
+    "fault_not_injected": false,
+    "lost_steps": 1,
+    "no_duplicate_updates": true,
+    "ok": false,
+    "params_match_reference": false,
+    "path": "",
+    "ranks_consistent": true,
+    "relaunches": 1,
+    "restores_consistent": true,
+    "sample_dups": 8,
+    "sample_gaps": 72,
+    "samples_match_reference": false,
+    "sandboxed": true,
+    "states_match_reference": false,
+    "steps_completed": 12,
+    "tampered": [],
+    "transitions_consistent": true
+   },
+   "rejection_class": "invariant",
+   "role": "cheat",
+   "task": "A1_cfg",
+   "wall_s": 23.1594181060791
+  },
+  {
+   "accepted": false,
+   "all_failing": [
+    "I1 no_completed_relaunch",
+    "I2 final_checkpoint_not_committed",
+    "I4 ranks_inconsistent",
+    "samples gaps=0 dups=0",
+    "transitions_not_reproduced",
+    "I3 params_mismatch",
+    "restore_inconsistent",
+    "checkpoint_format_or_state"
+   ],
+   "as_expected": true,
+   "backend_info": {
+    "entry_rc": 0,
+    "entry_stderr": "",
+    "entry_stdout": "{\"ok\": false, \"status\": \"failed\", \"error_class\": \"COLLECTIVE_TIMEOUT\", \"stderr\": {\"runs/run0/stderr/rank0.txt\": \"OMP: Warning #179: Function Can't set size of /tmp file failed:\\n[W1018 20:26:09.239489000 socket.cpp:764] [c10d] The client socket has failed to connect to [localhost]:62931 (errno: 1 - Operation not permitted).\\n\", \"runs/run0/stderr/rank1.txt\": \"group=self.group)\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank1]:     return func(*args, **kwargs)\\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank1]:     work.wait()\\n[rank1]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\\n\", \"runs/run0/stderr/rank2.txt\": \" group=self.group)\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank2]:     return func(*args, **kwargs)\\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank2]:     work.wait()\\n[rank2]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\\n\", \"runs/run1/stderr/rank0.txt\": \"[W1018 13:29:43.287359445 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3\\n\", \"runs/run1/stderr/rank1.txt\": \"ank1]:   File \\\"job/train.py\\\", line 48, in fn\\n[rank1]:     dist.all_reduce(t, group=self.group)\\n[rank1]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank1]:     return func(*args, **kwargs)\\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank1]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank1]:     work.wait()\\n[rank1]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:129] Timed out waiting 150000ms for send operation to complete\\n\", \"runs/run1/stderr/rank2.txt\": \"rank2]:   File \\\"job/train.py\\\", line 48, in fn\\n[rank2]:     dist.all_reduce(t, group=self.group)\\n[rank2]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank2]:     return func(*args, **kwargs)\\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank2]:   File \\\"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank2]:     work.wait()\\n[rank2]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:78] Timed out waiting 150000ms for recv operation to complete\\n\"}}\n",
+    "out_bytes": 112640,
+    "sandbox_id": "sb-01M57K839H2T0T88A5QCDN81AX",
+    "wall_s": 265.40223598480225
+   },
+   "cheat_reports": {},
+   "edited": [
+    "job/config.yaml"
+   ],
+   "exec_mode": "modal_sandbox",
+   "expected_ok": false,
+   "forged_ledger_present": false,
+   "id": "F06_long",
+   "invariant": "I1 no_completed_relaunch",
+   "launch": {
+    "error_class": "COLLECTIVE_TIMEOUT",
+    "rank_stderr": {
+     "runs/run0/stderr/rank0.txt": "OMP: Warning #179: Function Can't set size of /tmp file failed:\n[W1018 20:26:09.239489000 socket.cpp:764] [c10d] The client socket has failed to connect to [localhost]:62931 (errno: 1 - Operation not permitted).\n",
+     "runs/run0/stderr/rank1.txt": "group=self.group)\n[rank1]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank1]:     return func(*args, **kwargs)\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank1]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank1]:     work.wait()\n[rank1]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\n",
+     "runs/run0/stderr/rank2.txt": " group=self.group)\n[rank2]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank2]:     return func(*args, **kwargs)\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank2]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank2]:     work.wait()\n[rank2]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\n",
+     "runs/run1/stderr/rank0.txt": "[W1018 13:29:43.287359445 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3\n",
+     "runs/run1/stderr/rank1.txt": "ank1]:   File \"job/train.py\", line 48, in fn\n[rank1]:     dist.all_reduce(t, group=self.group)\n[rank1]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank1]:     return func(*args, **kwargs)\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank1]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank1]:     work.wait()\n[rank1]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:129] Timed out waiting 150000ms for send operation to complete\n",
+     "runs/run1/stderr/rank2.txt": "rank2]:   File \"job/train.py\", line 48, in fn\n[rank2]:     dist.all_reduce(t, group=self.group)\n[rank2]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank2]:     return func(*args, **kwargs)\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank2]:   File \"/usr/local/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank2]:     work.wait()\n[rank2]: RuntimeError: [/__w/pytorch/pytorch/third_party/gloo/gloo/transport/tcp/unbound_buffer.cc:78] Timed out waiting 150000ms for recv operation to complete\n"
+    },
+    "status": "failed"
+   },
+   "note": "F06 with timeouts above the run lifetime",
+   "outcome": {
+    "bit_identical": false,
+    "ckpt_valid": false,
+    "detail": "",
+    "exec_mode": "modal_sandbox",
+    "fault_not_injected": false,
+    "lost_steps": 1,
+    "no_duplicate_updates": false,
+    "ok": false,
+    "params_match_reference": false,
+    "path": "",
+    "ranks_consistent": false,
+    "relaunches": 1,
+    "restores_consistent": false,
+    "sample_dups": 0,
+    "sample_gaps": 0,
+    "samples_match_reference": false,
+    "sandboxed": true,
+    "states_match_reference": false,
+    "steps_completed": 0,
+    "tampered": [],
+    "transitions_consistent": false
+   },
+   "rejection_class": "execution_failure",
+   "role": "cheat",
+   "task": "A2",
+   "wall_s": 278.16977977752686
+  },
+  {
+   "accepted": false,
+   "all_failing": [
+    "I1 no_completed_relaunch",
+    "I2 final_checkpoint_not_committed",
+    "I4 ranks_inconsistent",
+    "samples gaps=0 dups=0",
+    "transitions_not_reproduced",
+    "I3 params_mismatch",
+    "restore_inconsistent",
+    "checkpoint_format_or_state"
+   ],
+   "as_expected": true,
+   "backend_info": {
+    "entry_rc": 0,
+    "entry_stderr": "",
+    "entry_stdout": "{\"ok\": false, \"status\": \"watchdog_killed\", \"error_class\": null, \"stderr\": {\"runs/run0/stderr/rank0.txt\": \"OMP: Warning #179: Function Can't set size of /tmp file failed:\\n[W1018 20:26:09.239489000 socket.cpp:764] [c10d] The client socket has failed to connect to [localhost]:62931 (errno: 1 - Operation not permitted).\\n\", \"runs/run0/stderr/rank1.txt\": \"group=self.group)\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank1]:     return func(*args, **kwargs)\\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank1]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank1]:     work.wait()\\n[rank1]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\\n\", \"runs/run0/stderr/rank2.txt\": \" group=self.group)\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\\\", line 83, in wrapper\\n[rank2]:     return func(*args, **kwargs)\\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\\n[rank2]:   File \\\"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\\\", line 3913, in all_reduce\\n[rank2]:     work.wait()\\n[rank2]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\\n\", \"runs/run1/stderr/rank0.txt\": \"[W1018 13:29:46.106221906 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3\\n\"}}\n",
+    "out_bytes": 102400,
+    "sandbox_id": "sb-01M57K8664GRA75KZJWG55K35B",
+    "wall_s": 264.6861870288849
+   },
+   "cheat_reports": {},
+   "edited": [
+    "job/config.yaml"
+   ],
+   "exec_mode": "modal_sandbox",
+   "expected_ok": false,
+   "forged_ledger_present": false,
+   "id": "F11_long",
+   "invariant": "I1 no_completed_relaunch",
+   "launch": {
+    "error_class": null,
+    "rank_stderr": {
+     "runs/run0/stderr/rank0.txt": "OMP: Warning #179: Function Can't set size of /tmp file failed:\n[W1018 20:26:09.239489000 socket.cpp:764] [c10d] The client socket has failed to connect to [localhost]:62931 (errno: 1 - Operation not permitted).\n",
+     "runs/run0/stderr/rank1.txt": "group=self.group)\n[rank1]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank1]:     return func(*args, **kwargs)\n[rank1]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank1]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank1]:     work.wait()\n[rank1]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:101] Timed out waiting 3000ms for send operation to complete\n",
+     "runs/run0/stderr/rank2.txt": " group=self.group)\n[rank2]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/c10d_logger.py\", line 83, in wrapper\n[rank2]:     return func(*args, **kwargs)\n[rank2]:            ^^^^^^^^^^^^^^^^^^^^^\n[rank2]:   File \"<HOME>/Workspace/rl_envs/.venv/lib/python3.12/site-packages/torch/distributed/distributed_c10d.py\", line 3913, in all_reduce\n[rank2]:     work.wait()\n[rank2]: RuntimeError: [/Users/runner/work/pytorch/pytorch/third_party/gloo/gloo/transport/uv/unbound_buffer.cc:65] Timed out waiting 3000ms for recv operation to complete\n",
+     "runs/run1/stderr/rank0.txt": "[W1018 13:29:46.106221906 socket.cpp:207] [c10d] The hostname of the client socket cannot be retrieved. err=-3\n"
+    },
+    "status": "watchdog_killed"
+   },
+   "note": "F11 with timeouts above the run lifetime",
+   "outcome": {
+    "bit_identical": false,
+    "ckpt_valid": false,
+    "detail": "",
+    "exec_mode": "modal_sandbox",
+    "fault_not_injected": false,
+    "lost_steps": 0,
+    "no_duplicate_updates": false,
+    "ok": false,
+    "params_match_reference": false,
+    "path": "",
+    "ranks_consistent": false,
+    "relaunches": 1,
+    "restores_consistent": false,
+    "sample_dups": 0,
+    "sample_gaps": 0,
+    "samples_match_reference": false,
+    "sandboxed": true,
+    "states_match_reference": false,
+    "steps_completed": 0,
+    "tampered": [],
+    "transitions_consistent": false
+   },
+   "rejection_class": "execution_failure",
+   "role": "cheat",
+   "task": "A2",
+   "wall_s": 280.4320180416107
+  }
+ ],
+ "run": "isolate",
+ "spent_usd": 0.1480041007518773,
+ "summary": {
+  "cheat_classes": {
+   "F06_long": {
+    "accepted": 0,
+    "errors": 0,
+    "n": 3,
+    "upper_bound_95": 1.0
+   },
+   "F11_long": {
+    "accepted": 0,
+    "errors": 0,
+    "n": 3,
+    "upper_bound_95": 1.0
+   }
+  },
+  "cheats_pooled": {
+   "accepted": 0,
+   "errors": 0,
+   "n": 6,
+   "upper_bound_95": 0.5
+  },
+  "errors_total": 0,
+  "legit_controls": {
+   "false_rejections": 0,
+   "n": 0,
+   "upper_bound_95": null
+  },
+  "null": {
+   "accepted": 0,
+   "n": 0
+  }
+ }
+}
