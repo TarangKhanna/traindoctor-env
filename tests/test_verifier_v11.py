@@ -1,5 +1,5 @@
 """Verifier v1.1 (opt-in `format_check='v1.1'`): the sampler position is judged by BEHAVIOUR, not by representation.
-Rule (evidence/results/VERIFIER_V11.md): the position each rank requested right after a restore,
+Rule: the position each rank requested right after a restore,
 as recorded by the harness-owned data server, must equal the reference position for the committed step of the
 checkpoint resumed from, then advance one reference step per acknowledged step; restored state, sample accounting
 and every other invariant stay. Nothing a job wrote (logs, progress files, a stored position it chose) can

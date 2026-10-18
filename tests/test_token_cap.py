@@ -69,7 +69,7 @@ SYNTH_SEEDS = range(10000, 10120)    # DEV seeds: make_scenario draws kind and 3
 
 def test_synthetic_bundles_fit_the_cap_in_true_tokens_for_task_b_at_3_and_4_ranks(tok):
     """No Gloo here, so records are synthesized in the executed format (tests/synth_snapshot.py; pessimistic: every rank of
-    the failed run records samples through the kill step). Rule: the certificate is never dropped (evidence/prereg/amendment_token_cap.md), so
+    the failed run records samples through the kill step). Rule: the certificate is never dropped (the Task B certificate does not fit in 2048 tokens), so
     the cap must admit it for every variant: no BundleTooLarge, estimate and real count both <= CAP_TOKENS."""
     from tests.synth_snapshot import synth_snapshot
     seen = set()

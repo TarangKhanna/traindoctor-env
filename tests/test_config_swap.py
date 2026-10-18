@@ -13,10 +13,9 @@ from pathlib import Path
 
 from jobs.build import ALL_LABELS, KINDS
 from jobs.config import dumps, flatten, loads
-from rl.splits import TRAIN_SEEDS
 from traindoctor_env.scenario import job_spec, make_scenario
 
-SEEDS = list(TRAIN_SEEDS)[:150]
+SEEDS = list(range(20_000, 20_400))[:150]
 FAULT_WORDS = re.compile(r"bug|fault|stale|broken|inject|wrong|bad|diverg|stall|skip|dup|mismatch", re.I)
 
 

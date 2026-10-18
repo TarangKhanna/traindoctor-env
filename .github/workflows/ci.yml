@@ -28,11 +28,11 @@ jobs:
       - name: Unit tests (no Docker, Modal, Metal or macOS sandbox)
         run: |
           set -o pipefail
-          python -m pytest -q -rs -rf --ignore=tests/test_first_update.py -m "not sweep and not executed" 2>&1 | tee pytest.log \
+          python -m pytest -q -rs -rf -m "not sweep and not executed" 2>&1 | tee pytest.log \
             || { grep -E "^(FAILED|ERROR)" pytest.log | cut -c1-400 | while read -r l; do echo "::error::$l"; done; exit 1; }
       - name: Import smoke test of the installed package
         run: |
-          cd "$RUNNER_TEMP" && python -I -c "import traindoctor_env, jobs, rl.splits; from modal_train import sandbox_backend"
+          cd "$RUNNER_TEMP" && python -I -c "import traindoctor_env, jobs; from traindoctor_env import modal_backend"
 
   lint:
     runs-on: ubuntu-latest
@@ -46,17 +46,26 @@ jobs:
           python -m pip install ruff
           ruff check --select E9,F63,F7,F82 .
 
-  docs-and-evidence:
+  docs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - name: README numbers, links and figures match the committed results
-        run: python scripts/check_readme.py
-      - name: Evidence checksums
+      - name: Relative Markdown links resolve
         run: |
-          for f in $(git ls-files | grep -E '(^|/)SHA256SUMS$'); do
-            echo "== $f"; (cd "$(dirname "$f")" && sha256sum -c SHA256SUMS)
-          done
+          python - <<'EOF'
+          import re, subprocess, sys
+          from pathlib import Path
+          bad = []
+          for f in subprocess.check_output(["git", "ls-files", "*.md"], text=True).split():
+              text = re.sub(r"```.*?```", "", Path(f).read_text(), flags=re.S)
+              for target in re.findall(r"\]\(([^)\s]+)\)", text):
+                  if re.match(r"[a-z]+:|#", target):
+                      continue
+                  if not (Path(f).parent / target.split("#")[0]).exists():
+                      bad.append(f"{f}: {target}")
+          print("\n".join(bad) or "all relative links resolve")
+          sys.exit(1 if bad else 0)
+          EOF

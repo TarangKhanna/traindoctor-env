@@ -15,6 +15,7 @@ import argparse
 import dataclasses
 import difflib
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -58,6 +59,7 @@ def main() -> int:
     out = Path(a.out or tempfile.mkdtemp(prefix="traindoctor_qs_"))
     sc = make_scenario(a.seed)
     print(f"== 1. failed job from seed {a.seed}: kind={sc.kind} variant={sc.variant} world_size={sc.world_size}")
+    shutil.rmtree(out / f"s{a.seed}", ignore_errors=True)   # a re-run into the same --out starts clean
     snap = execute(sc, out / f"s{a.seed}")
     truth = load_truth(snap)
     print(f"   {len(snap.records)} public records (source=executed). What the agent sees:")

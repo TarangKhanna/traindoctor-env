@@ -1,4 +1,4 @@
-"""Fake-repair red-team suite (results table: evidence/results/REDTEAM_TABLE.md).
+"""Fake-repair red-team suite .
 
 For each Tier B-style task (A1 src/cfg variants, A2, B_SKIP, B_DUP) every control (null, gold, alternative repairs) and
 every applicable cheat is a real diff to the EDITABLE job files, judged by the real verification path
@@ -8,7 +8,7 @@ rule-of-three denominators.
 
   redteam_suite.py [--run NAME] [--tasks A2,B_DUP] [--workers N] [--cap-usd X] [--list]
 Needs TD_KEY (any hex) and TD_MODAL_SITE (site-packages holding the modal client) in the environment.
-Writes modal_train/results/redteam_<run>.json and REDTEAM_TABLE.md. --list prints the cases and executes nothing."""
+Writes redteam_results/redteam_<run>.json and REDTEAM_TABLE.md (or $TD_RESULTS_DIR). --list prints the cases and executes nothing."""
 from __future__ import annotations
 
 import argparse
@@ -25,7 +25,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
-RESULTS = Path(os.environ.get("TD_RESULTS_DIR") or ROOT / "modal_train" / "results")
+RESULTS = Path(os.environ.get("TD_RESULTS_DIR") or ROOT / "redteam_results")
 
 from jobs.build import EDITABLE, Edit  # noqa: E402
 from traindoctor_env.scenario import Scenario  # noqa: E402
@@ -446,7 +446,7 @@ _tl = threading.local()
 def _install_capture():
     """Wrap run_resubmit so each case also reads back (as data) the cheat reports the job code wrote and the size of
     the copied-back ledger. Evidence only: the verdict still comes from reexec.check on the trusted side."""
-    from modal_train import sandbox_backend
+    from traindoctor_env import modal_backend as sandbox_backend
     orig = sandbox_backend.run_resubmit
 
     def wrapped(jd, sched, kw, **k):
@@ -463,25 +463,30 @@ def _install_capture():
     sandbox_backend.run_resubmit = wrapped
 
 
+class BudgetExceeded(RuntimeError):
+    pass
+
+
+CPU_USD_PER_HOUR = 0.14     # Modal CPU rate per core-hour at the time of writing; the guard is an estimate, not a bill
+
+
 class Ledger:
-    """Spend guard for this task: ledger rows via modal_train/budget.py (cpu_per_hour x 4 cores, as in the proof)."""
+    """In-process spend guard: sandbox seconds x 4 cores x CPU_USD_PER_HOUR, checked against the per-run cap."""
 
     def __init__(self, cap: float):
-        from modal_train import budget
-        self.b, self.cap, self.lock = budget, cap, threading.Lock()
-        self.start = budget.spent_usd()
+        self.cap, self.lock, self._spent = cap, threading.Lock(), 0.0
 
     def spent(self) -> float:
-        return self.b.spent_usd() - self.start
+        return self._spent
 
     def reserve(self, worst_s: float) -> None:
         with self.lock:
-            if self.spent() + worst_s * 4 * self.b.rate_per_s("cpu_per_hour") > self.cap:
-                raise self.b.BudgetExceeded(f"task cap ${self.cap:.2f}: spent ${self.spent():.3f}")
+            if self._spent + worst_s * 4 * CPU_USD_PER_HOUR / 3600 > self.cap:
+                raise BudgetExceeded(f"task cap ${self.cap:.2f}: spent ${self._spent:.3f}")
 
     def book(self, label: str, seconds: float) -> None:
         with self.lock:
-            self.b.record(f"redteam-{label}-{time.time_ns()}", "redteam_modal", "cpu_per_hour", seconds * 4, "actual")
+            self._spent += seconds * 4 * CPU_USD_PER_HOUR / 3600
 
 
 def judge(snap, c: Case, task: str, ckpt_every: int, led: Ledger) -> dict:
@@ -527,7 +532,7 @@ def run(args) -> int:
         import modal  # noqa: F401
     except ImportError:
         sys.path.append(os.environ["TD_MODAL_SITE"])    # the Modal client lives in a separate venv, appended AFTER the repo venv
-    from modal_train import sandbox_backend
+    from traindoctor_env import modal_backend as sandbox_backend
     from traindoctor_env import reexec
     from traindoctor_env.oracle import reference_solution
     from traindoctor_env.snapshot import execute, load_truth
@@ -556,7 +561,7 @@ def run(args) -> int:
         for name in args.tasks:
             sc = SCENARIOS[name]
             t0 = time.time()
-            try:     # trusted, local, unsandboxed scenario build: as in modal_train/prepare.py; only the replays run on Modal
+            try:     # trusted, local, unsandboxed scenario build: only the replays run on Modal
                 snap = execute(sc, Path(wd) / name)
                 truth = load_truth(snap)
                 _, _, gold = reference_solution(snap, truth)

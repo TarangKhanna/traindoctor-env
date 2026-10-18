@@ -45,7 +45,7 @@ def ci_unsandboxed_allowed(env=None, platform: str | None = None) -> bool:
 
 
 ALLOW_UNSANDBOXED = ci_unsandboxed_allowed()
-DEV_CONTAINER_MODE = False   # training-only, set by modal_train/prepare.py; never set in eval/audit paths
+DEV_CONTAINER_MODE = False   # training-only, set by the training harness; never set in eval/audit paths
 B_VALIDATION_SCRATCH_RUNS = 1   # Task B: the one from-scratch rerun the repair legitimately needs (checkpoints the
                                 # buggy code wrote are untrustworthy) is not charged as lost work; every other attempt is
 
@@ -87,7 +87,7 @@ def mark_sandbox(out: FixOutcome, sandboxed: bool) -> FixOutcome:
 
 
 EXEC_SANDBOXED, EXEC_MODAL, EXEC_DEV_CONTAINER = "sandboxed", "modal_sandbox", "dev_container"
-BACKENDS = (None, "modal")      # None: the local OS sandbox (jobs/sandbox.py); "modal": modal_train/sandbox_backend.py
+BACKENDS = (None, "modal")      # None: the local OS sandbox (jobs/sandbox.py); "modal": traindoctor_env/modal_backend.py
 
 
 NO_RELAUNCH = FixOutcome(False, False, False, False, False, False, 0, False)
@@ -471,7 +471,7 @@ class Replay:
             sched = SaltSchedule.fresh_for(snap.salt, start["step"] if start else 0)
             ref = reference_for_config(snap.reference["pristine_config"], sched)
             if self.backend == "modal":
-                from modal_train import sandbox_backend
+                from traindoctor_env import modal_backend as sandbox_backend
                 self.backend_info = sandbox_backend.run_resubmit(jd, sched, kw)
             else:
                 resubmit(jd, sandbox=True, salt=sched, allow_unsandboxed=self.allow_unsandboxed, **kw)

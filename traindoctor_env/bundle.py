@@ -125,7 +125,7 @@ def _fit_parts(parts: list[dict]) -> str:
     return _blank_pad(render())
 
 
-CAP_TOKENS = 3072      # the whole Tier A prompt, in Qwen3 tokens (was 2048; see evidence/prereg/amendment_token_cap.md)
+CAP_TOKENS = 3072      # the whole Tier A prompt, in Qwen3 tokens (was 2048: the Task B certificate does not fit)
 PROMPT_OVERHEAD = 160  # chat-template tokens + the answer-format instruction around the bundle text (tiera.FORMAT); a test checks it
 ALWAYS = ("job", "process", "scheduler", "ckpt")   # the incident summary: kept for every scenario, label-independent
 _PIECE = re.compile(r"[A-Za-z]+|[0-9]|\s+|(.)\1*")

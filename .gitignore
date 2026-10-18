@@ -15,12 +15,7 @@ logs/
 *.safetensors
 *.gguf
 # private / local-only
-modal_train/ledger.jsonl
-modal_train/cache*/
-modal_train/logs/
 .devkey
-modal_train/test_seeds.local.json
-modal_train/test.local.key.txt
 prepare_opts.json
 /out/
 /audit_out/

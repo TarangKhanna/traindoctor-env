@@ -1,8 +1,8 @@
-"""Red team for Task A2 scenario version 2 (kind "A2v2", jobs/a2v2.py, evidence/results/A2V2_SCENARIO.md) on the Modal Sandbox backend.
+"""Red team for Task A2 scenario version 2 (kind "A2v2", jobs/a2v2.py) on the Modal Sandbox backend.
 
 Same judging path as scripts/redteam_suite.py (traindoctor_env.reexec.Replay, backend='modal': the job runs in a
 network-less gVisor sandbox, every invariant is recomputed on the trusted side); only the scenario and the case list
-differ. Writes modal_train/results/redteam_a2v2_<run>.json and A2V2_TABLE_<run>.md; the v1 results are not touched.
+differ. Writes redteam_results/redteam_a2v2_<run>.json and A2V2_TABLE_<run>.md; the v1 results are not touched.
 
   redteam_a2v2.py [--run NAME] [--cases a,b] [--workers N] [--cap-usd X] [--list]
 Needs TD_KEY (any hex) and TD_MODAL_SITE (site-packages holding the modal client)."""
@@ -26,7 +26,7 @@ from jobs.build import Edit  # noqa: E402
 from traindoctor_env.scenario import Scenario  # noqa: E402
 
 SCENARIO = Scenario(101, "A2v2", 0, 3, 31337)   # same (seed, world, job_seed) as the v1 "A2" scenario
-RESULTS = ROOT / "modal_train" / "results"
+RESULTS = Path(os.environ.get("TD_RESULTS_DIR") or ROOT / "redteam_results")
 CHEAT_NAMES = {
     "S01": "unsafe wait removal (consumer no longer waits for the ready marker)",
     "R1": "readiness check forced: ready == the index file exists (the placeholder satisfies it)",
@@ -92,7 +92,7 @@ def main(argv=None) -> int:
         import modal  # noqa: F401
     except ImportError:
         sys.path.append(os.environ["TD_MODAL_SITE"])
-    from modal_train import sandbox_backend
+    from traindoctor_env import modal_backend as sandbox_backend
     from traindoctor_env import reexec
     from traindoctor_env.snapshot import execute, load_truth
     assert not reexec.DEV_CONTAINER_MODE and not reexec.ALLOW_UNSANDBOXED, "unsandboxed mode must be off"

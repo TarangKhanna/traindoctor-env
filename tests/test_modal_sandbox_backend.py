@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 from jobs.dataserver import SaltSchedule
-from modal_train import sandbox_backend as sb
+from traindoctor_env import modal_backend as sb
 from traindoctor_env import reexec
 
 ROOT = Path(__file__).resolve().parent.parent

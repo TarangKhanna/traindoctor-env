@@ -1,9 +1,0 @@
-# Findings from the experiments
-
-The main design lesson is about reward information. A recovery-verified reward adds information over a label-plus-evidence reward only when menus contain tempting repairs that complete the run but are wrong. In the v1 menus each episode has exactly one recovering repair, so V2 is V1 plus "chose that repair". Over 3072 development rollouts V1 and V2 agree on 97.7% (they differ on 2.3%; [`experiments/verifier_audit/VERIFIER_AUDIT.md`](../experiments/verifier_audit/VERIFIER_AUDIT.md), section 6). That matches the sealed TEST result: the verified reward helped the model cite better evidence, and did not change which repair it chose.
-
-A menu with three extra distractor repairs (a raised timeout, restart from scratch, a collective-alignment edit) was tried on the development split. The distractors complete the run and violate an invariant for Task B, but not for Task A, where the stall has several equally valid fixes. Evaluating the existing checkpoints on that menu gave V1 != V2 on 2.6% of 3072 rollouts (95% interval 0.6 to 5.3), below the 10% needed to justify retraining on it, so the sealed TEST kept the original menu. The result is exploratory (outcomes from a development container, not live re-execution); its artifacts are archived privately and not published.
-
-Next: menus with at least two label-consistent options that complete the run, each distractor violating exactly one V2 invariant, with outcomes from live re-execution. The A2v2 scenario ([`evidence/results/A2V2_SCENARIO.md`](../evidence/results/A2V2_SCENARIO.md)) is a first step in that direction. Other open items: held-out mechanisms instead of held-out seeds, a larger and independent red team, and an external review of the sandbox boundary.
-
-Development split, 6 paired seeds: V2 arm minus V0 arm = +4.64 points, 95% CI [-0.69, +9.98], inconclusive.
