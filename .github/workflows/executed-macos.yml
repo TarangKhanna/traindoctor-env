@@ -27,13 +27,35 @@ jobs:
       - name: Sandbox availability
         run: |
           python -c "from jobs import sandbox; print('sandbox.available =', sandbox.available())"
-      - name: First failure detail
+      - name: Sandbox ladder with denials
         continue-on-error: true
         run: |
           set +e
-          python -m pytest -x -q -s --tb=long -k "test_oracle_repair_passes_every_invariant_by_reexecution and A1_src" tests/test_scenarios.py 2>&1 | tee first_failure.txt
-          detail=$(tail -n 60 first_failure.txt | sed 's/%/%25/g' | paste -sd '|' - | cut -c1-3500)
-          echo "::error title=executed-macos first failure::${detail}"
+          sudo log stream --predicate 'sender == "Sandbox"' --style compact > denials.txt 2>&1 &
+          LOGPID=$!
+          sleep 3
+          python scripts/diag_sandbox.py > ladder.json 2> ladder.err
+          sleep 3
+          sudo kill $LOGPID
+          cat ladder.json
+          echo "--- denials"
+          grep -i "deny" denials.txt | sed -E 's/^.*Sandbox: //' | sort | uniq -c | sort -rn | head -40
+          python - <<'PY'
+          import json
+          t = open("ladder.json").read()
+          e = open("ladder.err").read()[-800:]
+          d = open("denials.txt").read()
+          import re
+          deny = sorted({re.sub(r"^.*Sandbox: ", "", l) for l in d.splitlines() if "deny" in l.lower()})
+          def chunk(s, n=3000):
+              return [s[i:i+n] for i in range(0, len(s), n)] or [""]
+          def enc(s):
+              return s.replace("%", "%25").replace("\r", "%0D").replace("\n", "%0A")
+          for i, c in enumerate(chunk(t)[:3]):
+              print("::error title=ladder %d::%s" % (i, enc(c)))
+          print("::error title=ladder stderr::%s" % enc(e))
+          print("::error title=denials::%s" % enc("\n".join(deny)[:3500]))
+          PY
       - name: Executed tests
         run: |
           set +e
