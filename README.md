@@ -1,16 +1,26 @@
 # TrainDoctor
 
-An RL environment for debugging distributed PyTorch training jobs.
+An executable RL environment for diagnosing and repairing distributed ML training failures, with a verifier that checks whether training actually recovered.
 
-TrainDoctor gives a coding agent a failed multi-process PyTorch (Gloo) training job and asks it to diagnose and fix it. Each repair is re-run in a sandbox. A verifier outside the sandbox then checks whether training actually recovered: which samples each committed step consumed, whether checkpoint, optimizer and sampler state were restored correctly, and whether all ranks agree.
+TrainDoctor turns executed multi-process PyTorch (Gloo) training failures into tasks for AI agents. Agents investigate an executed failure, identify the root cause, cite evidence and repair the training job. The suite has four fault kinds across two failure families, plus a healthy-job control:
 
-A job that exits cleanly is not necessarily repaired. In one task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce`, and every rank times out with the same error.
+- **Distributed communication failures:** a rank enters a mismatched collective (A1), or a rank stalls before communication and never reaches the collective (A2). Both produce the same timeout on every rank.
+- **Silent corruption after recovery:** a worker fails, the job restarts, loss looks normal, but checkpoint and sampler state disagree, so samples are skipped (B_SKIP) or processed twice (B_DUP).
+- **Healthy control:** a job with no fault (B_OK), where the correct answer is no fault.
+
+There are two modes over the same executed snapshot. Tier A is a single-turn bundle of evidence records and a menu of candidate repairs, used for RL training and evaluation. Tier B is multi-turn: tools expose logs, traces and the job's source and config, and the agent's code edits are applied and re-executed.
+
+The central problem is verifying the repair, not detecting the failure. A job can exit cleanly with normal-looking loss and still have consumed the wrong samples or restored inconsistent optimizer state. Code repairs are re-executed in an isolated Modal Sandbox; launcher-controlled evidence (sample identity from a private data server, a checkpoint ledger) and an independent replay of the optimizer update let a verifier outside the sandbox check sample accounting, checkpoints, optimizer state and agreement between ranks. Rewards have three levels: V0 (diagnosis), V1 (plus grounded evidence) and V2 (plus correctness-verified recovery).
+
+## Worked example: a repair that runs but is wrong
+
+In the A1 task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce`, and every rank times out with the same error.
 
 ![Four ranks at step 6: rank 2 calls broadcast while ranks 0, 1 and 3 call all_reduce, so all four ranks time out with COLLECTIVE_TIMEOUT](docs/figures/fig_failure.svg)
 
-A tempting shortcut is to set `world_size` from 4 to 1 (fake repair F11). The hang disappears and the job completes, but it is no longer the same training run. In the quickstart scenario above (seed 123) the verifier reports the wrong worker count, 96 missing samples and parameters that differ from the reference. A separate red-team run on a different task instance (A1_src, replayed in a Modal sandbox) reported 72 missing and 8 duplicated samples for the same fake ([per-case table](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/REDTEAM_TABLE.md)). The two sets of counts come from different seeds and are not comparable.
+A tempting shortcut is to set `world_size` from 4 to 1 (fake repair F11). The hang disappears and the job completes, but it is no longer the same training run. In the quickstart scenario below (seed 123) the verifier reports the wrong worker count, 96 missing samples and parameters that differ from the reference. A separate red-team run on a different task instance (A1_src, replayed in a Modal sandbox) reported 72 missing and 8 duplicated samples for the same fake ([per-case table](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/REDTEAM_TABLE.md)). The two sets of counts come from different seeds and are not comparable.
 
-Preview (v0.1): two synthetic failure families. This repository is the environment and verifier; training and evaluation results are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research). [Quickstart](#quickstart) | [Tier A](#tier-a-interface-and-rewards) | [Results](#results) | [Limitations](#limitations)
+Research preview (v0.1): executable CPU/Gloo workloads with two synthetic failure families. It is not a general-purpose verifier for arbitrary production training jobs. This repository is the environment and verifier; training and evaluation results are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research). [Quickstart](#quickstart) | [Task suite](docs/TASKS.md) | [Verifier architecture](ARCHITECTURE.md) | [Tier A](#tier-a-interface-and-rewards) | [Results](#results) | [Limitations](#limitations)
 
 ## Quickstart
 
@@ -50,7 +60,7 @@ The checks are specific to this small MLP, sampler and optimizer, not a general 
 | B_SKIP, B_DUP | After a worker failure and restart, checkpoint and sampler disagree and samples are skipped or counted twice |
 | B_OK | Healthy job; the correct answer is no fault |
 
-See [docs/TASKS.md](docs/TASKS.md) and [docs/EXTENDING.md](docs/EXTENDING.md).
+A1 and A2 present the same timeout, so the symptom alone does not identify the cause. See [docs/TASKS.md](docs/TASKS.md) and [docs/EXTENDING.md](docs/EXTENDING.md).
 
 ## Tier A interface and rewards
 
