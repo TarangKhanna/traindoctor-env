@@ -625,7 +625,6 @@ def main(argv=None) -> int:
     a.tasks = a.tasks.split(",")
     if a.list:
         from jobs.build import materialize
-        from jobs.config import job_config
         from traindoctor_env.scenario import job_spec
         from traindoctor_env.snapshot import job_files
         for t in a.tasks:

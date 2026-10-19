@@ -9,7 +9,6 @@ Version 1 (kind "A2") is untouched; this module is reached only through kind "A2
 from __future__ import annotations
 
 import random
-import shutil
 from pathlib import Path
 
 from jobs import safefs

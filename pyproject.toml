@@ -14,7 +14,6 @@ keywords = ["reinforcement-learning", "rl-environment", "llm-agents", "distribut
 dependencies = [
     "torch==2.14.1",
     "numpy==2.5.4",
-    "pydantic==2.14.1",
 ]
 
 [project.optional-dependencies]

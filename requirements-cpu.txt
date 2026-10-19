@@ -2,6 +2,5 @@
 # On Linux add: --extra-index-url https://download.pytorch.org/whl/cpu   (macOS wheels on PyPI are CPU/MPS builds)
 torch==2.14.1
 numpy==2.5.4
-pydantic==2.14.1
 pytest==9.1.1
 hypothesis==6.170.1

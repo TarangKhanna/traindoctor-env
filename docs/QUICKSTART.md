@@ -7,7 +7,7 @@ CPU only, no paid API, no Modal needed for steps 1-2. Python 3.12.
 ```bash
 git clone https://github.com/TarangKhanna/traindoctor-env && cd traindoctor-env
 python3.12 -m venv .venv && . .venv/bin/activate
-pip install -r requirements-cpu.txt      # torch 2.14.1, numpy, pydantic, pytest, hypothesis (pins equal uv.lock)
+pip install -r requirements-cpu.txt      # torch 2.14.1, numpy, pytest, hypothesis (pins equal uv.lock)
 #   or, to import the packages elsewhere:  pip install ".[dev]"   /   pip install git+https://github.com/TarangKhanna/traindoctor-env
 #   extras: ".[modal]" (Modal backend). The scenario generator needs TD_KEY (any random hex) in the environment; quickstart.py sets one for you.
 #   Linux: pip install --extra-index-url https://download.pytorch.org/whl/cpu -r requirements-cpu.txt
