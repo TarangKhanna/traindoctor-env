@@ -27,4 +27,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install --extra-index-url https://download.pytorch.org/whl/cpu ".[dev]"
       - name: Executed tests
-        run: python -m pytest -q -rs -rf -m "executed and not sweep"
+        run: |
+          set +e
+          python -m pytest -q -rs -rf --tb=line -m "executed and not sweep" 2>&1 | tee pytest_executed.txt
+          rc=${PIPESTATUS[0]}
+          summary=$(tail -n 1 pytest_executed.txt)
+          failed=$(grep -E '^(FAILED|ERROR)' pytest_executed.txt | head -40 | sed 's/%/%25/g' | paste -sd '|' -)
+          echo "::error title=executed-linux summary::${summary} || ${failed}"
+          exit $rc
