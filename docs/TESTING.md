@@ -4,9 +4,9 @@ Counts below are from `PYTHONPATH=. python -m pytest -q -rs -rf -m "..."` run fr
 
 | selection | Python | result |
 |---|---|---|
-| `-m "not sweep and not executed"` (what CI runs), repo venv with `transformers`, 2026-10-19, current branch | 3.12 | **196 passed, 14 skipped, 117 deselected** |
+| `-m "not sweep and not executed"` (what CI runs), repo venv with `transformers`, 2026-10-19, current branch | 3.12 | **199 passed, 14 skipped, 117 deselected** |
 | same selection, clean clone without `transformers`, before the quickstart CLI tests were added (`332782b`) | 3.12.9 and 3.13.2 | 176 passed, 17 skipped, 117 deselected on each; not re-run on the current branch |
-| `-m "executed and not sweep"` (real multi-process Gloo jobs under the `sandbox-exec` profile), GitHub-hosted `macos-14` runner, Python 3.12 (python.org framework build), 2026-10-20, branch `executed-macos` at `1d037a7`, workflow `executed-macos` | 3.12 | **115 passed, 206 deselected** (one run) |
+| `-m "executed and not sweep"` under the `sandbox-exec` profile, GitHub-hosted `macos-14` runner, Python 3.12 (python.org framework build), workflow `executed-macos` | 3.12 | **Not consistently passing.** All observed runs, 2026-10-19/20: (1) before the framework fix, 51 passed / 64 failed (the interpreter could not start under the profile); (2) branch `executed-macos` at `1d037a7`, 115 passed in 706 s; (3) `main` at `f36a0f6` (run 39297918958), 72 passed / 43 failed in 1508 s, the first scenario (A1_src) passed and later scenarios failed, cause not established; (4) rerun on `main` (run 39302209373) had not finished when this was written |
 | same selection on a developer Mac, other Python builds (uv, Homebrew), or Python 3.13 | | not run |
 | `-m sweep` | 3.12 | 2 collected; not run |
 
@@ -22,3 +22,8 @@ To run the executed tests, use a host where `sandbox-exec` can be applied (an un
 Linux: the `executed` tests are not part of the required CI because `sandbox-exec` does not exist there and the sandboxed verification path needs it. The non-required workflow `.github/workflows/executed-linux.yml` (manual dispatch) runs the Gloo subset with `CI=true TD_CI_UNSANDBOXED=1`; it has not been run, and tests that need OS isolation skip there.
 
 First `executed-linux` run (unsandboxed GitHub-hosted Ubuntu runner, 115 tests selected by `-m "executed and not sweep"`): 49 passed, 60 skipped (sandbox-exec), 6 failed, 195 deselected. The 6 failures all assert that a legitimate repair is verified (`ok=True`); `reexec.mark_sandbox` forces `ok=False` for any unsandboxed re-execution, so they cannot pass without OS isolation. They now skip when no sandbox is available. A macOS host run of the full selection has not been done, so the real-launcher suite is not claimed as passing.
+
+
+The failed runs report `FixOutcome(ok=False)` and downstream assertion failures without the worker stderr, watchdog reason or launcher termination reason, so the cause of run (3) is unknown. The launcher has a startup grace period and a maximum runtime, so timing sensitivity on a loaded runner is plausible but not shown. Native macOS execution is an optional, experimental development path (the README calls the profile a development convenience, not a security boundary); no clean executed-suite claim is made, and the framework-Python profile fix and its tests are kept. If verified local macOS execution becomes a requirement, the next step is to capture the first failing rank's stderr, exit status, launcher termination reason and trusted job record before changing anything.
+
+Current-code end-to-end validation does not depend on this: `scripts/modal_regression.py` replays a fixed set of gold, no-op and incorrect repairs in Modal gVisor sandboxes (see [MODAL_REGRESSION.md](MODAL_REGRESSION.md)).
