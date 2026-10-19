@@ -149,7 +149,7 @@ def launch_params(job_dir: Path) -> tuple[int, float, float, DataSpec]:
         cfg = job_config(job_dir)
         world, pg, wd = int(cfg["world_size"]), float(cfg["pg_timeout_s"]), float(cfg["watchdog_s"])
         spec = DataSpec(world, int(cfg["data"]["num_samples"]), int(cfg["batch_size"]), int(cfg["seed"]))
-    except Exception as e:  # noqa: BLE001 -- any parse/shape problem is the same refusal
+    except Exception as e:  # any parse/shape problem is the same refusal  # noqa: BLE001
         raise BadConfig(f"unreadable job config: {type(e).__name__}") from None
     if not 1 <= world <= MAX_WORLD or spec.batch_size < 1 or spec.num_samples < 1:
         raise BadConfig("job config outside launchable bounds")

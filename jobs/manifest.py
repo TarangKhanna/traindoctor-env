@@ -44,7 +44,7 @@ def check_entry(job_dir: Path, e: dict) -> None:
                 raise ManifestError(f"{e['ckpt_id']}: checksum mismatch for {s['file']}")
     except ManifestError:
         raise
-    except Exception as exc:  # noqa: BLE001 -- the entry is job-written; any malformation means "not valid"
+    except Exception as exc:  # the entry is job-written; any malformation means "not valid"  # noqa: BLE001
         raise ManifestError(f"malformed manifest entry: {type(exc).__name__}") from None
 
 

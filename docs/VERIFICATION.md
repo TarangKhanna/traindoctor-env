@@ -51,7 +51,7 @@ Two operations often called “replay” are distinct here:
 
 [`traindoctor_env/verifiers.py`](../traindoctor_env/verifiers.py) separates three success conditions. **V0** checks diagnosis; **V1** additionally checks supporting *pre-intervention* evidence citations; **V2** additionally requires sandboxed, correctness-verified repair and a non-destructive action. A forged log emitted after the agent edits the job is not valid evidence for the original diagnosis.
 
-**V2 is full-task success, not repair selection alone.** In the Qwen3-4B comparison (reported in the research repository), the stronger-reward model cited better evidence but selected genuinely repairing actions at essentially the same rate as diagnosis-only GRPO. The training reward used precomputed exploratory repair outcomes; held-out scoring used live Modal re-execution.
+**V2 is full-task success, not repair selection alone.** In the Qwen3-4B comparison (reported in the research repository), the stronger-reward model cited better evidence but selected genuinely repairing actions at nearly the same rate as diagnosis-only GRPO. The training reward used precomputed exploratory repair outcomes; held-out scoring used live Modal re-execution.
 
 ## A concrete rejected shortcut
 

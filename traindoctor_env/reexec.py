@@ -5,12 +5,12 @@ standard recovery protocol (Task A: relaunch from the latest valid checkpoint of
 with the incident's worker failure and the scheduler's automatic restart) and judges it from what the launcher
 itself recorded (jobs/trusted.py): checkpoints copied when committed, the data server's log, process history.
 
-Grading. FAST PATH (sufficient): every committed checkpoint -- model, optimizer momentum, sampler position -- equals
+Grading. FAST PATH (sufficient): every committed checkpoint (model, optimizer momentum, sampler position) equals
 the uninterrupted reference's state at the same step within TOLERANCE, and the run completed with the final
 checkpoint committed. FALLBACK (a valid repair need not be state-equal, e.g. a different checkpoint layout): the
-independently specified invariants -- checkpoint format and sampler position, each transition between consecutive
+independently specified invariants (checkpoint format and sampler position, each transition between consecutive
 committed states reproduced by the pristine update rule on the logged samples (this is restored-state
-consistency at each resume), exact logical sample accounting. Either way: lost work over every recovery attempt
+consistency at each resume), and exact logical sample accounting). Either way: lost work over every recovery attempt
 <= one checkpoint interval, ranks agree, no tampering. Everything runs in this (the launcher's) process, outside
 the sandbox the job runs in."""
 from __future__ import annotations
@@ -121,7 +121,7 @@ def _ref_state(ref: dict, step: int) -> dict | None:
 def _load(jd: Path, cap: dict) -> dict | None:
     try:
         st = torch.load(trusted.trusted_dir(jd) / cap["file"], weights_only=True)
-    except Exception:  # noqa: BLE001 -- anything unreadable is simply not a valid state
+    except Exception:  # anything unreadable is simply not a valid state  # noqa: BLE001
         return None
     return st if isinstance(st, dict) and all(isinstance(v, torch.Tensor) for v in st.values()) else None
 

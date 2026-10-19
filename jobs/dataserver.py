@@ -118,7 +118,7 @@ class DataServer:
         self.closed = True
 
     def parse(self, rank: int, line: bytes) -> tuple[str, dict]:
-        """('batch', req) | ('step', msg) | ('error', {error}) | ('drop', {}) -- drop = cut the connection."""
+        """('batch', req) | ('step', msg) | ('error', {error}) | ('drop', {}); drop = cut the connection."""
         if len(line) > MAX_LINE:
             return "drop", {}
         try:

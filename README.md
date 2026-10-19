@@ -97,7 +97,7 @@ Qwen3-4B was trained and evaluated in this environment, and the verifier was att
 
 - Two synthetic task families; splits differ by seed, not by failure mechanism.
 - Each repair menu has one recovering option, so V1 and V2 agree on 97.7% of development rollouts. The results do not show that recovery-based reward improves repair selection.
-- The training result rests on six paired seeds, a robustness minimum rather than statistical power, and is exploratory.
+- The training result rests on six paired seeds, the minimum for a consistency check rather than statistical power, and is exploratory.
 - Verified replay needs a Modal account. The macOS `sandbox-exec` profile is a development convenience, not a security boundary.
 - No claim about production NCCL/FSDP failures or arbitrary training programs.
 

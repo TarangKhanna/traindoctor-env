@@ -1,5 +1,5 @@
 """The verifier trusts nothing that runs inside the job's process. Probes that must fail V2 (forged records, forged
-or corrupted checkpoints, no training, lr=0, ...), and valid alternative repairs that must pass -- by the fast path
+or corrupted checkpoints, no training, lr=0, ...), and valid alternative repairs that must pass, by the fast path
 (state equal to the reference at every committed checkpoint) or, when not state-equal, by the independent
 invariants (checkpoint format and sampler position, each transition reproduced by the pristine update rule,
 logical sample accounting, restored-state consistency, bounded lost work, rank agreement)."""
@@ -66,7 +66,7 @@ def test_valid_repairs_in_the_correctness_class_pass(snapshot, needs_sandbox):
 
 def test_a_valid_repair_that_is_not_state_equal_passes_by_the_invariants(snapshot, needs_sandbox):
     """Rule: full-state equality is a sufficient fast path, not a necessary condition. A repair that also changes the
-    checkpoint layout (an extra entry) is not state-equal to the reference -- yet it restores correctly, trains on the
+    checkpoint layout (an extra entry) is not state-equal to the reference, yet it restores correctly, trains on the
     right samples and loses nothing, so the independent invariants must accept it."""
     snap = snapshot("A2")
     save = line(snap, "job/ckpt.py", r"state.update\(sampler=")
@@ -183,7 +183,7 @@ def forge_payload(snap):
 
 
 def test_forged_in_process_records_cannot_turn_a_failing_job_into_a_pass(snapshot):
-    """Item 1: B_DUP left unrepaired -- replayed samples, a checkpoint without sampler state -- with code that forges
+    """Item 1: B_DUP left unrepaired (replayed samples, a checkpoint without sampler state) with code that forges
     every record kept inside the job's process. Nothing the verdict rests on lives there: the checkpoints were copied
     by the launcher when committed, the batches were served by the launcher's data server, and the process history
     is the launcher's own."""
@@ -231,7 +231,7 @@ def test_tolerance_constants_are_the_documented_ones():
 def test_checkpoints_replayed_from_an_earlier_run_fail_verification(snapshot):
     """Rule: verification is satisfied only by training on the data THIS verification served. A job that embeds the
     correct final checkpoint produced by an earlier (exploratory) run, writes it, forges identical per-rank digests and
-    exits without training must fail V2 -- the scenario's data used to be stable across runs, which made such a
+    exits without training must fail V2: the scenario's data used to be stable across runs, which made such a
     checkpoint valid for every later run."""
     import base64
     import json

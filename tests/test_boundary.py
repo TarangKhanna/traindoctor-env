@@ -162,7 +162,7 @@ def test_data_values_from_the_boundary_on_differ_per_verification_but_earlier_po
     from jobs.dataserver import SaltSchedule
     base = salt_for("rule")
     a, b = SaltSchedule.fresh_for(base, boundary=2), SaltSchedule.fresh_for(base, boundary=2)
-    plain = lambda e, i: _values(base, e, i)   # noqa: E731 -- what any earlier (exploratory) run was served
+    plain = lambda e, i: _values(base, e, i)   # what any earlier (exploratory) run was served  # noqa: E731
     for e, i in ((0, 0), (0, 1)):                                    # positions 0, 1: below the boundary
         assert _values(a, e, i) == plain(e, i) == _values(b, e, i)
     for e, i in ((0, 2), (0, 3), (1, 0)):                            # positions 2, 3, 4: keyed by the nonce
@@ -223,7 +223,7 @@ def test_trusted_digest_has_the_format_the_ranks_report():
     sys.path.insert(0, str(sandbox.RUNTIME))
     try:
         import harness
-    except Exception as e:  # noqa: BLE001 -- the runtime module needs the job's environment
+    except Exception as e:  # the runtime module needs the job's environment  # noqa: BLE001
         pytest.skip(f"harness not importable here: {type(e).__name__}")
     torch.manual_seed(1)
     model = torch.nn.Sequential(torch.nn.Linear(8, 2), torch.nn.Linear(2, 4))

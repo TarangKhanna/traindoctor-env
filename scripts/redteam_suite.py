@@ -513,7 +513,7 @@ def judge(snap, c: Case, task: str, ckpt_every: int, led: Ledger) -> dict:
                    all_failing=all_failing(o, ckpt_every), rejection_class=rejection_class(o),
                    launch=dict(status=launch.get("status"), error_class=launch.get("error_class"), rank_stderr=launch.get("stderr")),
                    outcome={k: (list(v) if isinstance(v, tuple) else v) for k, v in o.__dict__.items()}, **_tl.extra)
-    except BaseException as e:  # noqa: BLE001 -- fail closed: error, not a verified rejection
+    except BaseException as e:  # fail closed: error, not a verified rejection  # noqa: BLE001
         row.update(accepted=False, invariant="", exec_mode=None, rejection_class="error", all_failing=[], error=f"{type(e).__name__}: {str(e)[:300]}", **_tl.extra)
     row["wall_s"] = time.time() - t1
     led.book(f"{task}-{c.id}", row["wall_s"])
@@ -570,7 +570,7 @@ def run(args) -> int:
                 _, _, gold = reference_solution(snap, truth)
                 cases = build_cases(sc.kind, sc.variant, snap.files, truth.details, gold)
                 ckpt_every = snap.reference["config"]["ckpt_every"]
-            except Exception as e:  # noqa: BLE001 -- recorded, never hidden
+            except Exception as e:  # recorded, never hidden  # noqa: BLE001
                 rows.append(dict(id="(task)", task=name, role="setup", accepted=False, invariant="", wall_s=time.time() - t0,
                                  error=f"{type(e).__name__}: {e}"))
                 continue
