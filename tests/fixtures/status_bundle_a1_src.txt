@@ -1,0 +1,176 @@
+A distributed training job failed or misbehaved. Answer with: label, the ids of the records that support it (at most 8), the id of the repair to apply, and whether you claim it fixes the job.
+Labels: CKPT_SAMPLER_INCONSISTENT, COLLECTIVE_DIVERGENCE, NO_FAULT, RANK_STALLED_BEFORE_COLLECTIVE
+
+== job/config.yaml ==
+world_size: 4               
+steps: 12                   
+seed: 482920                
+hidden: 12                  
+lr: 0.1                     
+batch_size: 4               
+ckpt_every: 4               
+step_time_s: 0.05           
+pg_timeout_s: 3             
+watchdog_s: 8               
+sync:                       
+  mode: all_reduce          
+  warmup_steps: 5           
+  per_rank:                 
+    3: all_reduce           
+data:                       
+  root: data                
+  num_samples: 96           
+  shard_steps: 6            
+  shard_dirs:               
+    0: part-0               
+    1: part-1               
+    2: part-2               
+    3: part-3
+
+== records ==
+E8493d2 ck0004 step=4 world_size=4
+E413630 [run0] resume_from=none started_at_step=0 -> failed last_step=4 error=COLLECTIVE_TIMEOUT
+E70b9e6 [run0] rank 0 INFO checkpoint ck0004 committed
+E5f33c6 [run0] rank 1 INFO loaded shard 0 from data/part-1/shard0.idx
+Ed77570 [run0] rank 1 INFO step 1 loss=0.479
+Ea264a2 [run0] rank 1 INFO step 2 loss=0.335
+E9daabf [run0] rank 1 INFO step 3 loss=0.524
+E321e4c [run0] rank 0 failed exit=1 last_step=4 COLLECTIVE_TIMEOUT
+E661bce [run0] rank 1 failed exit=1 last_step=4 COLLECTIVE_TIMEOUT
+Ea2136c [run0] rank 2 failed exit=1 last_step=4 COLLECTIVE_TIMEOUT
+E914337 [run0] rank 3 failed exit=1 last_step=4 COLLECTIVE_TIMEOUT
+Ee6c1c5 [run0] rank 0 step=3 samples=[0, 4, 92, 16]
+Ed2e7ff [run0] rank 1 step=1 samples=[29, 69, 5, 25]
+Eb4e883 [run0] rank 3 step=4 samples=[23, 27, 55, 95]
+Ea96138 submitted: run0 resume_from=none
+E5c0340 failed: run0 COLLECTIVE_TIMEOUT
+Ecd5a64 [run0] rank 0 step=5 seq=10 all_reduce bucket=0 numel=80 pending
+E4eaea7 [run0] rank 1 step=5 seq=10 broadcast bucket=0 numel=80 pending
+Efc3167 [run0] rank 2 step=3 seq=6 all_reduce bucket=0 numel=80 done
+Eca6f76 [run0] rank 2 step=4 seq=9 all_reduce bucket=1 numel=80 done
+Ec2f6fb [run0] rank 2 step=5 seq=10 all_reduce bucket=0 numel=80 pending
+Ef364d8 [run0] rank 3 step=5 seq=10 all_reduce bucket=0 numel=80 pending
+
+== repairs ==
+R3a1bb:
+--- job/config.yaml
+~ world_size: 4
+~ ---
+~ world_size: 3
+  steps: 12
+  seed: 482920
+  hidden: 12
+  lr: 0.1
+  batch_size: 4
+  ckpt_every: 4
+  step_time_s: 0.05
+  pg_timeout_s: 3
+  watchdog_s: 8
+  sync:
+    mode: all_reduce
+    warmup_steps: 5
+    per_rank:
+      3: all_reduce
+  data:
+    root: data
+    num_samples: 96
+    shard_steps: 6
+    shard_dirs:
+.....
+R243aa:
+no change; relaunch from the latest checkpoint
+  world_size: 4
+  steps: 12
+  seed: 482920
+  hidden: 12
+  lr: 0.1
+  batch_size: 4
+  ckpt_every: 4
+  step_time_s: 0.05
+  pg_timeout_s: 3
+  watchdog_s: 8
+  sync:
+    mode: all_reduce
+    warmup_steps: 5
+    per_rank:
+      3: all_reduce
+  data:
+    root: data
+    num_samples: 96
+    shard_steps: 6
+    shard_dirs:.
+R0b9c5:
+--- job/ckpt.py
+~ state.update(sampler=sampler.state(), step=torch.tensor([step]))
+~ ---
+~ state.update(step=torch.tensor([step]))
+  from __future__ import annotations
+  
+  import hashlib
+--- job/ckpt.py
+~         sampler.load_state(state["sampler"])
+~ ---
+~         sampler.load_state(_progress(rank, state["sampler"]))
+      return int(state["step"])
+.......
+R6bb82:
+--- job/config.yaml
+  batch_size: 4
+  ckpt_every: 4
+  step_time_s: 0.05
+  pg_timeout_s: 3
+  watchdog_s: 8
+  sync:
+    mode: all_reduce
+    warmup_steps: 5
+    per_rank:
+      3: all_reduce
+  data:
+    root: data
+    num_samples: 96
+    shard_steps: 6
+    shard_dirs:
+      0: part-0
+      1: part-1
+~     2: part-2
+~ ---
+~     2: part-4
+      3: part-3
+.......
+R4319b:
+--- job/config.yaml
+  batch_size: 4
+  ckpt_every: 4
+  step_time_s: 0.05
+  pg_timeout_s: 3
+  watchdog_s: 8
+  sync:
+    mode: all_reduce
+    warmup_steps: 5
+    per_rank:
+~     3: reduce_bcast
+~ ---
+~     3: all_reduce
+  data:
+    root: data
+    num_samples: 96
+    shard_steps: 6
+    shard_dirs:
+      0: part-0
+      1: part-1
+      2: part-2
+      3: part-3
+.
+R01754:
+--- job/train.py
+              comm.broadcast(bucket, step, b)
+              bucket.div_(comm.world)
+          else:
+~             comm.all_reduce(bucket, step, b)
+~ ---
+~             (comm.broadcast if rank == 1 and step >= 5 and b == 0 else comm.all_reduce)(bucket, step, b)
+  
+  
+  def main() -> None:
+      torch.set_num_threads(1)
+........................

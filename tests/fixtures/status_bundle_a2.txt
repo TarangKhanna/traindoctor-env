@@ -1,0 +1,174 @@
+A distributed training job failed or misbehaved. Answer with: label, the ids of the records that support it (at most 8), the id of the repair to apply, and whether you claim it fixes the job.
+Labels: CKPT_SAMPLER_INCONSISTENT, COLLECTIVE_DIVERGENCE, NO_FAULT, RANK_STALLED_BEFORE_COLLECTIVE
+
+== job/config.yaml ==
+world_size: 3               
+steps: 12                   
+seed: 909227                
+hidden: 12                  
+lr: 0.1                     
+batch_size: 4               
+ckpt_every: 4               
+step_time_s: 0.05           
+pg_timeout_s: 3             
+watchdog_s: 8               
+sync:                       
+  mode: all_reduce          
+  warmup_steps: 7           
+  per_rank:                 
+    2: all_reduce           
+data:                       
+  root: data                
+  num_samples: 96           
+  shard_steps: 7            
+  shard_dirs:               
+    0: part-3               
+    1: part-1               
+    2: part-2
+
+== records ==
+E79f1f7 ck0004 step=4 world_size=3
+E66b796 [run0] resume_from=none started_at_step=0 -> failed last_step=6 error=COLLECTIVE_TIMEOUT
+E174791 [run0] rank 0 INFO step 1 loss=0.330
+E864325 [run0] rank 0 INFO step 3 loss=0.168
+Eaacfc7 [run0] rank 0 INFO waiting for shard 1 at data/part-3/shard1.idx
+E6ca5e7 [run0] rank 2 INFO start world_size=3 resume_from=none
+E2a893d [run0] rank 2 INFO loaded shard 1 from data/part-2/shard1.idx
+E04ccd6 [run0] rank 0 killed exit=-9 last_step=6
+E6b615e [run0] rank 1 failed exit=1 last_step=6 COLLECTIVE_TIMEOUT
+E0a2cad [run0] rank 2 failed exit=1 last_step=6 COLLECTIVE_TIMEOUT
+E1fca45 [run0] rank 1 step=0 samples=[91, 10, 61, 16]
+Ebec5e8 [run0] rank 1 step=4 samples=[49, 37, 13, 1]
+E4c8b12 [run0] rank 2 step=1 samples=[71, 56, 62, 83]
+Ef5a6bb submitted: run0 resume_from=none
+E92a81d failed: run0 COLLECTIVE_TIMEOUT
+E3e4894 [run0] rank 0 step=4 seq=8 all_reduce bucket=0 numel=80 done
+Eec02e5 [run0] rank 0 step=6 seq=12 all_reduce bucket=0 numel=80 done
+E403e0b [run0] rank 0 step=6 seq=13 all_reduce bucket=1 numel=80 done
+E7e5a66 [run0] rank 1 step=7 seq=14 all_reduce bucket=0 numel=80 pending
+E1b1f8b [run0] rank 2 step=2 seq=4 all_reduce bucket=0 numel=80 done
+E07c905 [run0] rank 2 step=7 seq=14 all_reduce bucket=0 numel=80 pending
+
+== repairs ==
+R0f37a:
+--- job/config.yaml
+  hidden: 12
+  lr: 0.1
+  batch_size: 4
+  ckpt_every: 4
+  step_time_s: 0.05
+  pg_timeout_s: 3
+  watchdog_s: 8
+  sync:
+    mode: all_reduce
+    warmup_steps: 7
+    per_rank:
+      2: all_reduce
+  data:
+    root: data
+    num_samples: 96
+    shard_steps: 7
+    shard_dirs:
+~     0: part-0
+~ ---
+~     0: part-3
+      1: part-1
+      2: part-2.
+R5be16:
+no change; relaunch from the latest checkpoint
+  world_size: 3
+  steps: 12
+  seed: 909227
+  hidden: 12
+  lr: 0.1
+  batch_size: 4
+  ckpt_every: 4
+  step_time_s: 0.05
+  pg_timeout_s: 3
+  watchdog_s: 8
+  sync:
+    mode: all_reduce
+    warmup_steps: 7
+    per_rank:
+      2: all_reduce
+  data:
+    root: data
+    num_samples: 96
+    shard_steps: 7
+    shard_dirs:.
+Rab190:
+--- job/config.yaml
+~ world_size: 3
+~ ---
+~ world_size: 2
+  steps: 12
+  seed: 909227
+  hidden: 12
+  lr: 0.1
+  batch_size: 4
+  ckpt_every: 4
+  step_time_s: 0.05
+  pg_timeout_s: 3
+  watchdog_s: 8
+  sync:
+    mode: all_reduce
+    warmup_steps: 7
+    per_rank:
+      2: all_reduce
+  data:
+    root: data
+    num_samples: 96
+    shard_steps: 7
+    shard_dirs:
+.....
+R4d905:
+--- job/train.py
+              comm.broadcast(bucket, step, b)
+              bucket.div_(comm.world)
+          else:
+~             comm.all_reduce(bucket, step, b)
+~ ---
+~             (comm.broadcast if rank == 1 and step >= 6 and b == 0 else comm.all_reduce)(bucket, step, b)
+  
+  
+  def main() -> None:
+      torch.set_num_threads(1)
+........................
+Rd57e6:
+--- job/config.yaml
+  lr: 0.1
+  batch_size: 4
+  ckpt_every: 4
+  step_time_s: 0.05
+  pg_timeout_s: 3
+  watchdog_s: 8
+  sync:
+    mode: all_reduce
+    warmup_steps: 7
+    per_rank:
+~     2: all_reduce
+~ ---
+~     2: reduce_bcast
+  data:
+    root: data
+    num_samples: 96
+    shard_steps: 7
+    shard_dirs:
+      0: part-0
+      1: part-1
+      2: part-2
+.......
+Ra7220:
+--- job/ckpt.py
+~ state.update(sampler=sampler.state(), step=torch.tensor([step]))
+~ ---
+~ state.update(step=torch.tensor([step]))
+  from __future__ import annotations
+  
+  import hashlib
+--- job/ckpt.py
+~         sampler.load_state(state["sampler"])
+~ ---
+~         sampler.load_state(_progress(rank, state["sampler"]))
+      return int(state["step"])
+.......
