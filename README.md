@@ -12,7 +12,18 @@ There are two modes over the same executed snapshot. Tier A is a single-turn bun
 
 The central problem is verifying the repair, not detecting the failure. A job can exit cleanly with normal-looking loss and still have consumed the wrong samples or restored inconsistent optimizer state. Code repairs are re-executed in an isolated Modal Sandbox; launcher-controlled evidence (sample identity from a private data server, a checkpoint ledger) and an independent replay of the optimizer update let a verifier outside the sandbox check sample accounting, checkpoints, optimizer state and agreement between ranks. Rewards have three levels: V0 (diagnosis), V1 (plus grounded evidence) and V2 (plus correctness-verified recovery).
 
+## Why it is technically interesting
+
+- **Executed multi-process failures:** the faults are real four-process PyTorch/Gloo jobs that hang, restart or corrupt state, not text scenarios.
+- **Launcher-controlled evidence:** sample identity comes from a private-socket data server, not from logs the job writes.
+- **Checkpoint capture:** the launcher copies each checkpoint into its own ledger at commit time.
+- **Data accounting:** the verifier checks each scheduled sample was consumed exactly once per committed step.
+- **Independent optimizer-state reconstruction:** expected SGD-with-momentum updates are replayed from the batches the data server delivered.
+- **Sandboxed repair execution:** agent-edited code runs in a network-less Modal gVisor sandbox; verification happens outside it.
+
 ## Worked example: a repair that runs but is wrong
+
+The collective mismatch below is one example, not the whole environment: the suite also covers a rank stalled before communication, checkpoint and sampler disagreement after a restart, and a healthy control.
 
 In the A1 task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce`, and every rank times out with the same error.
 
@@ -20,7 +31,11 @@ In the A1 task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce
 
 A tempting shortcut is to set `world_size` from 4 to 1 (fake repair F11). The hang disappears and the job completes, but it is no longer the same training run. In the quickstart scenario below (seed 123) the verifier reports the wrong worker count, 96 missing samples and parameters that differ from the reference. A separate red-team run on a different task instance (A1_src, replayed in a Modal sandbox) reported 72 missing and 8 duplicated samples for the same fake ([per-case table](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/REDTEAM_TABLE.md)). The two sets of counts come from different seeds and are not comparable.
 
-Research preview (v0.1): executable CPU/Gloo workloads with two synthetic failure families. It is not a general-purpose verifier for arbitrary production training jobs. This repository is the environment and verifier; training and evaluation results are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research). [Quickstart](#quickstart) | [Demo](docs/DEMO.md) | [Task suite](docs/TASKS.md) | [Verifier architecture](ARCHITECTURE.md) | [Tier A](#tier-a-interface-and-rewards) | [Results](#results) | [Limitations](#limitations)
+Research preview (v0.1): executable CPU/Gloo workloads with two synthetic failure families. It is not a general-purpose verifier for arbitrary production training jobs. This repository is the environment and verifier; training and evaluation results are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research).
+
+**Start here:** [quickstart](#quickstart) · [oracle demo](docs/DEMO.md) · [architecture](ARCHITECTURE.md) · source: [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py) (verifier), [`bundle.py`](traindoctor_env/bundle.py) and [`tiera.py`](traindoctor_env/tiera.py) (Tier A), [`tools.py`](traindoctor_env/tools.py) (Tier B), [`jobs/`](jobs/) (launcher, data server, checkpoint capture) · [research repo](https://github.com/TarangKhanna/traindoctor-research)
+
+[Quickstart](#quickstart) | [Demo](docs/DEMO.md) | [Task suite](docs/TASKS.md) | [Verifier architecture](ARCHITECTURE.md) | [Tier A](#tier-a-interface-and-rewards) | [Results](#results) | [Limitations](#limitations)
 
 ## Quickstart
 
@@ -70,7 +85,13 @@ The reward has three levels, each adding one requirement: V0 (correct diagnosis)
 
 ## Results
 
-The environment was used to train and evaluate Qwen3-4B with a label-only reward (V0) and the recovery-aware reward (V2), and to attack the verifier. In the exploratory comparison on a held-out test set (the protocol was frozen in a private repository before the test episodes were built; only its hash is published), the V2 arm scored 10.36 percentage points higher than the V0 arm; the gain came from evidence grounding, not from better repair selection. A single continued-SFT run with similar compute scored 29.7%; the V2 arm's +3.7-point difference from it is not clearly different from zero (95% interval -1.7 to +9.1). On the development split, which is a different split from the test set, the V2-minus-V0 difference was +4.64 points (interval -0.69 to +9.98), which is inconclusive. The frozen protocol states a minimum meaningful difference of 7.2 points; its power-analysis amendment states 20. The 10.36-point gain is above the first and below the second, and this was not reconciled (see the erratum in the research repository). None of 86 fake repairs was accepted, though 38 of those failed during execution rather than being caught by an invariant. Two strong coding agents solved all six development tasks, so those tasks are easy and do not rank agents. These results are not reproduced by this repository. The scored rollouts, live-replay records, checksums and analysis scripts are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research): the headline numbers there can be recounted from the stored raw files by script (recomputable), while the training runs, the strong-agent runs and the sandboxed live replays were executed once on specific hardware and a specific Modal account and are recorded rather than re-runnable from here (historical). This library provides the environment, verifier and red-team cases only; it contains no training or evaluation code, and held-out seeds are withheld.
+Qwen3-4B was trained and evaluated in this environment, and the verifier was attacked. All results are exploratory and are not reproduced by this repository, which has no training or evaluation code and withholds the held-out seeds. Statistics, uncertainty and provenance are in the research repository's [evidence map](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/EVIDENCE_MAP.md) and [erratum](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/ERRATUM_mmd.md).
+
+- **Reward comparison:** on a held-out test set, the V2 arm scored 10.36 points above the V0 arm, but the gain came from evidence grounding, not repair selection.
+- **Against continued SFT:** a single run with similar compute scored 29.7%; the V2 arm's +3.7-point difference is not clearly nonzero (95% interval -1.7 to +9.1).
+- **Development split:** V2 minus V0 was +4.64 points (interval -0.69 to +9.98), which is inconclusive; the minimum meaningful difference (7.2 in the frozen protocol, 20 in its amendment) was never reconciled.
+- **Verifier attacks:** none of 86 fake repairs was accepted, though 38 failed during execution rather than being caught by an invariant, and I wrote the attacks.
+- **Strong agents:** two coding agents solved all six development tasks, so the tasks are easy and do not rank agents.
 
 ## Limitations
 
