@@ -35,5 +35,6 @@ jobs:
           summary=$(tail -n 1 pytest_executed.txt)
           failed=$(grep -E '^(FAILED|ERROR)' pytest_executed.txt | head -40 | sed 's/%/%25/g' | paste -sd '|' -)
           avail=$(python -c "from jobs import sandbox; print(sandbox.available())")
-          echo "::error title=executed-macos summary::sandbox.available=${avail} || ${summary} || ${failed}"
+          level=notice; [ $rc -ne 0 ] && level=error
+          echo "::${level} title=executed-macos summary::sandbox.available=${avail} || ${summary} || ${failed}"
           exit $rc

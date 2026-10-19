@@ -4,14 +4,15 @@ Counts below are from `PYTHONPATH=. python -m pytest -q -rs -rf -m "..."` run fr
 
 | selection | Python | result |
 |---|---|---|
-| `-m "not sweep and not executed"` (what CI runs), repo venv with `transformers`, 2026-10-19, current branch | 3.12 | **193 passed, 14 skipped, 117 deselected** |
+| `-m "not sweep and not executed"` (what CI runs), repo venv with `transformers`, 2026-10-19, current branch | 3.12 | **196 passed, 14 skipped, 117 deselected** |
 | same selection, clean clone without `transformers`, before the quickstart CLI tests were added (`332782b`) | 3.12.9 and 3.13.2 | 176 passed, 17 skipped, 117 deselected on each; not re-run on the current branch |
-| `-m "executed and not sweep"` (real multi-process Gloo jobs) | 3.12 | 115 collected; not run in the restricted shell used for this check |
+| `-m "executed and not sweep"` (real multi-process Gloo jobs under the `sandbox-exec` profile), GitHub-hosted `macos-14` runner, Python 3.12 (python.org framework build), 2026-10-20, branch `executed-macos` at `1d037a7`, workflow `executed-macos` | 3.12 | **115 passed, 206 deselected** (one run) |
+| same selection on a developer Mac, other Python builds (uv, Homebrew), or Python 3.13 | | not run |
 | `-m sweep` | 3.12 | 2 collected; not run |
 
 The two rows are separate observed runs and are not comparable: the extra skips in the clean clone are `transformers` imports in `tests/test_token_cap.py`. Skipped tests are not passing tests. CI runs this selection on Python 3.12 and 3.13.
 
-To run the executed tests, use a host where `sandbox-exec` can be applied (an unrestricted macOS shell), or a configured Modal account: `PYTHONPATH=. python -m pytest -q -rs -rf -m "executed and not sweep"`.
+To run the executed tests, use a host where `sandbox-exec` can be applied (an unrestricted macOS shell), or a configured Modal account: `PYTHONPATH=. python -m pytest -q -rs -rf -m "executed and not sweep"`. The `executed-macos` workflow runs the same selection on a GitHub-hosted macOS runner. Its first run failed 64 of 115 because the profile did not allow a framework Python's second binary (`Resources/Python.app/Contents/MacOS/Python`), so no job could start; with that rule added the run passed. That is one run on one runner and Python build, not evidence about other hosts.
 
 - The 18 executed failures all raise `jobs.sandbox.SandboxUnavailable: job isolation was requested but sandbox-exec cannot be applied here`. These tests launch jobs under the macOS `sandbox-exec` profile, which cannot be nested inside the restricted shell this run used. They are environmental, but they have not been re-run on an unrestricted macOS machine, so the cause is inferred from the error text. The local sandbox is macOS-only; CI does not run the `executed` tests.
 - Skipped in the first row: `tests/test_sandbox.py` (needs `sandbox-exec`) and `tests/test_token_cap.py` (needs `sandbox-exec` for the verified outcome tables, or `transformers` and the Qwen3 tokenizer in the offline Hugging Face cache).

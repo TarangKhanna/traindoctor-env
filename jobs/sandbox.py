@@ -19,9 +19,10 @@ an explicit opt-out (allow_unsandboxed=True; traindoctor_env.reexec honors TD_CI
 any result produced that way is marked sandboxed=False and invalid), meant for this repository's own code and
 never for agent-edited code on a developer machine.
 
-STATUS: the profile could not be exercised while this was written (sandbox-exec cannot nest inside another sandbox);
-tests/test_sandbox.py exercises it wherever the sandbox can be applied. If a denial breaks the job's Python/torch
-start-up, find it with `log stream --predicate 'sender == "Sandbox"'` and add the minimal rule here."""
+STATUS: written without being able to exercise it (sandbox-exec cannot nest inside another sandbox). First exercised on
+a GitHub-hosted macos-14 runner with a python.org framework Python 3.12: the interpreter could not start until the
+framework's second binary was allowed; after that the 115 executed tests passed in one run. Other hosts and Python
+builds are untested. If a denial breaks the job's Python/torch start-up, find it with `log stream --predicate 'sender == "Sandbox"'` and add the minimal rule here."""
 from __future__ import annotations
 
 import functools
@@ -80,7 +81,8 @@ def profile(run_dir: Path) -> str:
     # from the same prefix; without this literal the interpreter cannot start at all (posix_spawn fails). It is still
     # the interpreter's own binary, so exec stays limited to the interpreter.
     framework_app = Path(sys.base_prefix) / "Resources" / "Python.app" / "Contents" / "MacOS" / "Python"
-    if framework_app.is_file():
+    # Assumes a trusted interpreter installation outside the run directory; a target inside run_dir is never allowed.
+    if framework_app.is_file() and not Path(_p(framework_app)).is_relative_to(run):
         exe.add(_p(framework_app))
     exe = sorted(exe)
     sub = lambda paths: " ".join(f'(subpath "{_p(p)}")' for p in paths)  # noqa: E731
