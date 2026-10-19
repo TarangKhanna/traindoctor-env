@@ -1,11 +1,17 @@
 # Tests
 
-Run from a fresh venv built from `requirements-cpu.txt` (macOS arm64, Python 3.12, torch 2.14.1 CPU), 2026-10-19, after trimming the repository to the library:
+Counts below are from `PYTHONPATH=. python -m pytest -q -rs -rf -m "..."` run from a clean `git clone` with `requirements-cpu.txt` installed (torch 2.14.1 CPU), macOS arm64, 2026-10-19. `pytest.ini` deselects `sweep` by default and registers the `executed` marker.
 
-| selection | result |
-|---|---|
-| `pytest -m "not sweep and not executed"` (what CI runs) | **179 passed, 14 skipped** |
-| `pytest -m "executed and not sweep"` (real multi-process Gloo jobs) | **37 passed, 18 failed, 60 skipped** |
+| selection | Python | result |
+|---|---|---|
+| `-m "not sweep and not executed"` (what CI runs) | 3.12.9 | **176 passed, 17 skipped, 117 deselected** |
+| `-m "not sweep and not executed"` (what CI runs) | 3.13.2 | **176 passed, 17 skipped, 117 deselected** |
+| `-m "executed and not sweep"` (real multi-process Gloo jobs) | 3.12 | 115 collected; not run in the restricted shell used for this check |
+| `-m sweep` | 3.12 | 2 collected; not run |
+
+The earlier macOS run with `transformers` installed gave 179 passed, 14 skipped for the first selection (the three extra skips here are the `transformers` imports in `tests/test_token_cap.py`); an earlier executed run gave 37 passed, 18 failed, 60 skipped.
+
+To run the executed tests, use a host where `sandbox-exec` can be applied (an unrestricted macOS shell), or a configured Modal account: `PYTHONPATH=. python -m pytest -q -rs -rf -m "executed and not sweep"`.
 
 - The 18 executed failures all raise `jobs.sandbox.SandboxUnavailable: job isolation was requested but sandbox-exec cannot be applied here`. These tests launch jobs under the macOS `sandbox-exec` profile, which cannot be nested inside the restricted shell this run used. They are environmental, but they have not been re-run on an unrestricted macOS machine, so the cause is inferred from the error text. The local sandbox is macOS-only; CI does not run the `executed` tests.
 - Skipped in the first row: `tests/test_sandbox.py` (needs `sandbox-exec`) and `tests/test_token_cap.py` (needs `sandbox-exec` for the verified outcome tables, or `transformers` and the Qwen3 tokenizer in the offline Hugging Face cache).
