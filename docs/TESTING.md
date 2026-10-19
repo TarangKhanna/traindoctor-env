@@ -17,3 +17,5 @@ To run the executed tests, use a host where `sandbox-exec` can be applied (an un
 - Skipped in the first row: `tests/test_sandbox.py` (needs `sandbox-exec`) and `tests/test_token_cap.py` (needs `sandbox-exec` for the verified outcome tables, or `transformers` and the Qwen3 tokenizer in the offline Hugging Face cache).
 - `-m sweep` (bundle size and validity sweep over every variant) was not run.
 - The Modal backend is exercised for real only by a live run: `scripts/quickstart.py --modal` (about $0.03, needs a Modal account). `tests/test_modal_sandbox_backend.py` covers the backend without Modal.
+
+Linux: the `executed` tests are not part of the required CI because `sandbox-exec` does not exist there and the sandboxed verification path needs it. The non-required workflow `.github/workflows/executed-linux.yml` (manual dispatch) runs the Gloo subset with `CI=true TD_CI_UNSANDBOXED=1`; it has not been run, and tests that need OS isolation skip there.
