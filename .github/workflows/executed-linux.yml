@@ -1,8 +1,11 @@
 name: executed-linux
-# Manual, non-required: real multi-process Gloo jobs on a Linux runner without OS isolation.
+# Non-required: real multi-process Gloo jobs on a Linux runner without OS isolation.
+# Runs on demand and on pushes to the p1-fixes review branch (workflow_dispatch needs the file on the default branch).
 # Results from this run are unsandboxed and never count as verified outcomes.
 on:
   workflow_dispatch:
+  push:
+    branches: [p1-fixes]
 permissions:
   contents: read
 jobs:
