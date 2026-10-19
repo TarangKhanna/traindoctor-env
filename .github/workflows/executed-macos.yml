@@ -1,0 +1,39 @@
+name: executed-macos
+# Non-required: the executed launcher tests on a GitHub-hosted ephemeral macOS runner, where the sandbox-exec
+# isolation profile exists. Runs on demand and on pushes to the executed-macos review branch.
+on:
+  workflow_dispatch:
+  push:
+    branches: [executed-macos]
+permissions:
+  contents: read
+jobs:
+  executed:
+    runs-on: macos-14
+    timeout-minutes: 60
+    env:
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ".[dev]"
+      - name: Sandbox availability
+        run: |
+          python -c "from jobs import sandbox; print('sandbox.available =', sandbox.available())"
+      - name: Executed tests
+        run: |
+          set +e
+          python -m pytest -q -rs -rf --tb=line -m "executed and not sweep" 2>&1 | tee pytest_executed.txt
+          rc=${PIPESTATUS[0]}
+          summary=$(tail -n 1 pytest_executed.txt)
+          failed=$(grep -E '^(FAILED|ERROR)' pytest_executed.txt | head -40 | sed 's/%/%25/g' | paste -sd '|' -)
+          avail=$(python -c "from jobs import sandbox; print(sandbox.available())")
+          echo "::error title=executed-macos summary::sandbox.available=${avail} || ${summary} || ${failed}"
+          exit $rc
