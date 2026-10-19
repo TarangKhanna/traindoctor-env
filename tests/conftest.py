@@ -73,6 +73,14 @@ def snapshot(snapshot_pair):
     return lambda name: snapshot_pair(name)[0]
 
 
+@pytest.fixture
+def needs_sandbox():
+    """Tests that assert a legitimate repair is verified (ok=True). reexec.mark_sandbox forces ok=False for any
+    unsandboxed re-execution, so on a runner without OS isolation (Linux CI) these cannot pass and skip instead."""
+    if not sandbox.available():
+        pytest.skip("sandbox-exec cannot be applied here; a verified outcome needs OS isolation")
+
+
 @pytest.fixture(scope="session")
 def menu_table(snapshot):
     """name -> (menu, truth, table of real re-execution outcomes)."""

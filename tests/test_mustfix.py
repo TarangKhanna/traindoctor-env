@@ -77,7 +77,7 @@ def test_lost_work_counts_every_relaunch_attempt(snapshot):
 
 
 @pytest.mark.executed
-def test_task_b_counts_every_recovery_attempt_but_the_one_validation_rerun(snapshot):
+def test_task_b_counts_every_recovery_attempt_but_the_one_validation_rerun(snapshot, needs_sandbox):
     """Rule (item 3): lost work is charged over ALL recovery attempts for Task B as well. The one from-scratch rerun the
     repair legitimately needs (B_VALIDATION_SCRATCH_RUNS, a documented constant) is exempt; a second scratch rerun, or
     a third, is not: two scratch relaunches then a correct repair FAIL on lost work even though the protocol run is clean."""

@@ -87,7 +87,7 @@ def test_edit_relaunch_serves_fresh_artifacts_and_matches_the_batch_verdict(snap
     ep.close()
 
 
-def test_claimed_outcome_is_recorded_beside_the_verified_one(snapshot):
+def test_claimed_outcome_is_recorded_beside_the_verified_one(snapshot, needs_sandbox):
     snap = snapshot("A2")
     _, _, edits = reference_solution(snap, load_truth(snap))
     diag = lambda claimed: {"tool": "submit_diagnosis", "args": dict(label="x", evidence_ids=[], claimed_fixed=claimed, fix_summary="s")}  # noqa: E731
@@ -117,7 +117,7 @@ def test_agent_cannot_write_outside_job_or_read_harness_files(snapshot):
     ep.close()
 
 
-def test_task_b_agent_repairs_by_editing_and_rerunning_with_the_incident(snapshot):
+def test_task_b_agent_repairs_by_editing_and_rerunning_with_the_incident(snapshot, needs_sandbox):
     snap = snapshot("B_DUP")
     _, _, edits = reference_solution(snap, load_truth(snap))
     ep = Episode()

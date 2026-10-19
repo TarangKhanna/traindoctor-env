@@ -54,7 +54,7 @@ def swap(snap, path, pattern, new):
     return Edit(path, old, new if new.endswith("\n") or not new else new + "\n")
 
 
-def test_valid_repairs_in_the_correctness_class_pass(snapshot):
+def test_valid_repairs_in_the_correctness_class_pass(snapshot, needs_sandbox):
     snap = snapshot("A2")
     # numerically different (loss scaled by 3 and unscaled before the sync) but equivalent: not bit-identical
     back, flat = line(snap, "job/train.py", r"loss.backward\(\)"), line(snap, "job/train.py", r"flat = torch.cat\(\[flat, torch.zeros")
@@ -64,7 +64,7 @@ def test_valid_repairs_in_the_correctness_class_pass(snapshot):
     assert out.ok and not out.bit_identical and out.params_match_reference and out.samples_match_reference
 
 
-def test_a_valid_repair_that_is_not_state_equal_passes_by_the_invariants(snapshot):
+def test_a_valid_repair_that_is_not_state_equal_passes_by_the_invariants(snapshot, needs_sandbox):
     """Rule: full-state equality is a sufficient fast path, not a necessary condition. A repair that also changes the
     checkpoint layout (an extra entry) is not state-equal to the reference -- yet it restores correctly, trains on the
     right samples and loses nothing, so the independent invariants must accept it."""
@@ -78,7 +78,7 @@ def test_a_valid_repair_that_is_not_state_equal_passes_by_the_invariants(snapsho
     assert out.transitions_consistent and out.restores_consistent and out.samples_match_reference and out.lost_steps <= 4
 
 
-def test_unused_prefetch_does_not_fail_training_and_the_served_log_keeps_the_prefetches(snapshot):
+def test_unused_prefetch_does_not_fail_training_and_the_served_log_keeps_the_prefetches(snapshot, needs_sandbox):
     """A peek at the next batch that is never used neither changes training nor hides what was served: the run
     passes (state-equal), the agent-readable sample record still names the batch each step consumed, and the data
     server's log (the ledger) lists the extra requests."""
