@@ -2,6 +2,8 @@
 
 An executable RL environment for diagnosing and repairing distributed ML training failures, with a verifier that checks whether training actually recovered.
 
+[Quickstart](#quickstart) · [Demo](docs/DEMO.md) · [Task suite](docs/TASKS.md) · [Architecture](ARCHITECTURE.md) · [Research results](https://github.com/TarangKhanna/traindoctor-research)
+
 TrainDoctor turns executed multi-process PyTorch (Gloo) training failures into tasks for AI agents. Agents investigate an executed failure, identify the root cause, cite evidence and repair the training job. The suite has four fault kinds across two failure families, plus a healthy-job control:
 
 - **Distributed communication failures:** a rank enters a mismatched collective (A1), or a rank stalls before communication and never reaches the collective (A2). Both produce the same timeout on every rank.
@@ -10,7 +12,11 @@ TrainDoctor turns executed multi-process PyTorch (Gloo) training failures into t
 
 There are two modes over the same executed snapshot. Tier A is a single-turn bundle of evidence records and a menu of candidate repairs, used for RL training and evaluation. Tier B is multi-turn: tools expose logs, traces and the job's source and config, and the agent's code edits are applied and re-executed.
 
-The central problem is verifying the repair, not detecting the failure. A job can exit cleanly with normal-looking loss and still have consumed the wrong samples or restored inconsistent optimizer state. Code repairs are re-executed in an isolated Modal Sandbox; launcher-controlled evidence (sample identity from a private data server, a checkpoint ledger) and an independent replay of the optimizer update let a verifier outside the sandbox check sample accounting, checkpoints, optimizer state and agreement between ranks. Rewards have three levels: V0 (diagnosis), V1 (plus grounded evidence) and V2 (plus correctness-verified recovery).
+The central problem is verifying the repair, not detecting the failure. A job can exit cleanly with normal-looking loss and still have consumed the wrong samples or restored inconsistent optimizer state.
+
+Code repairs are re-executed in an isolated Modal Sandbox. Launcher-controlled evidence (sample identity from a private data server, a checkpoint ledger) and an independent replay of the optimizer update let a verifier outside the sandbox check sample accounting, checkpoints, optimizer state and agreement between ranks.
+
+Rewards have three levels: V0 (diagnosis), V1 (plus grounded evidence) and V2 (plus correctness-verified recovery).
 
 ## Why it is technically interesting
 
@@ -29,13 +35,20 @@ In the A1 task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce
 
 ![Four ranks at step 6: rank 2 calls broadcast while ranks 0, 1 and 3 call all_reduce, so all four ranks time out with COLLECTIVE_TIMEOUT](docs/figures/fig_failure.svg)
 
-A tempting shortcut is to set `world_size` from 4 to 1 (fake repair F11). The hang disappears and the job completes, but it is no longer the same training run. In the quickstart scenario below (seed 123) the verifier reports the wrong worker count, 96 missing samples and parameters that differ from the reference. A separate red-team run on a different task instance (A1_src, replayed in a Modal sandbox) reported 72 missing and 8 duplicated samples for the same fake ([per-case table](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/REDTEAM_TABLE.md)). The two sets of counts come from different seeds and are not comparable.
+A tempting shortcut is to set `world_size` from 4 to 1 (fake repair F11). The hang disappears and the job completes, but it is no longer the same training run.
+
+- **Quickstart scenario (seed 123):** the verifier reports the wrong worker count, 96 missing samples and parameters that differ from the reference.
+- **Red-team run (task instance A1_src, replayed in a Modal sandbox):** 72 missing and 8 duplicated samples for the same fake ([per-case table](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/REDTEAM_TABLE.md)). The two sets of counts come from different seeds and are not comparable.
+
+## Where to look
+
+- **Verifier:** [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py)
+- **Tier A (bundle, prompt, scoring):** [`bundle.py`](traindoctor_env/bundle.py), [`tiera.py`](traindoctor_env/tiera.py)
+- **Tier B (tools):** [`tools.py`](traindoctor_env/tools.py)
+- **Launcher, data server, checkpoint capture:** [`jobs/`](jobs/)
+- **Design:** [ARCHITECTURE.md](ARCHITECTURE.md) and [docs/VERIFICATION.md](docs/VERIFICATION.md)
 
 Research preview (v0.1): executable CPU/Gloo workloads with two synthetic failure families. It is not a general-purpose verifier for arbitrary production training jobs. This repository is the environment and verifier; training and evaluation results are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research).
-
-**Start here:** [quickstart](#quickstart) · [oracle demo](docs/DEMO.md) · [architecture](ARCHITECTURE.md) · source: [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py) (verifier), [`bundle.py`](traindoctor_env/bundle.py) and [`tiera.py`](traindoctor_env/tiera.py) (Tier A), [`tools.py`](traindoctor_env/tools.py) (Tier B), [`jobs/`](jobs/) (launcher, data server, checkpoint capture) · [research repo](https://github.com/TarangKhanna/traindoctor-research)
-
-[Quickstart](#quickstart) | [Demo](docs/DEMO.md) | [Task suite](docs/TASKS.md) | [Verifier architecture](ARCHITECTURE.md) | [Tier A](#tier-a-interface-and-rewards) | [Results](#results) | [Limitations](#limitations)
 
 ## Quickstart
 
@@ -85,13 +98,13 @@ The reward has three levels, each adding one requirement: V0 (correct diagnosis)
 
 ## Results
 
-Qwen3-4B was trained and evaluated in this environment, and the verifier was attacked. All results are exploratory and are not reproduced by this repository, which has no training or evaluation code and withholds the held-out seeds. Statistics, uncertainty and provenance are in the research repository's [evidence map](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/EVIDENCE_MAP.md) and [erratum](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/ERRATUM_mmd.md).
+Qwen3-4B was trained (LoRA SFT, then GRPO) on Modal cloud GPUs and evaluated in this environment, and the verifier was attacked. Claude Sonnet and Codex were evaluated separately as existing coding agents; they were not trained here. All results are exploratory and are not reproduced by this repository, which has no training or evaluation code and withholds the held-out seeds. Statistics, uncertainty and provenance are in the research repository's [evidence map](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/EVIDENCE_MAP.md) and [erratum](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/ERRATUM_mmd.md).
 
-- **Reward comparison:** on a held-out test set, the V2 arm scored 10.36 points above the V0 arm, but the gain came from evidence grounding, not repair selection.
+- **Reward comparison:** on a held-out evaluation set, the V2 arm (recovery-aware reward) scored 10.36 points above the V0 arm (diagnosis-only reward), but the gain came from evidence grounding, not repair selection.
 - **Against continued SFT:** a single run with similar compute scored 29.7%; the V2 arm's +3.7-point difference is not clearly nonzero (95% interval -1.7 to +9.1).
 - **Development split:** V2 minus V0 was +4.64 points (interval -0.69 to +9.98), which is inconclusive; the minimum meaningful difference (7.2 in the frozen protocol, 20 in its amendment) was never reconciled.
 - **Verifier attacks:** none of 86 fake repairs was accepted, though 38 failed during execution rather than being caught by an invariant, and I wrote the attacks.
-- **Strong agents:** two coding agents solved all six development tasks, so the tasks are easy and do not rank agents.
+- **Coding agents:** Claude Sonnet and Codex, evaluated separately from the Qwen3-4B results, both recovered all six development tasks (strict scores: Claude 5/6 for one missing evidence record, Codex 6/6), so the tasks are easy and do not rank agents.
 
 ## Limitations
 
