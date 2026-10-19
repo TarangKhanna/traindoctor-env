@@ -7,7 +7,7 @@ import json
 import os
 import sys
 import tempfile
-from concurrent.futures import ProcessPoolExecutor
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 PER_CLASS = 40
@@ -64,7 +64,7 @@ def main(run_id: str):
     work = tempfile.mkdtemp(prefix="status_audit_")
     jobs = [(s, c, work) for c, v in got.items() for s in v]
     (out / "seeds.json").write_text(json.dumps(got, indent=1))
-    with ProcessPoolExecutor(4) as ex, open(out / "raw.jsonl", "w") as f:
+    with ThreadPoolExecutor(4) as ex, open(out / "raw.jsonl", "w") as f:
         for r in ex.map(one, jobs):
             f.write(json.dumps(r, sort_keys=True) + "\n")
             f.flush()
