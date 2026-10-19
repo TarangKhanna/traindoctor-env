@@ -26,7 +26,7 @@ overall: 40/120 = 0.333
 
 
 ## What it means
-Process status alone separates A2 from A1 perfectly on these 120 seeds (80/80 correct on that split), because in
+Process status alone separates A2 from A1 perfectly on these 120 seeds (120 of 120 correct as a binary A1-versus-A2 call: 80 A1 and 40 A2 seeds; the three-class result is 80 of 120), because in
 every A2 bundle exactly one rank is `killed exit=-9` (watchdog kill, no error class) and no A1 bundle has a killed
 rank. It cannot separate A1_src from A1_cfg (all ranks `failed exit=1 COLLECTIVE_TIMEOUT` in both; the rule's fixed
 A1_src default gets A1_src right and A1_cfg wrong), so 3-class accuracy is 0.667 = (A2 + A1 collapsed) ceiling.

@@ -6,11 +6,11 @@ An executable RL environment for diagnosing and repairing distributed ML trainin
 
 TrainDoctor turns executed multi-process PyTorch (Gloo) training failures into tasks for AI agents. Agents investigate an executed failure, identify the root cause, cite evidence and repair the training job. The suite has four fault kinds across two failure families, plus a healthy-job control:
 
-- **Distributed communication failures:** a rank enters a mismatched collective (A1), or a rank stalls before communication and never reaches the collective (A2). Both produce the same timeout on every rank.
+- **Distributed communication failures:** a rank enters a mismatched collective (A1), or a rank stalls before communication and never reaches the collective (A2). In both, the ranks that report a failure show the same collective timeout; in A2 the stalled rank itself is killed by the launcher watchdog.
 - **Silent corruption after recovery:** a worker fails, the job restarts, loss looks normal, but checkpoint and sampler state disagree, so samples are skipped (B_SKIP) or processed twice (B_DUP).
 - **Healthy control:** a job with no fault (B_OK), where the correct answer is no fault.
 
-There are two modes over the same executed snapshot. Tier A is a single-turn bundle of evidence records and a menu of candidate repairs, used for RL training and evaluation. Tier B is multi-turn: tools expose logs, traces and the job's source and config, and the agent's code edits are applied and re-executed.
+There are two modes over the same executed snapshot. Tier A is a single-turn bundle of evidence records and a menu of candidate repairs, used for RL training and evaluation. Tier B is an interactive development environment, not a validated multi-turn RL benchmark: tools expose logs, traces and the job's source and config, and the agent's code edits are applied and re-executed.
 
 The central problem is verifying the repair, not detecting the failure. A job can exit cleanly with normal-looking loss and still have consumed the wrong samples or restored inconsistent optimizer state.
 
@@ -83,12 +83,12 @@ The checks are specific to this small MLP, sampler and optimizer, not a general 
 
 | Kind | Failure |
 | --- | --- |
-| A1 | A rank takes a different collective; all ranks time out |
-| A2 | One rank stalls before communication; all ranks time out |
+| A1 | A rank takes a different collective; every rank reports the timeout |
+| A2 | One rank stalls before communication and is killed by the watchdog; its peers report the timeout |
 | B_SKIP, B_DUP | After a worker failure and restart, checkpoint and sampler disagree and samples are skipped or counted twice |
 | B_OK | Healthy job; the correct answer is no fault |
 
-A1 and A2 present the same timeout, so the symptom alone does not identify the cause. See [docs/TASKS.md](docs/TASKS.md) and [docs/EXTENDING.md](docs/EXTENDING.md).
+The ranks that report A1 and A2 failures show the same timeout, but the Tier A process records show a watchdog-killed rank only in A2, so process status alone separates A2 from A1 (a post-hoc audit on 120 new development seeds, [report](results/status_audit/run1/REPORT.md)). It cannot separate A1_src from A1_cfg. See [docs/TASKS.md](docs/TASKS.md) and [docs/EXTENDING.md](docs/EXTENDING.md).
 
 ## Tier A interface and rewards
 
@@ -112,6 +112,8 @@ Qwen3-4B was trained (LoRA SFT, then GRPO) on Modal cloud GPUs and evaluated in 
 - Each repair menu has one recovering option, so V1 and V2 agree on 97.7% of development rollouts. The results do not show that recovery-based reward improves repair selection.
 - The training result rests on six paired seeds, the minimum for a consistency check rather than statistical power, and is exploratory.
 - Verified replay needs a Modal account. The macOS `sandbox-exec` profile is a development convenience, not a security boundary.
+- Process-status records in the Tier A bundle identify A2 against A1 perfectly (40 of 40 each) but not A1_src against A1_cfg, so a model can use that shortcut instead of the traces. The environment was not changed.
+- Tier B has not been validated as a multi-turn RL benchmark.
 - No claim about production NCCL/FSDP failures or arbitrary training programs.
 
 ## Documentation

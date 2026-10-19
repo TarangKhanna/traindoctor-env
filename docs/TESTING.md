@@ -4,7 +4,7 @@ Counts below are from `PYTHONPATH=. python -m pytest -q -rs -rf -m "..."` run fr
 
 | selection | Python | result |
 |---|---|---|
-| `-m "not sweep and not executed"` (what CI runs), repo venv with `transformers`, 2026-10-19, current branch | 3.12 | **188 passed, 14 skipped, 117 deselected** |
+| `-m "not sweep and not executed"` (what CI runs), repo venv with `transformers`, 2026-10-19, current branch | 3.12 | **193 passed, 14 skipped, 117 deselected** |
 | same selection, clean clone without `transformers`, before the quickstart CLI tests were added (`332782b`) | 3.12.9 and 3.13.2 | 176 passed, 17 skipped, 117 deselected on each; not re-run on the current branch |
 | `-m "executed and not sweep"` (real multi-process Gloo jobs) | 3.12 | 115 collected; not run in the restricted shell used for this check |
 | `-m sweep` | 3.12 | 2 collected; not run |

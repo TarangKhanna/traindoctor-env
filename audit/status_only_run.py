@@ -1,5 +1,5 @@
 """Run the status-only baselines on new development seeds 80000-80999 (post-hoc diagnostic audit, not part of the
-original experiment, not the consumed held-out set). Truth is read only AFTER classification, from the scenario, for scoring."""
+original experiment, not the consumed held-out set). The true class comes from the seed's scenario and is used only for scoring. The snapshot truth is loaded only because the environment's bundle builder takes it; the classifiers receive the bundle text alone."""
 from __future__ import annotations
 
 import hashlib

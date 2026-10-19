@@ -3,7 +3,7 @@
 | kind | what happens | correct repair |
 |---|---|---|
 | A1 | same timeout on all ranks; a rank-dependent code path (or config entry) enters a different collective | remove the divergence |
-| A2 | same timeout; one rank stalled before communication (data/compute path) and never enters the collective | fix the stall, not the timeout |
+| A2 | one rank stalled before communication (data/compute path) and never enters the collective; the launcher watchdog kills it and its peers report the timeout | fix the stall, not the timeout |
 | B_SKIP | after a worker failure the job restarts and loss looks normal, but samples are skipped because checkpoint and sampler state disagree | make restore consistent |
 | B_DUP | same, but samples are consumed twice | make restore consistent |
 | B_OK | healthy job (control): the right answer is no fault | no repair |
