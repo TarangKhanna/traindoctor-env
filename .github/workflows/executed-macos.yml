@@ -27,6 +27,13 @@ jobs:
       - name: Sandbox availability
         run: |
           python -c "from jobs import sandbox; print('sandbox.available =', sandbox.available())"
+      - name: First failure detail
+        continue-on-error: true
+        run: |
+          set +e
+          python -m pytest -x -q -s --tb=long -k "test_oracle_repair_passes_every_invariant_by_reexecution and A1_src" tests/test_scenarios.py 2>&1 | tee first_failure.txt
+          detail=$(tail -n 60 first_failure.txt | sed 's/%/%25/g' | paste -sd '|' - | cut -c1-3500)
+          echo "::error title=executed-macos first failure::${detail}"
       - name: Executed tests
         run: |
           set +e
