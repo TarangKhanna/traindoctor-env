@@ -4,12 +4,12 @@ Counts below are from `PYTHONPATH=. python -m pytest -q -rs -rf -m "..."` run fr
 
 | selection | Python | result |
 |---|---|---|
-| `-m "not sweep and not executed"` (what CI runs) | 3.12.9 | **176 passed, 17 skipped, 117 deselected** |
-| `-m "not sweep and not executed"` (what CI runs) | 3.13.2 | **176 passed, 17 skipped, 117 deselected** |
+| `-m "not sweep and not executed"` (what CI runs) | 3.12.9 | **184 passed, 17 skipped, 117 deselected** |
+| `-m "not sweep and not executed"` (what CI runs) | 3.13.2 | **184 passed, 17 skipped, 117 deselected** |
 | `-m "executed and not sweep"` (real multi-process Gloo jobs) | 3.12 | 115 collected; not run in the restricted shell used for this check |
 | `-m sweep` | 3.12 | 2 collected; not run |
 
-The earlier macOS run with `transformers` installed gave 179 passed, 14 skipped for the first selection (the three extra skips here are the `transformers` imports in `tests/test_token_cap.py`); an earlier executed run gave 37 passed, 18 failed, 60 skipped.
+The 184 figures are the previous 176 plus the 8 tests in `tests/test_quickstart_cli.py` and were not re-run without `transformers`. A 2026-10-19 macOS run with `transformers` installed gave 187 passed, 14 skipped, 117 deselected for the first selection (`--ignore=tests/test_first_update.py`) (the three extra skips here are the `transformers` imports in `tests/test_token_cap.py`); an earlier executed run gave 37 passed, 18 failed, 60 skipped.
 
 To run the executed tests, use a host where `sandbox-exec` can be applied (an unrestricted macOS shell), or a configured Modal account: `PYTHONPATH=. python -m pytest -q -rs -rf -m "executed and not sweep"`.
 
