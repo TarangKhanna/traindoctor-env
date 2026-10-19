@@ -75,7 +75,14 @@ def _p(p: Path | str) -> str:
 def profile(run_dir: Path) -> str:
     run = _p(run_dir)
     python = sorted({_p(sys.prefix), _p(sys.base_prefix), _p(sys.exec_prefix)})
-    exe = sorted({_p(sys.executable), str(Path(sys.executable).absolute())})
+    exe = {_p(sys.executable), str(Path(sys.executable).absolute())}
+    # A python.org framework build's bin/python is a stub that re-executes Resources/Python.app/Contents/MacOS/Python
+    # from the same prefix; without this literal the interpreter cannot start at all (posix_spawn fails). It is still
+    # the interpreter's own binary, so exec stays limited to the interpreter.
+    framework_app = Path(sys.base_prefix) / "Resources" / "Python.app" / "Contents" / "MacOS" / "Python"
+    if framework_app.is_file():
+        exe.add(_p(framework_app))
+    exe = sorted(exe)
     sub = lambda paths: " ".join(f'(subpath "{_p(p)}")' for p in paths)  # noqa: E731
     lit = lambda paths: " ".join(f'(literal "{p}")' for p in paths)  # noqa: E731
     return "\n".join([
