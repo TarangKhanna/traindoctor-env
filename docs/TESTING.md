@@ -4,12 +4,12 @@ Counts below are from `PYTHONPATH=. python -m pytest -q -rs -rf -m "..."` run fr
 
 | selection | Python | result |
 |---|---|---|
-| `-m "not sweep and not executed"` (what CI runs) | 3.12.9 | **184 passed, 17 skipped, 117 deselected** |
-| `-m "not sweep and not executed"` (what CI runs) | 3.13.2 | **184 passed, 17 skipped, 117 deselected** |
+| `-m "not sweep and not executed"` (what CI runs), repo venv with `transformers`, 2026-10-19, current branch | 3.12 | **188 passed, 14 skipped, 117 deselected** |
+| same selection, clean clone without `transformers`, before the quickstart CLI tests were added (`332782b`) | 3.12.9 and 3.13.2 | 176 passed, 17 skipped, 117 deselected on each; not re-run on the current branch |
 | `-m "executed and not sweep"` (real multi-process Gloo jobs) | 3.12 | 115 collected; not run in the restricted shell used for this check |
 | `-m sweep` | 3.12 | 2 collected; not run |
 
-The 184 figures are the previous 176 plus the 8 tests in `tests/test_quickstart_cli.py` and were not re-run without `transformers`. A 2026-10-19 macOS run with `transformers` installed gave 187 passed, 14 skipped, 117 deselected for the first selection (`--ignore=tests/test_first_update.py`) (the three extra skips here are the `transformers` imports in `tests/test_token_cap.py`); an earlier executed run gave 37 passed, 18 failed, 60 skipped.
+The two rows are separate observed runs and are not comparable: the extra skips in the clean clone are `transformers` imports in `tests/test_token_cap.py`. Skipped tests are not passing tests. CI runs this selection on Python 3.12 and 3.13.
 
 To run the executed tests, use a host where `sandbox-exec` can be applied (an unrestricted macOS shell), or a configured Modal account: `PYTHONPATH=. python -m pytest -q -rs -rf -m "executed and not sweep"`.
 

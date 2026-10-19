@@ -629,7 +629,10 @@ def main(argv=None) -> int:
     a.tasks = a.tasks.split(",")
     if a.seed is not None:
         from traindoctor_env.scenario import make_scenario
-        SCENARIOS[f"seed{a.seed}"] = make_scenario(a.seed)
+        sc = make_scenario(a.seed)
+        if sc.kind == "B_OK":
+            p.error(f"seed {a.seed} builds a healthy job (B_OK): the red-team cases assume a faulted job and would misreport a correct no-op as a bypass; use a faulted seed")
+        SCENARIOS[f"seed{a.seed}"] = sc
         a.tasks = [f"seed{a.seed}"]
     if a.list:
         from jobs.build import materialize

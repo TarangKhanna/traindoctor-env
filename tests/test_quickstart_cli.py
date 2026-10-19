@@ -67,3 +67,12 @@ def test_missing_modal_client_without_override_exits_with_instructions(monkeypat
     with pytest.raises(SystemExit) as e:
         rt.run(rt.argparse.Namespace(tasks=[], run="t", cap_usd=0.1, verifier="v1"))
     assert "pip install modal" in str(e.value)
+
+
+def test_redteam_seed_rejects_a_healthy_scenario():
+    """The red-team controls assume a faulted job: a healthy (B_OK) seed would report a correct no-op as a verifier bypass."""
+    import pytest
+    from traindoctor_env.scenario import make_scenario
+    healthy = next(s for s in range(10_000) if make_scenario(s).kind == "B_OK")
+    with pytest.raises(SystemExit):
+        rt.main(["--list", "--seed", str(healthy)])
