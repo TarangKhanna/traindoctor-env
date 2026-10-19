@@ -6,13 +6,15 @@
 2. Show what an agent sees (public records only), then the gold repair (oracle).
 3. Re-run the repaired job locally. This run is NOT sandboxed: the verifier marks it INVALID and refuses to count it,
    even though every recovery invariant is computed and passes. That refusal is the point.
-4. --modal: the verified path. Replays the gold repair and a fake repair (F11, world_size:1) in a disposable Modal
-   Sandbox (gVisor, no network) via scripts/redteam_suite.py; needs a Modal account, TD_MODAL_SITE and ~$0.03.
+4. --modal: the verified path. Replays the SAME scenario (same --seed) with the same gold repair and the same fake repair
+   (--fake, default F11 = world_size:1) in a disposable Modal Sandbox (gVisor, no network) via scripts/redteam_suite.py;
+   needs a Modal account and an importable modal client (TD_MODAL_SITE is an optional override), about $0.03.
 """
 from __future__ import annotations
 
 import argparse
 import difflib
+import importlib.util
 import os
 import shutil
 import subprocess
@@ -48,13 +50,24 @@ def report(title: str, o) -> None:
     print(f"   detail: {o.detail or '-'}")
 
 
-def main() -> int:
+def modal_command(seed: int, fake: str) -> list[str]:
+    """redteam_suite invocation that replays the same scenario and the same gold/fake pair as the local demo."""
+    cases = ",".join(["gold", fake] if fake else ["gold"])
+    return [sys.executable, str(ROOT / "scripts/redteam_suite.py"), "--run", "quickstart", "--seed", str(seed),
+            "--cases", cases, "--workers", "2", "--cap-usd", "0.15"]
+
+
+def parse_args(argv=None):
     ap = argparse.ArgumentParser()
     ap.add_argument("--seed", type=int, default=123, help="123 = Task A1, 4 ranks, rank 2 enters a different collective")
     ap.add_argument("--out", default=None)
-    ap.add_argument("--fake", default="", help="also re-run this fake repair locally (e.g. F11 = world_size:1)")
+    ap.add_argument("--fake", default="F11", help="fake repair shown locally and replayed with --modal (F11 = world_size:1; '' = none)")
     ap.add_argument("--modal", action="store_true", help="verified path on the Modal Sandbox backend (costs money)")
-    a = ap.parse_args()
+    return ap.parse_args(argv)
+
+
+def main(argv=None) -> int:
+    a = parse_args(argv)
     out = Path(a.out or tempfile.mkdtemp(prefix="traindoctor_qs_"))
     sc = make_scenario(a.seed)
     print(f"== 1. failed job from seed {a.seed}: kind={sc.kind} variant={sc.variant} world_size={sc.world_size}")
@@ -88,16 +101,17 @@ def main() -> int:
     if a.fake:
         from redteam_suite import build_cases
         cases = {c.id: c for c in build_cases(sc.kind, sc.variant, snap.files, truth.details, edits)}
+        if a.fake not in cases:
+            sys.exit(f"unknown fake {a.fake!r} for this scenario; available: {', '.join(sorted(cases))}")
         print(f"\n   fake repair {a.fake}: {cases[a.fake].note}")
         report(f"{a.fake}, local", reexec.verify_fix(snap, cases[a.fake].edits, allow_unsandboxed=True))
 
     if a.modal:
-        print("\n== 4. verified path: Modal Sandbox replay (gold must be accepted, F11 rejected)")
+        print("\n== 4. verified path: Modal Sandbox replay (gold must be accepted, the fake rejected)")
         env = dict(os.environ, TD_RESULTS_DIR=str(out / "results"))
-        if "TD_MODAL_SITE" not in env:
-            sys.exit("set TD_MODAL_SITE to a site-packages directory that contains the modal client (or install modal in this env)")
-        return subprocess.call([sys.executable, str(ROOT / "scripts/redteam_suite.py"), "--run", "quickstart", "--tasks", "A2",
-                                "--cases", "gold,F11", "--workers", "2", "--cap-usd", "0.15"], env=env)
+        if importlib.util.find_spec("modal") is None and not env.get("TD_MODAL_SITE"):
+            sys.exit("the modal client is not importable: pip install modal && modal token new (or set TD_MODAL_SITE to its site-packages)")
+        return subprocess.call(modal_command(a.seed, a.fake), env=env)
     return 0
 
 

@@ -7,7 +7,8 @@ recomputed on the trusted side). Nothing here weakens or bypasses the verifier. 
 rule-of-three denominators.
 
   redteam_suite.py [--run NAME] [--tasks A2,B_DUP] [--workers N] [--cap-usd X] [--list]
-Needs TD_KEY (any hex) and TD_MODAL_SITE (site-packages holding the modal client) in the environment.
+Needs TD_KEY (any hex) in the environment and an importable modal client; TD_MODAL_SITE (a site-packages directory) is an optional
+override for a modal client installed in a separate environment. --seed N runs the generator's scenario for seed N instead of --tasks.
 Writes redteam_results/redteam_<run>.json and REDTEAM_TABLE.md (or $TD_RESULTS_DIR). --list prints the cases and executes nothing."""
 from __future__ import annotations
 
@@ -528,10 +529,12 @@ FORMAT_CHECK = "v1"     # --verifier v1|v1.1 (v1 = the frozen checkpoint-format 
 def run(args) -> int:
     if not os.environ.get("TD_KEY"):
         sys.exit("TD_KEY (any random hex) must be set: it keys the data server's salt")
-    try:
-        import modal  # noqa: F401
-    except ImportError:
-        sys.path.append(os.environ["TD_MODAL_SITE"])    # the Modal client lives in a separate venv, appended AFTER the repo venv
+    import importlib.util
+    if importlib.util.find_spec("modal") is None:
+        site = os.environ.get("TD_MODAL_SITE")           # optional: a modal client in a separate venv, appended AFTER the repo venv
+        if not site:
+            sys.exit("the modal client is not importable: pip install modal (or set TD_MODAL_SITE to its site-packages)")
+        sys.path.append(site)
     from traindoctor_env import modal_backend as sandbox_backend
     from traindoctor_env import reexec
     from traindoctor_env.oracle import reference_solution
@@ -620,9 +623,14 @@ def main(argv=None) -> int:
     p.add_argument("--cases", default="", help="comma-separated case ids to run (smoke)")
     p.add_argument("--limit", type=int, default=0, help="only the first N cases (smoke)")
     p.add_argument("--verifier", choices=("v1", "v1.1"), default="v1", help="checkpoint-format check; v1.1 is opt-in")
+    p.add_argument("--seed", type=int, default=None, help="run the generator's scenario for this seed (as scripts/quickstart.py builds it)")
     p.add_argument("--list", action="store_true")
     a = p.parse_args(argv)
     a.tasks = a.tasks.split(",")
+    if a.seed is not None:
+        from traindoctor_env.scenario import make_scenario
+        SCENARIOS[f"seed{a.seed}"] = make_scenario(a.seed)
+        a.tasks = [f"seed{a.seed}"]
     if a.list:
         from jobs.build import materialize
         from traindoctor_env.scenario import job_spec
