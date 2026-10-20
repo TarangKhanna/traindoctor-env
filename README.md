@@ -1,18 +1,20 @@
 # TrainDoctor
 
-An executable RL environment for diagnosing and repairing distributed ML training failures, with a verifier that checks recovery.
+TrainDoctor is an executable RL environment in which agents diagnose and repair failed multi-process PyTorch training jobs.
+
+The core problem: a job can restart cleanly, with normal-looking loss, and still skip or duplicate data or restore inconsistent optimizer state. The verifier checks recovery from launcher-controlled records (sample delivery, captured checkpoints, process history) and validates checkpoint state by replaying the update rule independently, rather than trusting the job's own logs.
 
 [Quickstart](#quickstart) · [Demo](docs/DEMO.md) · [Task suite](docs/TASKS.md) · [Architecture](ARCHITECTURE.md) · [Research results](https://github.com/TarangKhanna/traindoctor-research)
 
-Agents investigate executed multi-process PyTorch (Gloo) failures, identify the cause, cite evidence and repair the job. The suite has four fault kinds across two failure families, plus a healthy-job control:
+Agents investigate executed 3- or 4-process (Gloo) failures, name the cause, cite evidence and repair the job. The suite has four fault kinds in two families, plus a healthy-job control:
 
-- **Distributed communication failures:** a rank enters a mismatched collective (A1), or a rank stalls before communication and never reaches the collective (A2). In both, the ranks that report a failure show the same collective timeout; in A2 the stalled rank itself is killed by the launcher watchdog.
-- **Silent corruption after recovery:** a worker fails, the job restarts, loss looks normal, but checkpoint and sampler state disagree, so samples are skipped (B_SKIP) or processed twice (B_DUP).
-- **Healthy control:** a job with no fault (B_OK), where the correct answer is no fault.
+- Communication failures: a rank enters a mismatched collective (A1), or a rank stalls before communication and never reaches the collective (A2). In both, the ranks that report a failure show the same collective timeout; in A2 the stalled rank itself is killed by the launcher watchdog.
+- Silent corruption after recovery: a worker fails, the job restarts, loss looks normal, but checkpoint and sampler state disagree, so samples are skipped (B_SKIP) or processed twice (B_DUP).
+- Healthy control: a job with no fault (B_OK), where the correct answer is no fault.
 
 Tier A provides a single-turn evidence bundle and repair menu for RL training and evaluation. Tier B exposes the same snapshot through interactive tools for logs, traces, source and config, with code edits applied and re-executed. Tier B is a development environment, not a validated multi-turn RL benchmark.
 
-A job can exit cleanly with normal-looking loss while consuming the wrong samples or restoring inconsistent optimizer state. TrainDoctor verifies repairs to real four-process jobs using launcher-controlled evidence and independent optimizer-state reconstruction, as described [below](#how-recovery-verification-works).
+Repairs are checked against launcher-controlled evidence and an independent reconstruction of optimizer state ([how it works](#how-recovery-verification-works)).
 
 ## Worked example: a repair that runs but is wrong
 
@@ -22,18 +24,18 @@ In the A1 task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce
 
 Setting `world_size` from 4 to 1 (fake repair F11) removes the hang and completes the job while changing the training run.
 
-- **Quickstart scenario (seed 123):** the verifier reports the wrong worker count, 96 missing samples and parameters that differ from the reference.
-- **Red-team run (task instance A1_src, replayed in a Modal sandbox):** 72 missing and 8 duplicated samples for the same fake ([per-case table](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/REDTEAM_TABLE.md)). The two sets of counts come from different seeds and are not comparable.
+- Quickstart scenario (seed 123): the verifier reports the wrong worker count, 96 missing samples and parameters that differ from the reference.
+- Red-team run (task instance A1_src, replayed in a Modal sandbox): 72 missing and 8 duplicated samples for the same fake ([per-case table](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/REDTEAM_TABLE.md)). The two sets of counts come from different seeds and are not comparable.
 
 ## Where to look
 
-- **Verifier:** [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py)
-- **Tier A (bundle, prompt, scoring):** [`bundle.py`](traindoctor_env/bundle.py), [`tiera.py`](traindoctor_env/tiera.py)
-- **Tier B (tools):** [`tools.py`](traindoctor_env/tools.py)
-- **Launcher, data server, checkpoint capture:** [`jobs/`](jobs/)
-- **Design:** [ARCHITECTURE.md](ARCHITECTURE.md) and [docs/VERIFICATION.md](docs/VERIFICATION.md)
+- Verifier: [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py)
+- Tier A (bundle, prompt, scoring): [`bundle.py`](traindoctor_env/bundle.py), [`tiera.py`](traindoctor_env/tiera.py)
+- Tier B (tools): [`tools.py`](traindoctor_env/tools.py)
+- Launcher, data server, checkpoint capture: [`jobs/`](jobs/)
+- Design: [ARCHITECTURE.md](ARCHITECTURE.md) and [docs/VERIFICATION.md](docs/VERIFICATION.md)
 
-Research preview (v0.1): executable CPU/Gloo workloads with two synthetic failure families. It is not a general-purpose verifier for arbitrary production training jobs. This repository is the environment and verifier; training and evaluation results are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research).
+Research preview (v0.1): executable CPU/Gloo workloads with two synthetic failure families. It is not a general-purpose verifier for arbitrary production training jobs. This repository holds the environment and verifier; training and evaluation results are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research).
 
 ## Quickstart
 
@@ -78,17 +80,17 @@ The reward has three levels, each adding one requirement: V0 (correct diagnosis)
 
 `format_check='v1.2'` adds `history_intact` to v1.1: older checkpoint entries must be byte-identical to an earlier launcher capture, rejecting fabricated older checkpoints. v1 remains the default. See [docs/VERIFICATION.md](docs/VERIFICATION.md).
 
-Menu v3 is opt-in (`make_menu(..., version="v3")`), with valid alternatives and repairs that complete while violating training semantics. Its reconciled Modal-sandboxed audit covers 720 candidates: 60 reference repairs, 115 valid alternatives, 271 incorrect-but-completed repairs, 274 non-completions and 0 infrastructure errors. v1.2 accepts 175/175 valid repairs and 0/271 incorrect-but-completed repairs; v1 has 12 false rejections. These are development outcomes, with an oracle that shares the verifier's launcher records. The experiment is **NO-GO for RL**. Sources: [candidate accounting](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/ACCOUNTING.md), [report](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/REPORT.md).
+Menu v3 is opt-in (`make_menu(..., version="v3")`), with valid alternatives and repairs that complete while violating training semantics. Its reconciled Modal-sandboxed audit covers 720 candidates: 60 reference repairs, 115 valid alternatives, 271 incorrect-but-completed repairs, 274 non-completions and 0 infrastructure errors. v1.2 accepts 175/175 valid repairs and 0/271 incorrect-but-completed repairs; v1 has 12 false rejections. These are development outcomes, with an oracle that shares the verifier's launcher records. The experiment is NO-GO for RL. Sources: [candidate accounting](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/ACCOUNTING.md), [report](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/REPORT.md).
 
 ## Results (historical v0.1)
 
 Qwen3-4B was trained (LoRA SFT, then GRPO) on Modal cloud GPUs and evaluated in this environment, and the verifier was attacked. Claude Sonnet and Codex were evaluated separately as existing coding agents; they were not trained here. All results are exploratory and are not reproduced by this repository, which has no training or evaluation code and withholds the held-out seeds. Statistics, uncertainty and provenance are in the research repository's [evidence map](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/EVIDENCE_MAP.md) and [erratum](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/ERRATUM_mmd.md).
 
-- **Reward comparison:** on a held-out evaluation set, the V2 arm (recovery-aware reward) scored 10.36 points above the V0 arm (diagnosis-only reward), but the gain came from evidence grounding, not repair selection.
-- **Against continued SFT:** a single run with similar compute scored 29.7%; the V2 arm's +3.7-point difference is not clearly nonzero (95% interval -1.7 to +9.1).
-- **Development split:** V2 minus V0 was +4.64 points (interval -0.69 to +9.98), which is inconclusive; the minimum meaningful difference (7.2 in the frozen protocol, 20 in its amendment) was never reconciled.
-- **Verifier attacks:** none of 86 fake repairs was accepted, though 38 failed during execution rather than being caught by an invariant, and the attacks had no external review.
-- **Coding agents:** Claude Sonnet and Codex, evaluated separately from the Qwen3-4B results, both recovered all six development tasks (strict scores: Claude 5/6 for one missing evidence record, Codex 6/6), so the tasks are easy and do not rank agents.
+- Reward comparison: on a held-out evaluation set, the V2 arm (recovery-aware reward) scored 10.36 points above the V0 arm (diagnosis-only reward), but the gain came from evidence grounding, not repair selection.
+- Against continued SFT: a single run with similar compute scored 29.7%; the V2 arm's +3.7-point difference is not clearly nonzero (95% interval -1.7 to +9.1).
+- Development split: V2 minus V0 was +4.64 points (interval -0.69 to +9.98), which is inconclusive; the minimum meaningful difference (7.2 in the frozen protocol, 20 in its amendment) was never reconciled.
+- Verifier attacks: none of 86 fake repairs was accepted, though 38 failed during execution rather than being caught by an invariant, and the attacks had no external review.
+- Coding agents: Claude Sonnet and Codex, evaluated separately from the Qwen3-4B results, both recovered all six development tasks (strict scores: Claude 5/6 for one missing evidence record, Codex 6/6), so the tasks are easy and do not rank agents.
 
 ## Limitations
 
