@@ -161,7 +161,7 @@ def test_step_counter_mismatch_or_nonfinite_or_missing_model_fails_v11():
 def test_unknown_format_check_is_refused():
     with pytest.raises(ValueError):
         reexec.Replay.__init__(object.__new__(reexec.Replay), None, format_check="v2")
-    assert reexec.FORMAT_CHECKS == ("v1", "v1.1")
+    assert reexec.FORMAT_CHECKS[:2] == ("v1", "v1.1")   # later opt-in versions (v1.2) are appended, never replace these
 
 
 # --- end to end on a really executed Task B incident (local Gloo, repo-owned code) ---------------------------------

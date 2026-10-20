@@ -74,6 +74,7 @@ class FixOutcome:
     exec_mode: str = "sandboxed"    # sandboxed | modal_sandbox | dev_container (unverified DEV training reward only)
     fault_not_injected: bool = False  # the incident's planned worker failure could not be carried out
     sampler_behaviour: bool = True  # v1.1 only: post-restore sampler positions follow the reference (always True under v1)
+    history_intact: bool = True     # v1.2 only: no run re-committed an older checkpoint with new content (always True before)
 
 
 def mark_sandbox(out: FixOutcome, sandboxed: bool) -> FixOutcome:
@@ -235,7 +236,7 @@ def _format_ok(st: dict | None, c: dict, ref: dict, rc: dict) -> bool:
             and st["step"].tolist() == [c["step"]] and st["sampler"].tolist() == list(divmod(c["step"], spe)))
 
 
-FORMAT_CHECKS = ("v1", "v1.1")   # v1 (default, frozen): checkpoints must STORE the sampler position. v1.1 (opt-in, NOT active): the position is judged by behaviour; see tests/test_verifier_v11.py
+FORMAT_CHECKS = ("v1", "v1.1", "v1.2")   # v1 (default, frozen): checkpoints must STORE the sampler position. v1.1 (opt-in, NOT active): the position is judged by behaviour; see tests/test_verifier_v11.py. v1.2 (opt-in): v1.1 + history_intact
 
 
 def _format_ok_v11(st: dict | None, c: dict, ref: dict, rc: dict) -> bool:
@@ -286,6 +287,18 @@ def sampler_behaviour_ok(proto: list[dict], ledger: list[dict], load, rc: dict, 
                 return False
             if any(tuple(win[k][:2]) != divmod(base + k, spe) for k in win):
                 return False
+    return True
+
+
+def history_intact(proto: list[dict], ledger: list[dict]) -> bool:
+    """v1.2: a checkpoint a run's manifest lists BELOW the step it started from is history, not that run's work, so
+    _transitions skips it. It must then be byte-identical (same id, step and launcher hash) to a capture the launcher
+    made in an EARLIER run; otherwise the run fabricated or rewrote an old checkpoint, which the state checks never see."""
+    for rec in proto:
+        idx = next(i for i, r in enumerate(ledger) if r["run_id"] == rec["run_id"])
+        seen = {(c["ckpt_id"], c["step"], c["sha256"]) for r in ledger[:idx] for c in r["captures"]}
+        if any((c["ckpt_id"], c["step"], c["sha256"]) not in seen for c in rec["captures"] if c["step"] < rec["start_step"]):
+            return False
     return True
 
 
@@ -344,6 +357,7 @@ def check(jd: Path, snap: Snapshot, lost: int, tampered: tuple = (), before: fro
         and _close(loaded[(r["run_id"], c["file"])], refs[c["file"]], 0.0) for r, c in caps)
     fin_st, fin_ref = (loaded[(last["run_id"], final["file"])] if final else None), _ref_state(ref, steps)
     params_match = fin_st is not None and _close(fin_st, fin_ref, TOLERANCE, [k for k in fin_ref if k.startswith("model.")])
+    history = format_check != "v1.2" or history_intact(proto, led)
     if format_check == "v1":
         fmt, behaviour = bool(caps) and all(_format_ok(loaded[(r["run_id"], c["file"])], c, ref, rc) for r, c in caps), True
     else:
@@ -364,11 +378,12 @@ def check(jd: Path, snap: Snapshot, lost: int, tampered: tuple = (), before: fro
     ok_base = final is not None and ends_at_steps and lost <= ckpt_every and consistent and not tampered and joined
     # Sample coverage and every state transition must hold on BOTH paths: equality with the reference alone (the fast
     # path) never stands in for having trained on the data this run was served.
-    ok = ok_base and samples_ok and trans and behaviour and (fast or fmt)
+    ok = ok_base and samples_ok and trans and behaviour and history and (fast or fmt)
     return FixOutcome(ok, exact, params_match, samples_ok, resumes, applied_once, lost, consistent, tuple(tampered),
                       "" if joined else "I6 world size differs from the reference",
                       steps, final is not None, sum((w - g).values()), sum((g - w).values()), fast, trans,
-                      ("state_equal" if fast else "invariants") if ok else "", relaunches, sampler_behaviour=behaviour)
+                      ("state_equal" if fast else "invariants") if ok else "", relaunches, sampler_behaviour=behaviour,
+                      history_intact=history)
 
 
 def _fresh_protocol_dir(snap: Snapshot, ws_root: Path, tmp: Path) -> tuple[Path, set[str], int, dict, tuple]:
@@ -461,6 +476,13 @@ class Replay:
         self.relaunched = True
 
     def outcome(self) -> FixOutcome:
+        return self.outcomes((self.format_check,))[self.format_check]
+
+    def outcomes(self, format_checks: tuple) -> dict[str, FixOutcome]:
+        """One re-execution of the final job/, judged under each of `format_checks` (the run is shared, so the verdicts
+        differ only in the checks). outcome() is outcomes((self.format_check,))."""
+        if not format_checks or any(fc not in FORMAT_CHECKS for fc in format_checks):
+            raise ValueError(f"unknown format_check in {format_checks!r}")
         snap = self.snapshot
         task_b = snap.meta["task"] == "B"
         with tempfile.TemporaryDirectory() as tmp:
@@ -478,8 +500,11 @@ class Replay:
             lost = max(lost_work(jd, frontier, before),
                        lost_work(self.jd, snap.meta["frontier"], self.runs0, B_VALIDATION_SCRATCH_RUNS if task_b else 0))
             n = len(run_names(jd)) - len(before) + len(run_names(self.jd)) - len(self.runs0)
-            out = check(jd, snap, lost, tampered, before, expect_kill=task_b, relaunches=n, ref=ref, salt=sched,
-                        format_check=self.format_check)
+            outs = {fc: check(jd, snap, lost, tampered, before, expect_kill=task_b, relaunches=n, ref=ref, salt=sched,
+                              format_check=fc) for fc in format_checks}
+        return {fc: self._label(out) for fc, out in outs.items()}
+
+    def _label(self, out: FixOutcome) -> FixOutcome:
         out.detail = out.detail or "; ".join(self.notes)
         if self.backend == "modal":
             # Only this path sets the label, after run_resubmit returned: the job ran in a network-less gVisor sandbox.
@@ -489,6 +514,18 @@ class Replay:
             out.sandboxed, out.exec_mode = False, "dev_container"   # real outcome, kept unverified: strict V2 still rejects it
             return out
         return mark_sandbox(out, sandbox.available())
+
+
+def verify_fix_checks(snapshot: Snapshot, edits: list[Edit], format_checks: tuple, allow_unsandboxed: bool | None = None,
+                      backend: str | None = None) -> dict[str, FixOutcome]:
+    """verify_fix judged under several format checks from ONE re-execution."""
+    rp = Replay(snapshot, allow_unsandboxed, backend)
+    try:
+        for e in edits:
+            rp.edit(e)
+        return rp.outcomes(tuple(format_checks))
+    finally:
+        rp.close()
 
 
 def verify_fix(snapshot: Snapshot, edits: list[Edit], allow_unsandboxed: bool | None = None,
