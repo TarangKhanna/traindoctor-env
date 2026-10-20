@@ -148,6 +148,8 @@ class Episode:
                     diagnosis=self.diagnosis, done=self.done, result=self.result)
 
     def step(self, action: dict) -> tuple[str, bool]:
+        if self.snap is None:
+            return "error: episode not started (call reset first)", False
         if self.done:
             return "episode finished", True
         # Malformed agent output is answered with an error and never touches episode state.
@@ -161,7 +163,15 @@ class Episode:
             return "error: invalid arguments: args must be an object", False
         if err := _validate(args, spec):
             return f"error: invalid arguments: {err}", False
+        mark = len(self.calls)
         self.calls.append(dict(tool=name, args=args))
+        try:
+            return self._dispatch(name, args)
+        except BaseException:
+            del self.calls[mark:]  # a harness failure mid-step must not leave a call that never took effect
+            raise
+
+    def _dispatch(self, name: str, args: dict) -> tuple[str, bool]:
         if name in FIX_TOOLS:
             if name in ("write_file", "relaunch") and (msg := self._apply_fix(name, args)) != ACK:
                 self.calls.pop()
