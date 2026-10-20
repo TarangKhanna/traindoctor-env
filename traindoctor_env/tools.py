@@ -24,6 +24,8 @@ from traindoctor_env.verifiers import EVIDENCE_CAP, claimed_vs_verified
 
 MAX_CHARS = 1600
 MAX_FILE_CHARS = 8000
+MAX_WRITE_BYTES = 64 << 10
+MAX_PATTERN_CHARS = 256
 ACK = "recorded"
 ID_RE = re.compile(r"\bE[0-9a-f]{6}\b")
 # What the agent may read in its workspace (job directory); everything else is the harness's.
@@ -96,7 +98,12 @@ def _validate(args: dict, spec: dict) -> str | None:
 
 
 class Episode:
-    def __init__(self):
+    def __init__(self, max_tool_calls: int = 200, max_relaunches: int = 5):
+        if type(max_tool_calls) is not int or max_tool_calls < 1:
+            raise ValueError("max_tool_calls must be a positive integer")
+        if type(max_relaunches) is not int or max_relaunches < 0:
+            raise ValueError("max_relaunches must be a nonnegative integer")
+        self.max_tool_calls, self.max_relaunches = max_tool_calls, max_relaunches
         self.snap: Snapshot | None = None
         self.replay: Replay | None = None
 
@@ -112,6 +119,7 @@ class Episode:
         self.diagnosis: dict | None = None
         self.result: dict | None = None
         self.done = False
+        self.tool_calls = self.relaunches = 0
         return INTRO
 
     def close(self) -> None:
@@ -130,6 +138,13 @@ class Episode:
         return self.replay.outcome()
 
     def _apply_fix(self, name: str, args: dict) -> str:
+        if name == "write_file":
+            try:
+                oversized = len(args["content"]) > MAX_WRITE_BYTES or len(args["content"].encode("utf-8")) > MAX_WRITE_BYTES
+            except UnicodeEncodeError:
+                return "error: invalid arguments: content must be UTF-8 encodable"
+            if oversized:
+                return f"error: invalid arguments: content exceeds {MAX_WRITE_BYTES} bytes"
         if self.replay is None:
             self.replay = Replay(self.snap)
         if name == "write_file":
@@ -147,12 +162,21 @@ class Episode:
         return dict(calls=list(self.calls), actions=list(self.actions), observed_ids=sorted(self.observed_ids),
                     diagnosis=self.diagnosis, done=self.done, result=self.result)
 
+    def _terminal(self, status: str) -> tuple[str, bool]:
+        self.result = dict(status=status, claimed_fixed=(self.diagnosis or {}).get("claimed_fixed"),
+                           verified_fixed=None, outcome=None, claimed_vs_verified=None)
+        self.done = True
+        return status, True
+
     def step(self, action: dict) -> tuple[str, bool]:
         if self.snap is None:
             return "error: episode not started (call reset first)", False
         if self.done:
             return "episode finished", True
-        # Malformed agent output is answered with an error and never touches episode state.
+        if self.tool_calls >= self.max_tool_calls:
+            return self._terminal("budget_exhausted")
+        # Count attempts too: malformed output must not bypass the episode budget.
+        self.tool_calls += 1
         if not isinstance(action, dict):
             return "error: invalid action: must be an object with 'tool' and optional 'args'", False
         name, args = action.get("tool"), action.get("args", {})
@@ -163,10 +187,19 @@ class Episode:
             return "error: invalid arguments: args must be an object", False
         if err := _validate(args, spec):
             return f"error: invalid arguments: {err}", False
+        if name == "relaunch":
+            if self.relaunches >= self.max_relaunches:
+                return self._terminal("budget_exhausted")
+            self.relaunches += 1
         mark = len(self.calls)
         self.calls.append(dict(tool=name, args=args))
         try:
             return self._dispatch(name, args)
+        except Exception:
+            del self.calls[mark:]
+            if name in ("relaunch", "finish"):
+                return self._terminal("infrastructure_error")
+            raise
         except BaseException:
             del self.calls[mark:]  # a harness failure mid-step must not leave a call that never took effect
             raise
@@ -187,8 +220,11 @@ class Episode:
         if name == "finish":
             out = self.outcome()  # the final verification: re-execute the agent's final job/
             claimed = (self.diagnosis or {}).get("claimed_fixed")
-            self.result = dict(claimed_fixed=claimed, verified_fixed=out.ok, sandboxed=out.sandboxed, outcome=asdict(out),
+            self.result = dict(status="verified" if out.ok else "wrong_repair", claimed_fixed=claimed,
+                               verified_fixed=out.ok, sandboxed=out.sandboxed, outcome=asdict(out),
                                claimed_vs_verified=claimed_vs_verified(claimed, out.ok))
+            if not out.sandboxed:
+                return self._terminal("infrastructure_error")
             self.done = True
             return "episode finished", True
         obs = getattr(self, f"_{name}")(**args)
@@ -207,7 +243,7 @@ class Episode:
                 continue
             if window is not None and not (window[0] <= r["step"] <= window[1]):
                 continue
-            if pattern is not None and not pattern.search(r["text"]):
+            if pattern is not None and pattern not in r["text"]:
                 continue
             out.append(f"{r['id']} {r['text']}")
         return truncate_lines(out) if out else "(no matching records)"
@@ -232,11 +268,10 @@ class Episode:
         return self._records("samples", window=[step, step])
 
     def _grep_logs(self, pattern, ranks=None, window=None):
-        try:
-            rx = re.compile(pattern)
-        except re.error as e:
-            return f"error: invalid pattern: {e}"
-        return self._records("log", ranks=ranks, window=window, pattern=rx)
+        """Literal substring search: agent patterns never execute a regex in the harness."""
+        if len(pattern) > MAX_PATTERN_CHARS:
+            return f"error: invalid pattern: exceeds {MAX_PATTERN_CHARS} characters"
+        return self._records("log", ranks=ranks, window=window, pattern=pattern)
 
     def _ckpt_manifest(self):
         return self._records("ckpt")

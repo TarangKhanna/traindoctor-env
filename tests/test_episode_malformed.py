@@ -1,5 +1,5 @@
 """Rule: malformed agent output (an action or arguments of the wrong shape) gets an error observation and leaves the
-episode exactly as it was: nothing recorded, nothing executed, the episode not finished."""
+recorded state unchanged: nothing recorded or executed; each attempt still consumes the call budget."""
 from types import SimpleNamespace
 
 import pytest
@@ -48,3 +48,15 @@ def test_a_valid_action_after_malformed_ones_still_works():
     obs, done = ep.step({"tool": "job_status"})
     assert "E000001 job failed" in obs and not done
     assert ep.state()["calls"] == [dict(tool="job_status", args={})]
+
+
+@pytest.mark.parametrize("content", ["\ud800", "a\ud800z", "\udfff"])
+@pytest.mark.parametrize("existing_replay", [False, True])
+def test_unencodable_write_is_an_argument_error_without_changing_the_episode(content, existing_replay):
+    ep = _episode()
+    ep.replay = SimpleNamespace() if existing_replay else None
+    before, replay = ep.state(), ep.replay
+    obs, done = ep.step(dict(tool="write_file", args=dict(path="job/train.py", content=content)))
+    assert obs.startswith("error: invalid arguments:") and not done
+    assert ep.state() == before and ep.replay is replay
+    assert ep.tool_calls == 1

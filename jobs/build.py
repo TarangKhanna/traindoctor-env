@@ -9,7 +9,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 from jobs import safefs
-from jobs.config import dumps, loads
+from jobs.config import dumps, loads, validate_config
 from jobs.template import config as _  # noqa: F401  (template must be importable)
 
 TEMPLATE = Path(__file__).parent / "template"
@@ -134,6 +134,7 @@ def materialize(job_dir: Path, config: dict, bug: list[Edit] = ()) -> None:
         a2v2.overlay(job_dir)
     apply_edits(job_dir, list(bug))
     cfg = loads(safefs.read_bytes(job_dir, "job/config.yaml").decode())
+    validate_config(cfg)
     n_shards = -(-cfg["steps"] // cfg["data"]["shard_steps"])
     root = job_dir / cfg["data"]["root"]
     if v2:

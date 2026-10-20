@@ -16,7 +16,7 @@ ID = re.compile(r"\bE[0-9a-f]{6}\b")
 W = lambda path, content: {"tool": "write_file", "args": {"path": path, "content": content}}  # noqa: E731
 R = lambda **a: {"tool": "relaunch", "args": a}  # noqa: E731
 READS = [("job_status", {}), ("job_config", {}), ("ckpt_manifest", {}), ("scheduler_events", {}), ("list_files", {}),
-         ("rank_timeline", {}), ("grep_logs", {"pattern": "."}), ("process_state", {"rank": 0}),
+         ("rank_timeline", {}), ("grep_logs", {"pattern": ""}), ("process_state", {"rank": 0}),
          *[("collective_trace", {"step": s}) for s in range(4, 9)], *[("sample_ids", {"step": s}) for s in range(3, 11)]]
 BANNED = ["failure_class", "truth", "fixture", "oracle", "_private", "reference.json", "root cause", "recommend", "hint",
           "bug", "inject", "fault", "chaos", "hack", "workaround", "todo", "fixme", "jobs/template", "m2_candidates"]

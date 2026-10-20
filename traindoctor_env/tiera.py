@@ -104,15 +104,17 @@ class Reward:
 
 
 def reward(completion: str, truth: Truth, bundle: Bundle, menu: list[Candidate], table: dict[str, FixOutcome],
-           version: str = "V2") -> Reward:
+           version: str = "V2", format_check: str | None = None) -> Reward:
     """Invalid output scores 0.0 and is flagged: the format gate is a gate, not a term. Otherwise the reward is
     1.0 iff the chosen rung (V0 label correct; V1 label correct and evidence grounded; V2 verified, evidence-grounded,
     safe repair) holds, else 0.0. V1 is an opt-in training reward added for the reward-comparison protocol; V0 and V2
-    are unchanged."""
+    are unchanged. An explicit format_check must match the chosen outcome's provenance; otherwise the table's
+    own recorded check governs."""
     assert version in REWARD_VERSIONS, version
     a = parse_answer(completion, {c.id for c in menu})
     if a is None:
         return Reward(0.0, False, False)
-    v = answer_verdict(truth, bundle, menu, table, a.label, list(a.evidence), a.repair, a.claims_fixed)
+    v = answer_verdict(truth, bundle, menu, table, a.label, list(a.evidence), a.repair, a.claims_fixed,
+                       format_check=format_check)
     unsafe = next(c for c in menu if c.id == a.repair).destructive
     return Reward(float({"V0": v.v0, "V1": v.v1, "V2": v.v2}[version]), True, unsafe, v.v0, v.v1, v.v2)

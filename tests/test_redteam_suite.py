@@ -26,6 +26,13 @@ sys.modules["redteam"] = rt
 spec.loader.exec_module(rt)
 
 
+@pytest.mark.parametrize("args, expected", [([], "v1.2"), (["--verifier", "v1"], "v1"),
+                                           (["--verifier", "v1.1"], "v1.1"), (["--verifier", "v1.2"], "v1.2")])
+def test_cli_selects_verifier_without_running_sandboxes(monkeypatch, args, expected):
+    monkeypatch.setattr(rt, "run", lambda a: a.verifier)
+    assert rt.main(args) == expected
+
+
 def cases_for(name, d):
     sp = job_spec(rt.SCENARIOS[name])
     materialize(Path(d), sp.config, sp.bug)

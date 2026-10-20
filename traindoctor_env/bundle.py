@@ -396,20 +396,25 @@ def make_bundle(snap: Snapshot, menu: list[Candidate], truth: Truth) -> Bundle:
     return Bundle(snap.seed, kept, {"job/config.yaml": cfg}, pairs, text, est_tokens(text) + PROMPT_OVERHEAD)
 
 
-def outcome_table(snap: Snapshot, menu: list[Candidate], workers: int = 2) -> dict[str, FixOutcome]:
+def outcome_table(snap: Snapshot, menu: list[Candidate], workers: int = 2, format_check: str = "v1.2") -> dict[str, FixOutcome]:
     """Real re-execution of every candidate (two at a time)."""
     with ThreadPoolExecutor(workers) as ex:
-        return dict(zip((c.id for c in menu), ex.map(lambda c: verify_fix(snap, list(c.edits)), menu)))
+        return dict(zip((c.id for c in menu), ex.map(lambda c: verify_fix(snap, list(c.edits), format_check=format_check), menu)))
 
 
 def answer_verdict(truth: Truth, bundle: Bundle, menu: list[Candidate], table: dict[str, FixOutcome],
                    label: str, evidence_ids: list[str], repair_id: str, claimed_fixed: bool,
-                   live: Snapshot | None = None) -> Verdict:
+                   live: Snapshot | None = None, format_check: str | None = None) -> Verdict:
     """V0/V1/V2 for a Tier A answer (label, evidence ids, repair id, claimed_fixed). Every record in the bundle
     counts as observed. The table is the RL fast path; pass the snapshot as `live` to re-execute the repair
-    in a fresh trusted environment instead (final grading, audits)."""
+    in a fresh trusted environment instead (final grading, audits). An explicit format_check must match the
+    outcome's recorded check. Without one, the table's recorded check governs; live checks use verify_fix's default."""
     chosen = next(c for c in menu if c.id == repair_id)
     if live is not None:
-        table = {**table, repair_id: verify_fix(live, list(chosen.edits))}
+        table = {**table, repair_id: verify_fix(live, list(chosen.edits),
+                                             **({} if format_check is None else dict(format_check=format_check)))}
+    outcome = table[repair_id]
+    if format_check is not None and outcome.format_check != format_check:
+        raise ValueError(f"requested format_check {format_check!r}, outcome used {outcome.format_check!r}")
     return verdict(truth, label, evidence_ids, {r["id"] for r in bundle.records}, [list(bundle.records)],
-                   table[repair_id], chosen.destructive, claimed_fixed)
+                   outcome, chosen.destructive, claimed_fixed)

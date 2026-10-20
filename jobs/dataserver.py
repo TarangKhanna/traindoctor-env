@@ -18,6 +18,8 @@ from pathlib import Path
 
 import torch
 
+from jobs.config import validate_data_params
+
 IN_DIM, OUT_DIM = 8, 4
 MAX_LINE = 4096          # a request is a few dozen bytes; anything larger is abuse
 MAX_EPOCH = 1000
@@ -70,6 +72,9 @@ class DataSpec:
     num_samples: int
     batch_size: int
     seed: int
+
+    def __post_init__(self) -> None:
+        validate_data_params(self.world, self.num_samples, self.batch_size, self.seed)
 
     @property
     def steps_per_epoch(self) -> int:

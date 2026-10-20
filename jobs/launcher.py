@@ -25,7 +25,7 @@ from pathlib import Path
 from typing import Callable
 
 from jobs import safefs, sandbox, trusted
-from jobs.config import job_config
+from jobs.config import BadConfig, MAX_WORLD, job_config, validate_config
 from jobs.dataserver import DataServer, DataSpec, salt_for
 
 log = logging.getLogger(__name__)
@@ -52,7 +52,7 @@ class RankResult:
 @dataclass
 class JobResult:
     run_id: str
-    status: str  # completed | failed | watchdog_killed
+    status: str  # completed | failed | watchdog_killed | refused
     ranks: list[RankResult]
     last_step: int
     error_class: str | None
@@ -137,22 +137,16 @@ class _Rank:
         return bool(self.out) and now - self.progress_at > SEND_DEADLINE_S
 
 
-MAX_WORLD = 16
-
-
-class BadConfig(Exception):
-    """The job's config.yaml cannot be launched (unparsable, missing fields, absurd sizes). The config is agent-editable."""
-
-
 def launch_params(job_dir: Path) -> tuple[int, float, float, DataSpec]:
     try:
         cfg = job_config(job_dir)
-        world, pg, wd = int(cfg["world_size"]), float(cfg["pg_timeout_s"]), float(cfg["watchdog_s"])
-        spec = DataSpec(world, int(cfg["data"]["num_samples"]), int(cfg["batch_size"]), int(cfg["seed"]))
+        validate_config(cfg)
+        world, pg, wd = cfg["world_size"], cfg["pg_timeout_s"], cfg["watchdog_s"]
+        spec = DataSpec(world, cfg["data"]["num_samples"], cfg["batch_size"], cfg["seed"])
+    except BadConfig:
+        raise
     except Exception as e:  # any parse/shape problem is the same refusal  # noqa: BLE001
         raise BadConfig(f"unreadable job config: {type(e).__name__}") from None
-    if not 1 <= world <= MAX_WORLD or spec.batch_size < 1 or spec.num_samples < 1:
-        raise BadConfig("job config outside launchable bounds")
     return world, pg, wd, spec
 
 
@@ -162,7 +156,11 @@ def run_job(job_dir: Path, run_id: str = "run0", resume_from: str | None = None,
             allow_unsandboxed: bool = False) -> JobResult:
     """kill=(rank, step): fail that rank once it has committed `step` (a worker failure), at the rendezvous."""
     job_dir = Path(job_dir)
-    world, pg_timeout, watchdog, spec = launch_params(job_dir)
+    try:
+        world, pg_timeout, watchdog, spec = launch_params(job_dir)
+    except BadConfig as e:
+        trusted.append_event(job_dir, "launcher_refused", str(e))
+        return JobResult(run_id, "refused", [], -1, "BAD_CONFIG")
     safefs.makedirs(job_dir, f"runs/{run_id}/stderr")
     port = free_port()
     server = DataServer(spec, salt or salt_for("default"))

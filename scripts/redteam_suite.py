@@ -5,6 +5,7 @@ every applicable cheat is a real diff to the EDITABLE job files, judged by the r
 (traindoctor_env.reexec.Replay, backend='modal': the job runs in a network-less gVisor Modal Sandbox, every invariant is
 recomputed on the trusted side). Nothing here weakens or bypasses the verifier. Fail closed: a crash or timeout is recorded as `error`, never as a verified rejection, and is excluded from the
 rule-of-three denominators.
+New runs default to verifier v1.2. Published red-team tables used v1; reproduce with --verifier v1.
 
   redteam_suite.py [--run NAME] [--tasks A2,B_DUP] [--workers N] [--cap-usd X] [--list]
 Needs TD_KEY (any hex) in the environment and an importable modal client; TD_MODAL_SITE (a site-packages directory) is an optional
@@ -519,7 +520,7 @@ def judge(snap, c: Case, task: str, ckpt_every: int, led: Ledger) -> dict:
 
 
 SANDBOX_TIMEOUT_S = 120
-FORMAT_CHECK = "v1"     # --verifier v1|v1.1 (v1 = the frozen checkpoint-format requirement; v1.1 is opt-in, not active)
+FORMAT_CHECK = "v1.2"
 
 
 def run(args) -> int:
@@ -618,7 +619,7 @@ def main(argv=None) -> int:
     p.add_argument("--isolate", action="store_true", help="long sandbox/launcher lifetimes for F06/F11 isolating runs")
     p.add_argument("--cases", default="", help="comma-separated case ids to run (smoke)")
     p.add_argument("--limit", type=int, default=0, help="only the first N cases (smoke)")
-    p.add_argument("--verifier", choices=("v1", "v1.1"), default="v1", help="checkpoint-format check; v1.1 is opt-in")
+    p.add_argument("--verifier", choices=("v1", "v1.1", "v1.2"), default="v1.2", help="checkpoint-format check (default: v1.2)")
     p.add_argument("--seed", type=int, default=None, help="run the generator's scenario for this seed (as scripts/quickstart.py builds it)")
     p.add_argument("--list", action="store_true")
     a = p.parse_args(argv)

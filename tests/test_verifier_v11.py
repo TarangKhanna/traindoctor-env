@@ -3,7 +3,7 @@ Rule: the position each rank requested right after a restore,
 as recorded by the harness-owned data server, must equal the reference position for the committed step of the
 checkpoint resumed from, then advance one reference step per acknowledged step; restored state, sample accounting
 and every other invariant stay. Nothing a job wrote (logs, progress files, a stored position it chose) can
-substitute for that. The default stays v1 (frozen): a checkpoint must store the position."""
+substitute for that. Explicit v1 retains the historical rule: a checkpoint must store the position."""
 import copy
 import importlib.util
 import json
@@ -307,11 +307,10 @@ def test_real_checkpoint_step_counter_inconsistent_with_capture_fails_v11(runs, 
     assert not judge(runs["alt2"], "v1.1", jd).ok
 
 
-@pytest.mark.executed
-def test_default_and_frozen_verifiers_untouched():
+def test_v12_default_and_historical_verifiers_selectable():
     import inspect
     from traindoctor_env import verifiers
-    assert inspect.signature(reexec.check).parameters["format_check"].default == "v1"
-    assert inspect.signature(reexec.Replay.__init__).parameters["format_check"].default == "v1"
-    assert inspect.signature(reexec.verify_fix).parameters["format_check"].default == "v1"
+    assert inspect.signature(reexec.check).parameters["format_check"].default == "v1.2"
+    assert inspect.signature(reexec.Replay.__init__).parameters["format_check"].default == "v1.2"
+    assert inspect.signature(reexec.verify_fix).parameters["format_check"].default == "v1.2"
     assert "format_check" not in Path(verifiers.__file__).read_text() if hasattr(verifiers, "__file__") else True

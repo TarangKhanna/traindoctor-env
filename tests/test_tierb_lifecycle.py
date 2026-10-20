@@ -1,5 +1,5 @@
 """Rules for the Tier B episode lifecycle (CPU only; the workspace is a stub, no job is executed):
-a step that raises leaves no trace of the call; a finished episode is inert; reset leaves nothing of the previous
+infrastructure failures terminate without a repair verdict; a finished episode is inert; reset leaves nothing of the previous
 episode; finish without a diagnosis is 'no_claim'; the final reward comes from the final workspace."""
 from types import SimpleNamespace
 
@@ -49,20 +49,16 @@ def test_step_before_reset_is_an_error_not_an_attribute_error():
     assert obs.startswith("error:") and not done
 
 
-def test_relaunch_that_raises_leaves_no_recorded_call():
-    ep = _episode(FakeReplay(fail_relaunch=True))
-    before = ep.state()
-    with pytest.raises(RuntimeError):
-        ep.step({"tool": "relaunch", "args": {}})
-    assert ep.state() == before and ep.phase == 0 and len(ep.phase_records) == 1
-
-
-def test_finish_that_raises_leaves_the_episode_open_and_unrecorded():
-    ep = _episode(FakeReplay(fail_outcome=True))
-    before = ep.state()
-    with pytest.raises(RuntimeError):
-        ep.step({"tool": "finish"})
-    assert ep.state() == before and not ep.done
+@pytest.mark.parametrize("tool,kwargs", [("relaunch", dict(fail_relaunch=True)), ("finish", dict(fail_outcome=True))])
+def test_infrastructure_failure_is_terminal_and_has_no_repair_verdict(tool, kwargs):
+    ep = _episode(FakeReplay(**kwargs))
+    assert ep.step({"tool": tool}) == ("infrastructure_error", True)
+    assert ep.calls == ep.actions == [] and ep.phase == 0 and len(ep.phase_records) == 1
+    assert ep.result["status"] == "infrastructure_error"
+    assert ep.result["verified_fixed"] is None and ep.result["claimed_vs_verified"] is None
+    frozen = ep.state()
+    assert ep.step({"tool": "finish"}) == ("episode finished", True)
+    assert ep.state() == frozen
 
 
 def test_finished_episode_is_inert():
@@ -103,11 +99,89 @@ def test_reset_closes_the_old_workspace_and_clears_all_episode_state():
     assert ep.phase == 0 and len(ep.phase_records) == 1
 
 
-@pytest.mark.xfail(strict=True, reason="no step/relaunch budget: the episode never ends on its own (see docs/TIERB_READINESS.md)")
 def test_episode_is_bounded_in_tool_calls():
     ep = _episode(FakeReplay())
     for _ in range(5000):
         _, done = ep.step({"tool": "job_status"})
         if done:
+            assert ep.result["status"] == "budget_exhausted"
+            assert ep.result["verified_fixed"] is None
+            assert len(ep.calls) == ep.max_tool_calls == 200
             return
     raise AssertionError("5000 tool calls accepted")
+
+
+def test_relaunch_budget_prevents_another_execution(monkeypatch):
+    monkeypatch.setattr("traindoctor_env.tools.public_records", lambda *args: [RECORD])
+    rp = FakeReplay()
+    ep = Episode(max_relaunches=2)
+    ep.reset(SimpleNamespace(records=[RECORD], seed=0))
+    ep.replay = rp
+    for _ in range(2):
+        assert ep.step({"tool": "relaunch"}) == ("recorded", False)
+    assert ep.step({"tool": "relaunch"}) == ("budget_exhausted", True)
+    assert rp.relaunches == 2 and ep.phase == 2 and len(ep.calls) == 2
+    assert ep.result["verified_fixed"] is None
+
+
+def test_invalid_calls_and_rejected_writes_still_consume_the_budget():
+    ep = Episode(max_tool_calls=2, max_relaunches=0)
+    ep.reset(SimpleNamespace(records=[RECORD], seed=0))
+    assert not ep.step(None)[1]
+    assert not ep.step({"tool": "write_file", "args": {"path": "job/a", "content": "x" * 65537}})[1]
+    assert ep.step({"tool": "finish"}) == ("budget_exhausted", True)
+    assert ep.replay is None and ep.calls == []
+    ep.reset(SimpleNamespace(records=[RECORD], seed=0))
+    assert ep.step({"tool": "relaunch"}) == ("budget_exhausted", True)
+
+
+@pytest.mark.parametrize("content", ["x" * 65537, "é" * 32769])
+def test_write_size_is_capped_in_bytes_before_creating_a_workspace(content):
+    ep = _episode()
+    obs, done = ep.step({"tool": "write_file", "args": {"path": "job/a.py", "content": content}})
+    assert obs.startswith("error:") and not done
+    assert ep.replay is None and ep.calls == []
+
+
+def test_write_at_the_byte_limit_is_accepted():
+    rp = FakeReplay()
+    ep = _episode(rp)
+    text = "é" * 32768
+    assert ep.step({"tool": "write_file", "args": {"path": "job/a.py", "content": text}}) == ("recorded", False)
+    assert rp.files == {"job/a.py": text}
+
+
+def test_grep_uses_bounded_literal_patterns():
+    ep = _episode()
+    ep.records = [dict(RECORD, kind="log", rank=0, step=3, text="waiting for shard"),
+                  dict(RECORD, id="E000002", kind="log", rank=1, step=4, text="a" * 10000 + "!")]
+    assert "waiting for shard" in ep.step({"tool": "grep_logs", "args": {"pattern": "waiting", "ranks": [0], "window": [3, 3]}})[0]
+    assert ep.step({"tool": "grep_logs", "args": {"pattern": "(a+)+$"}}) == ("(no matching records)", False)
+    assert ep.step({"tool": "grep_logs", "args": {"pattern": "x" * 257}})[0].startswith("error: invalid pattern")
+
+
+@pytest.mark.parametrize("kwargs", [dict(max_tool_calls=0), dict(max_tool_calls=True), dict(max_tool_calls=float("inf")),
+                                    dict(max_relaunches=-1), dict(max_relaunches=1.5)])
+def test_budget_arguments_are_validated(kwargs):
+    with pytest.raises(ValueError):
+        Episode(**kwargs)
+
+
+def test_reset_restores_both_budgets():
+    ep = Episode(max_tool_calls=1, max_relaunches=0)
+    snap = SimpleNamespace(records=[RECORD], seed=0)
+    ep.reset(snap)
+    ep.step({"tool": "relaunch"})
+    ep.reset(snap)
+    assert ep.tool_calls == ep.relaunches == 0
+    assert ep.step({"tool": "job_status"}) == ("E000001 job failed", False)
+
+
+def test_unsandboxed_finish_is_infrastructure_error_not_wrong_repair(monkeypatch):
+    rp = FakeReplay(ok=False)
+    out = rp.outcome()
+    out.sandboxed = False
+    monkeypatch.setattr(rp, "outcome", lambda: out)
+    ep = _episode(rp)
+    assert ep.step({"tool": "finish"}) == ("infrastructure_error", True)
+    assert ep.result["verified_fixed"] is None

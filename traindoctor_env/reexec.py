@@ -75,6 +75,7 @@ class FixOutcome:
     fault_not_injected: bool = False  # the incident's planned worker failure could not be carried out
     sampler_behaviour: bool = True  # v1.1 only: post-restore sampler positions follow the reference (always True under v1)
     history_intact: bool = True     # v1.2 only: no run re-committed an older checkpoint with new content (always True before)
+    format_check: str = "v1"        # class default preserves provenance for old pickled v1 outcomes
 
 
 def mark_sandbox(out: FixOutcome, sandboxed: bool) -> FixOutcome:
@@ -236,7 +237,7 @@ def _format_ok(st: dict | None, c: dict, ref: dict, rc: dict) -> bool:
             and st["step"].tolist() == [c["step"]] and st["sampler"].tolist() == list(divmod(c["step"], spe)))
 
 
-FORMAT_CHECKS = ("v1", "v1.1", "v1.2")   # v1 (default, frozen): checkpoints must STORE the sampler position. v1.1 (opt-in, NOT active): the position is judged by behaviour; see tests/test_verifier_v11.py. v1.2 (opt-in): v1.1 + history_intact
+FORMAT_CHECKS = ("v1", "v1.1", "v1.2")   # v1.2 is the default; historical checks remain explicitly selectable.
 
 
 def _format_ok_v11(st: dict | None, c: dict, ref: dict, rc: dict) -> bool:
@@ -326,7 +327,7 @@ def world_joined(digests: dict, rc: dict) -> bool:
 
 def check(jd: Path, snap: Snapshot, lost: int, tampered: tuple = (), before: frozenset = frozenset(),
           expect_kill: bool = False, relaunches: int = 0, ref: dict | None = None, salt=None,
-          format_check: str = "v1") -> FixOutcome:
+          format_check: str = "v1.2") -> FixOutcome:
     """`ref` and `salt` are the recovery target and data keying of THIS verification run (a fresh SaltSchedule and
     the reference computed under it); they default to the snapshot's own, which only exploratory runs use."""
     if format_check not in FORMAT_CHECKS:
@@ -337,7 +338,7 @@ def check(jd: Path, snap: Snapshot, lost: int, tampered: tuple = (), before: fro
     steps, ckpt_every = ref["steps"], rc["ckpt_every"]
     led = trusted.ledger(jd)
     proto = [r for r in led if r["run_id"] not in before]
-    base = dict(lost_steps=lost, tampered=tuple(tampered), relaunches=relaunches)
+    base = dict(lost_steps=lost, tampered=tuple(tampered), relaunches=relaunches, format_check=format_check)
     if not proto or not proto[-1]["completed"]:
         return dataclasses.replace(NO_RELAUNCH, **base)
     if expect_kill and not proto[0]["kill_done"]:
@@ -383,7 +384,7 @@ def check(jd: Path, snap: Snapshot, lost: int, tampered: tuple = (), before: fro
                       "" if joined else "I6 world size differs from the reference",
                       steps, final is not None, sum((w - g).values()), sum((g - w).values()), fast, trans,
                       ("state_equal" if fast else "invariants") if ok else "", relaunches, sampler_behaviour=behaviour,
-                      history_intact=history)
+                      history_intact=history, format_check=format_check)
 
 
 def _fresh_protocol_dir(snap: Snapshot, ws_root: Path, tmp: Path) -> tuple[Path, set[str], int, dict, tuple]:
@@ -434,7 +435,7 @@ class Replay:
     """The agent's workspace. Edits are plain file writes under job/; relaunch goes through resubmit."""
 
     def __init__(self, snapshot: Snapshot, allow_unsandboxed: bool | None = None, backend: str | None = None,
-                 format_check: str = "v1"):
+                 format_check: str = "v1.2"):
         if backend not in BACKENDS:
             raise ValueError(f"unknown replay backend {backend!r}")
         if format_check not in FORMAT_CHECKS:
@@ -516,7 +517,7 @@ class Replay:
         return mark_sandbox(out, sandbox.available())
 
 
-def verify_fix_checks(snapshot: Snapshot, edits: list[Edit], format_checks: tuple, allow_unsandboxed: bool | None = None,
+def verify_fix_checks(snapshot: Snapshot, edits: list[Edit], format_checks: tuple = ("v1.2",), allow_unsandboxed: bool | None = None,
                       backend: str | None = None) -> dict[str, FixOutcome]:
     """verify_fix judged under several format checks from ONE re-execution."""
     rp = Replay(snapshot, allow_unsandboxed, backend)
@@ -529,7 +530,7 @@ def verify_fix_checks(snapshot: Snapshot, edits: list[Edit], format_checks: tupl
 
 
 def verify_fix(snapshot: Snapshot, edits: list[Edit], allow_unsandboxed: bool | None = None,
-               backend: str | None = None, format_check: str = "v1") -> FixOutcome:
+               backend: str | None = None, format_check: str = "v1.2") -> FixOutcome:
     rp = Replay(snapshot, allow_unsandboxed, backend, format_check)
     try:
         for e in edits:
