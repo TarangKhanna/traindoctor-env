@@ -342,7 +342,8 @@ def make_menu(snap: Snapshot, truth: Truth, version: str = "v1") -> list[Candida
     return cands
 
 
-REPAIRS_V3 = "== repairs (each shows the lines it edits as they will read after the repair, marked '>'; removed lines marked '-') =="
+REPAIRS_V3 = ("== repairs (each shows the lines it edits as they will read after the repair, marked '>'; removed lines marked "
+              "'-'; unmarked lines are unchanged code, or the config keys above the edited line) ==")
 
 
 def render(records, config_text: str, menu_pairs, labels, repairs_header: str = "== repairs ==") -> str:

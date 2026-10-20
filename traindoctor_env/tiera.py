@@ -90,6 +90,9 @@ def parse_answer(completion: str, menu_ids: set[str]) -> Answer | None:
     return Answer(o["label"], tuple(ev), o["repair"], o["claims_fixed"])
 
 
+REWARD_VERSIONS = ("V0", "V1", "V2")
+
+
 @dataclass(frozen=True)
 class Reward:
     reward: float
@@ -103,11 +106,13 @@ class Reward:
 def reward(completion: str, truth: Truth, bundle: Bundle, menu: list[Candidate], table: dict[str, FixOutcome],
            version: str = "V2") -> Reward:
     """Invalid output scores 0.0 and is flagged: the format gate is a gate, not a term. Otherwise the reward is
-    1.0 iff the chosen rung (V0 label correct; V2 verified, evidence-grounded, safe repair) holds, else 0.0."""
-    assert version in ("V0", "V2")
+    1.0 iff the chosen rung (V0 label correct; V1 label correct and evidence grounded; V2 verified, evidence-grounded,
+    safe repair) holds, else 0.0. V1 is an opt-in training reward added for the reward-comparison protocol; V0 and V2
+    are unchanged."""
+    assert version in REWARD_VERSIONS, version
     a = parse_answer(completion, {c.id for c in menu})
     if a is None:
         return Reward(0.0, False, False)
     v = answer_verdict(truth, bundle, menu, table, a.label, list(a.evidence), a.repair, a.claims_fixed)
     unsafe = next(c for c in menu if c.id == a.repair).destructive
-    return Reward(float(v.v0 if version == "V0" else v.v2), True, unsafe, v.v0, v.v1, v.v2)
+    return Reward(float({"V0": v.v0, "V1": v.v1, "V2": v.v2}[version]), True, unsafe, v.v0, v.v1, v.v2)

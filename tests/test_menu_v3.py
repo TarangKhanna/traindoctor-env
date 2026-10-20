@@ -100,3 +100,25 @@ def test_v3_bundles_fit_the_token_cap_for_every_variant_at_3_and_4_ranks():
             assert b.tokens <= CAP_TOKENS and "marked '>'" in b.text
             seen.add((sc.kind, sc.world_size))
     assert {k for k, _ in seen} >= {"A1", "A2", "B_SKIP", "B_DUP", "B_OK"} and {w for _, w in seen} == {3, 4}
+
+
+@pytest.mark.parametrize("kind, variant", VARIANTS)
+def test_every_displayed_line_is_true_of_the_edited_job(kind, variant):
+    """Rule: the display describes the job AFTER the edit. Every '>' and unmarked line it shows is a line of the edited
+    file, and every '-' line is gone from it, in every variant (a display that shows a fixed value the edit leaves faulty
+    would misdescribe the repair)."""
+    for seed in range(4):
+        for world in (2, 3, 4):
+            with tempfile.TemporaryDirectory() as t:
+                snap, _ = snap_for(kind, variant, seed, world, t)
+                for c in make_menu(snap, None, "v3"):
+                    if c.role == "relaunch":
+                        continue
+                    out, path = applied(t, c), None
+                    for line in c.diff().splitlines():
+                        if line.startswith("--- "):
+                            path = line[4:]
+                        elif line[:2] in ("> ", "  "):
+                            assert line[2:] in out[path].splitlines(), (kind, seed, world, c.role, line)
+                        elif line[:2] == "- ":
+                            assert line[2:] not in out[path].splitlines(), (kind, seed, world, c.role, line)

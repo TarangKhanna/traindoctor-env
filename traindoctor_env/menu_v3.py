@@ -82,6 +82,20 @@ def _part(path: str, clean_text: str, anchor: str, result: str) -> tuple:
     return (path, tuple(lines[:lo]), tuple(res), tuple(lines[lo + len(a):]))
 
 
+def _cfg_part(clean_cfg: str, anchor: str, result: str) -> tuple:
+    """Display part for a config item: its key path only (the ancestor `key:` lines, which hold no values), never sibling
+    values. Sibling values can differ between the clean config and the job's (the faulty value itself), so showing them
+    would misdescribe what the edited file holds; the job's actual config is shown in full elsewhere in the prompt."""
+    path, pre, res, _ = _part("job/config.yaml", clean_cfg, anchor, result)
+    chain, depth = [], len(anchor) - len(anchor.lstrip())
+    for line in reversed(pre):
+        ind = len(line) - len(line.lstrip())
+        if ind < depth and line.rstrip().endswith(":"):
+            chain.insert(0, line)
+            depth = ind
+    return (path, tuple(chain), res, ())
+
+
 def render_item(parts: tuple, width: int = ITEM_CHARS_V3) -> str:
     """The edited lines marked '>' with as much real context as fits, padded to exactly `width` characters with a line
     of dots, so an item's size says nothing about which repair it is."""
@@ -141,13 +155,13 @@ def items(files: dict, config: dict, seed: int) -> list[tuple[str, list[Edit], b
     clean_cfg = re.sub(rf"^    (\d+): part-{world}\n", lambda g: f"    {g.group(1)}: part-{g.group(1)}\n", clean_cfg, flags=re.M)
     per_line = f"    {key}: all_reduce\n"
     out.append(("perrank:canonical", _set("job/config.yaml", f"    {key}: {mode}\n", per_line), False,
-                (_part("job/config.yaml", clean_cfg, per_line, per_line),)))
+                (_cfg_part(clean_cfg, per_line, per_line),)))
     out.append(("perrank:global_reduce_bcast", [Edit("job/config.yaml", "  mode: all_reduce\n", "  mode: reduce_bcast\n")], False,
-                (_part("job/config.yaml", clean_cfg, "  mode: all_reduce\n", "  mode: reduce_bcast\n"),)))
+                (_cfg_part(clean_cfg, "  mode: all_reduce\n", "  mode: reduce_bcast\n"),)))
     shard_line = f"    {r}: part-{r}\n"
     cur = stale.group(0) if stale else shard_line
     out.append(("shard:canonical", _set("job/config.yaml", cur, shard_line), False,
-                (_part("job/config.yaml", clean_cfg, shard_line, shard_line),)))
+                (_cfg_part(clean_cfg, shard_line, shard_line),)))
 
     write, load = _region(ckpt, WRITE_FORMS), _region(ckpt, LOAD_FORMS)
     for form, w, region in (("canonical", WRITE_CLEAN, OPT_LOAD + LOAD_CLEAN),
@@ -161,6 +175,6 @@ def items(files: dict, config: dict, seed: int) -> list[tuple[str, list[Edit], b
 
     out.append(("relaunch", [], False, ()))
     out.append(("exclude_rank", [Edit("job/config.yaml", f"world_size: {world}\n", f"world_size: {world - 1}\n")], True,
-                (_part("job/config.yaml", clean_cfg, f"world_size: {world}\n", f"world_size: {world - 1}\n"),)))
+                (_cfg_part(clean_cfg, f"world_size: {world}\n", f"world_size: {world - 1}\n"),)))
     assert len(out) == K_MENU_V3
     return out
