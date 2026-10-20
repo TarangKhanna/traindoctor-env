@@ -18,7 +18,7 @@ from traindoctor_env.verifiers import EVIDENCE_CAP, Verdict, certificate_ids, ed
 
 K_MENU = 6            # every variant shows exactly this many candidate repairs (menu v1)
 K_MENU_V2 = 9         # menu v2: the v1 six plus three plausible-but-invalid repairs shown in every variant (see _v2_extras)
-MENU_VERSIONS = ("v1", "v2")
+MENU_VERSIONS = ("v1", "v2", "v3")   # v3: traindoctor_env/menu_v3.py
 ITEM_CHARS = 360      # every menu item is rendered with exactly this many characters (real context lines, then blanks)
 CONFIG_WIDTH = 28     # job/config.yaml is shown with every line padded to this width
 QUOTA = dict(log=5, trace=6, samples=3)   # records per kind in a bundle (at least the certificate's), whatever the label
@@ -36,11 +36,14 @@ class Candidate:
     destructive: bool = False
     shown: tuple = ()         # neutral display parts (path, clean_lines, bug_lines, clean_file_lines); see _shown_parts
     clean_cfg: tuple = ()     # the CLEAN job/config.yaml lines: the no-change item's context (never the buggy text)
+    display: str = ""         # menu v3: the item's fixed rendering (menu_v3.render_item); used as is when set
 
     def diff(self, files: dict | None = None) -> str:
         """The candidate as a unified-diff-like text of exactly ITEM_CHARS characters: the changed lines, then real
         unchanged lines around them while they fit, then blank padding, so the size of an item says nothing about
         which repair it is."""
+        if self.display:
+            return self.display
         files = files or {}
         if not self.edits:
             lines = ["no change; relaunch from the latest checkpoint"]
@@ -304,6 +307,13 @@ def make_menu(snap: Snapshot, truth: Truth, version: str = "v1") -> list[Candida
     job's own text by a seed-only stream). For the no-fault variant the correct answer is the relaunch slot.
     version="v2" appends the three _v2_extras (K_MENU_V2 items); "v1" (default) is unchanged."""
     assert version in MENU_VERSIONS, version
+    if version == "v3":           # a function of the job's files and the seed only: the Truth is not read
+        from traindoctor_env import menu_v3
+        cands = [Candidate(candidate_id(snap.seed, "v3:" + role), role, tuple(e), d,
+                           display=menu_v3.render_item(parts) if parts else menu_v3.render_text(menu_v3.NO_CHANGE))
+                 for role, e, d, parts in menu_v3.items(snap.files, snap.config, snap.seed)]
+        random.Random(f"menu3:{snap.seed}").shuffle(cands)
+        return cands
     f = snap.files
     world = snap.config["world_size"]
     decoy = _decoy_edits(f, snap.config, snap.seed)
@@ -332,12 +342,15 @@ def make_menu(snap: Snapshot, truth: Truth, version: str = "v1") -> list[Candida
     return cands
 
 
-def render(records, config_text: str, menu_pairs, labels) -> str:
+REPAIRS_V3 = "== repairs (each shows the lines it edits as they will read after the repair, marked '>'; removed lines marked '-') =="
+
+
+def render(records, config_text: str, menu_pairs, labels, repairs_header: str = "== repairs ==") -> str:
     out = ["A distributed training job failed or misbehaved. Answer with: label, the ids of the records that "
            f"support it (at most {EVIDENCE_CAP}), the id of the repair to apply, and whether you claim it fixes the job.",
            "Labels: " + ", ".join(labels), "", "== job/config.yaml ==", config_text.rstrip(), "", "== records =="]
     out += [f"{r['id']} {r['text']}" for r in records]
-    out += ["", "== repairs =="]
+    out += ["", repairs_header]
     for rid, diff in menu_pairs:
         out += [f"{rid}:", diff]
     return "\n".join(out)
@@ -373,7 +386,7 @@ def make_bundle(snap: Snapshot, menu: list[Candidate], truth: Truth) -> Bundle:
     droppable.sort(key=lambda i: kind_of[i] in ALWAYS)          # stable: noise first, summary last
     while True:
         kept = tuple(r for r in snap.records if r["id"] in keep)
-        text = render(kept, cfg, pairs, ALL_LABELS)
+        text = render(kept, cfg, pairs, ALL_LABELS, REPAIRS_V3 if any(c.display for c in menu) else "== repairs ==")
         if est_tokens(text) + PROMPT_OVERHEAD <= CAP_TOKENS:
             break
         if not droppable:
