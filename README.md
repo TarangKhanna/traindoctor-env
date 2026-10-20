@@ -78,7 +78,7 @@ The reward has three levels, each adding one requirement: V0 (correct diagnosis)
 
 ## Opt-in verifier v1.2 and menu v3
 
-`format_check='v1.2'` adds `history_intact` to v1.1: older checkpoint entries must be byte-identical to an earlier launcher capture, rejecting fabricated older checkpoints. v1 remains the default. See [docs/VERIFICATION.md](docs/VERIFICATION.md).
+`format_check='v1.2'` adds `history_intact` to v1.1: older checkpoint entries must be byte-identical to an earlier launcher capture, rejecting fabricated older checkpoints. v1.2 is the default for new verifications; the published results used v1 and reproduce with `format_check="v1"`. See [docs/VERIFICATION.md](docs/VERIFICATION.md).
 
 Menu v3 is opt-in (`make_menu(..., version="v3")`), with valid alternatives and repairs that complete while violating training semantics. Its reconciled Modal-sandboxed audit covers 720 candidates: 60 reference repairs, 115 valid alternatives, 271 incorrect-but-completed repairs, 274 non-completions and 0 infrastructure errors. v1.2 accepts 175/175 valid repairs and 0/271 incorrect-but-completed repairs; v1 has 12 false rejections. These are development outcomes, with an oracle that shares the verifier's launcher records. The experiment is NO-GO for RL. Sources: [candidate accounting](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/ACCOUNTING.md), [report](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/REPORT.md).
 
