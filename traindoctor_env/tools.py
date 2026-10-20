@@ -150,12 +150,17 @@ class Episode:
     def step(self, action: dict) -> tuple[str, bool]:
         if self.done:
             return "episode finished", True
+        # Malformed agent output is answered with an error and never touches episode state.
+        if not isinstance(action, dict):
+            return "error: invalid action: must be an object with 'tool' and optional 'args'", False
         name, args = action.get("tool"), action.get("args", {})
-        spec = {**READ_TOOLS, **FIX_TOOLS, **END_TOOLS}.get(name)
+        spec = {**READ_TOOLS, **FIX_TOOLS, **END_TOOLS}.get(name) if isinstance(name, str) else None
         if spec is None:
             return f"error: unknown tool '{name}'", False
-        if not isinstance(args, dict) or (err := _validate(args, spec)):
-            return f"error: invalid arguments: {err or 'args must be an object'}", False
+        if not isinstance(args, dict):
+            return "error: invalid arguments: args must be an object", False
+        if err := _validate(args, spec):
+            return f"error: invalid arguments: {err}", False
         self.calls.append(dict(tool=name, args=args))
         if name in FIX_TOOLS:
             if name in ("write_file", "relaunch") and (msg := self._apply_fix(name, args)) != ACK:
