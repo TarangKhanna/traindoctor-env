@@ -31,7 +31,7 @@ import torch
 from jobs import manifest, safefs, sandbox, trusted
 from jobs.build import EDITABLE, Edit, apply_edits
 from jobs.dataserver import SaltSchedule, batch_tensors, salt_at
-from jobs.resubmit import SCRATCH, resubmit
+from jobs.resubmit import resubmit
 from traindoctor_env.snapshot import Snapshot, lineage, reference_for_config, run_names, step_batches
 
 TOLERANCE = 1e-5          # max abs difference between two numerically different but equivalent states

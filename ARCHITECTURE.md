@@ -1,10 +1,10 @@
 # Architecture
 
-TrainDoctor is an executable environment for diagnosing and repairing failed distributed training. **Modal/gVisor provides execution isolation; TrainDoctor provides the recovery verifier.**
+TrainDoctor diagnoses and verifies repairs to failed distributed training. **Modal/gVisor isolates execution; TrainDoctor verifies recovery.**
 
 ![Trust boundaries in TrainDoctor: untrusted rank processes, launcher-owned evidence inside Modal Sandbox, and independent verification outside.](docs/figures/fig_trust_boundary.svg)
 
-The agent submits edits to permitted job files. Inside an isolated Modal Sandbox, the patched PyTorch ranks run as an unprivileged user, while a launcher and private-socket data server manage rank identity, failure injection, batch delivery, run history and checkpoint captures. A separate verifier **outside** that sandbox checks the captured training state against a known-good reference. Copied checkpoints remain untrusted data until the independent checks pass.
+The agent submits edits to permitted job files. Inside an isolated Modal Sandbox, the patched PyTorch ranks run as an unprivileged user, while a launcher and private-socket data server manage rank identity, failure injection, batch delivery, run history and checkpoint captures. A verifier **outside** the sandbox checks captured training state against a known-good reference. Copied checkpoints remain untrusted data until the independent checks pass.
 
 ## Code map
 
@@ -20,6 +20,6 @@ The agent submits edits to permitted job files. Inside an isolated Modal Sandbox
 | Diagnosis/evidence/repair rewards | [`traindoctor_env/verifiers.py`](traindoctor_env/verifiers.py) |
 | Tier A prompt, menu and answer scoring | [`traindoctor_env/bundle.py`](traindoctor_env/bundle.py), [`tiera.py`](traindoctor_env/tiera.py) |
 
-Two distinct operations matter: **re-execution** runs the modified job; **independent update reconstruction** calculates what the expected training state should be, given the reference algorithm and delivered samples.
+**Re-execution** runs the modified job; **independent update reconstruction** calculates expected training state from the reference algorithm and delivered samples.
 
 This preview covers synthetic PyTorch/Gloo training with two failure families, **not arbitrary production FSDP/NCCL workflows**. See [verifier mechanisms](docs/VERIFICATION.md), [task definitions](docs/TASKS.md) and [results](https://github.com/TarangKhanna/traindoctor-research).

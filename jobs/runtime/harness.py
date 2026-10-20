@@ -9,7 +9,6 @@ import os
 import runpy
 import sys
 
-import torch
 from torch.optim.optimizer import register_optimizer_step_post_hook
 
 import td_client

@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 RESULTS = Path(os.environ.get("TD_RESULTS_DIR") or ROOT / "redteam_results")
 
-from jobs.build import EDITABLE, Edit  # noqa: E402
+from jobs.build import Edit  # noqa: E402
 from traindoctor_env.scenario import Scenario  # noqa: E402
 
 # World size 3 (the generator uses 3-4) so that "drop a rank" (F04) differs from "single process" (F11).
@@ -184,10 +184,6 @@ def _cfg(files: dict, pattern: str, new: str) -> Edit:
     return Edit("job/config.yaml", old, new + "\n")
 
 
-def _sub(path: str, old: str, new: str) -> Edit:
-    return Edit(path, old, new)
-
-
 def _train(old: str, new: str) -> Edit:
     return Edit("job/train.py", old, new)
 
@@ -224,7 +220,7 @@ dist.barrier = _swallow(dist.barrier)
 def build_cases(kind: str, variant: int, files: dict, details: dict, gold: list) -> list[Case]:
     """All cases for one task. `files` = the job's editable/other files as of the incident (job/...), `gold` = the
     reference repair's edits. Pure text work: nothing is executed."""
-    a_task, b_task = kind in ("A1", "A2"), kind.startswith("B_")
+    a_task = kind in ("A1", "A2")
     world = int(re.search(r"^world_size: (\d+)", files["job/config.yaml"], re.M).group(1))
     rank = details["rank"]
     cs: list[Case] = [Case("null", "null", False), Case("gold", "gold", True, list(gold))]

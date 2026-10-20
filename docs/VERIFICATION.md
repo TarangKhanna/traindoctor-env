@@ -1,6 +1,6 @@
 # TrainDoctor's recovery verifier
 
-**The objective is not to run an agent's patch safely; it is to determine whether that patch preserved the intended training computation.** TrainDoctor uses Modal's existing gVisor sandbox for isolation and implements the domain-specific execution record and state checks around it.
+**TrainDoctor checks whether a patch preserves the intended training computation.** Modal gVisor provides isolation; launcher records and domain-specific state checks establish recovery.
 
 This verifier knows the expected behavior of an intentionally small PyTorch/Gloo data-parallel MLP, including its sampler, checkpoint schedule and SGD-with-momentum update rule. It is **not a general mathematical verifier** for arbitrary production PyTorch, FSDP, NCCL, TPU or JAX programs.
 
@@ -42,7 +42,7 @@ Checkpoint metadata or even an apparently correct final tensor can be fabricated
 
 Main checks include consistent worker count and rank state, exact logical sample accounting, correct checkpoint/restored state, expected parameter transitions, bounded repeated work after failure, and integrity of non-editable files. Floating-point comparisons use numeric tolerances where appropriate; a legitimate repair is not required to produce bitwise-identical floating-point outputs.
 
-Two operations often called “replay” are distinct here:
+Replay has two distinct operations:
 
 - **Repair re-execution:** run the patch in an isolated environment and capture what happened.
 - **Independent update reconstruction:** recompute what the training algorithm should have done from the known reference rule and sample history.
@@ -51,7 +51,7 @@ Two operations often called “replay” are distinct here:
 
 [`traindoctor_env/verifiers.py`](../traindoctor_env/verifiers.py) separates three success conditions. **V0** checks diagnosis; **V1** additionally checks supporting *pre-intervention* evidence citations; **V2** additionally requires sandboxed, correctness-verified repair and a non-destructive action. A forged log emitted after the agent edits the job is not valid evidence for the original diagnosis.
 
-**V2 is full-task success, not repair selection alone.** In the Qwen3-4B comparison (reported in the research repository), the stronger-reward model cited better evidence but selected genuinely repairing actions at nearly the same rate as diagnosis-only GRPO. The training reward used precomputed exploratory repair outcomes; held-out scoring used live Modal re-execution.
+**V2 is full-task success, not repair selection alone.** In the Qwen3-4B comparison (reported in the research repository), the stronger-reward model cited better evidence but selected recovering actions at nearly the same rate as diagnosis-only GRPO. The training reward used precomputed exploratory repair outcomes; held-out scoring used live Modal re-execution.
 
 ## A concrete rejected shortcut
 
@@ -68,5 +68,3 @@ Across v1, **86 incorrect-repair attempts were not accepted**: 48 were rejected 
 - **Limited attacks:** the red team was produced within the project and has no independent external security audit.
 - **Limited learning signal:** menus v1 and v2 contain exactly one working fix, and the development tasks are too easy for strong coding agents. Menu v3 (`make_menu(..., "v3")`, opt-in, `traindoctor_env/menu_v3.py`) adds, at every repair location, equivalent rewrites and edits that let the job finish while breaking training (gradients not averaged, samples skipped, optimizer momentum not restored); which ones recover is decided by re-execution only. The agent comparison and a negative mutation pilot are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research).
 - **Reproducibility:** held-out seeds are withheld. Scored rollouts, live replay records, checksums and scripts are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research), not in this repository; some executed Gloo test configurations have not been validated in an unrestricted public CI environment.
-
-**Engineering takeaway:** sandbox isolation lets the agent's repair run; launcher-owned evidence and independent update checks make that repair **gradable for training correctness**.

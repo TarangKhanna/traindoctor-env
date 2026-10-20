@@ -1,29 +1,39 @@
 # Tests
 
-Counts below are from `PYTHONPATH=. python -m pytest -q -rs -rf -m "..."` run from a clean `git clone` with `requirements-cpu.txt` installed (torch 2.14.1 CPU), macOS arm64, 2026-10-19. `pytest.ini` deselects `sweep` by default and registers the `executed` marker.
+Historical counts below come from `PYTHONPATH=. python -m pytest -q -rs -rf -m "..."`, with `requirements-cpu.txt` (torch 2.14.1 CPU) on macOS arm64, 2026-10-19, except where noted. `pytest.ini` deselects `sweep` by default and registers `executed`. CI runs the non-executed selection on Python 3.12 and 3.13; skipped tests are not passes.
 
-| selection | Python | result |
-|---|---|---|
-| `-m "not sweep and not executed"` (what CI runs), repo venv with `transformers`, 2026-10-19, current branch | 3.12 | **199 passed, 14 skipped, 117 deselected** |
-| same selection, clean clone without `transformers`, before the quickstart CLI tests were added (`332782b`) | 3.12.9 and 3.13.2 | 176 passed, 17 skipped, 117 deselected on each; not re-run on the current branch |
-| `-m "executed and not sweep"` under the `sandbox-exec` profile, GitHub-hosted `macos-14` runner, Python 3.12 (python.org framework build), workflow `executed-macos` | 3.12 | **Not consistently passing.** All observed runs, 2026-10-19/20: (1) before the framework fix, 51 passed / 64 failed (the interpreter could not start under the profile); (2) branch `executed-macos` at `1d037a7`, 115 passed in 706 s; (3) `main` at `f36a0f6` (run 39297918958), 72 passed / 43 failed in 1508 s, the first scenario (A1_src) passed and later scenarios failed, cause not established; (4) rerun on `main` (run 39302209373) had not finished when this was written |
-| same selection on a developer Mac, other Python builds (uv, Homebrew), or Python 3.13 | | not run |
-| `-m sweep` | 3.12 | 2 collected; not run |
+| selection | Python | historical result |
+| --- | --- | --- |
+| `-m "not sweep and not executed"` (CI selection), repo venv with `transformers`, 2026-10-19 branch | 3.12 | **199 passed, 14 skipped, 117 deselected** |
+| Same selection, clean clone without `transformers`, before quickstart CLI tests (`332782b`) | 3.12.9 and 3.13.2 | 176 passed, 17 skipped, 117 deselected on each; not re-run on the later branch |
+| `-m "executed and not sweep"`, `sandbox-exec` profile, GitHub-hosted `macos-14`, python.org framework build, workflow `executed-macos` | 3.12 | **Not consistently passing.** Observed 2026-10-19/20: (1) before the framework fix, 51 passed / 64 failed (interpreter could not start); (2) branch `executed-macos`, `1d037a7`, 115 passed in 706 s; (3) `main`, `f36a0f6`, run 39297918958, 72 passed / 43 failed in 1508 s: first scenario A1_src passed, later scenarios failed, cause not established; (4) `main` rerun 39302209373 was unfinished at the time of the report |
+| Same executed selection on a developer Mac, other Python builds (uv, Homebrew), or Python 3.13 | | Not run |
+| `-m sweep` (bundle size and validity over every variant) | 3.12 | 2 collected; not run |
 
-The two rows are separate observed runs and are not comparable: the extra skips in the clean clone are `transformers` imports in `tests/test_token_cap.py`. Skipped tests are not passing tests. CI runs this selection on Python 3.12 and 3.13.
+The first two rows are separate, non-comparable runs; the clean clone's extra skips are `transformers` imports in `tests/test_token_cap.py`. The first row skips `tests/test_sandbox.py` (needs `sandbox-exec`) and `tests/test_token_cap.py` (needs `sandbox-exec` for verified outcome tables, or `transformers` and the Qwen3 tokenizer in the offline Hugging Face cache).
 
-To run the executed tests, use a host where `sandbox-exec` can be applied (an unrestricted macOS shell), or a configured Modal account: `PYTHONPATH=. python -m pytest -q -rs -rf -m "executed and not sweep"`. The `executed-macos` workflow runs the same selection on a GitHub-hosted macOS runner. Its first run failed 64 of 115 because the profile did not allow a framework Python's second binary (`Resources/Python.app/Contents/MacOS/Python`), so no job could start; with that rule added the run passed. That is one run on one runner and Python build, not evidence about other hosts.
+## Executed tests and host limitations
 
-- The 18 executed failures all raise `jobs.sandbox.SandboxUnavailable: job isolation was requested but sandbox-exec cannot be applied here`. These tests launch jobs under the macOS `sandbox-exec` profile, which cannot be nested inside the restricted shell this run used. They are environmental, but they have not been re-run on an unrestricted macOS machine, so the cause is inferred from the error text. The local sandbox is macOS-only; CI does not run the `executed` tests.
-- Skipped in the first row: `tests/test_sandbox.py` (needs `sandbox-exec`) and `tests/test_token_cap.py` (needs `sandbox-exec` for the verified outcome tables, or `transformers` and the Qwen3 tokenizer in the offline Hugging Face cache).
-- `-m sweep` (bundle size and validity sweep over every variant) was not run.
-- The Modal backend is exercised for real only by a live run: `scripts/quickstart.py --modal` (about $0.03, needs a Modal account). `tests/test_modal_sandbox_backend.py` covers the backend without Modal.
+Run `PYTHONPATH=. python -m pytest -q -rs -rf -m "executed and not sweep"` from an unrestricted macOS shell that permits `sandbox-exec`, or with a configured Modal account. The `executed-macos` workflow uses the same selection. Its initial 64 of 115 failures came from the profile blocking a framework Python's second binary (`Resources/Python.app/Contents/MacOS/Python`); adding that rule produced run (2). One runner and Python build do not establish support for other hosts.
 
-Linux: the `executed` tests are not part of the required CI because `sandbox-exec` does not exist there and the sandboxed verification path needs it. The non-required workflow `.github/workflows/executed-linux.yml` (manual dispatch) runs the Gloo subset with `CI=true TD_CI_UNSANDBOXED=1`; it has not been run, and tests that need OS isolation skip there.
+An earlier restricted-shell run reported 18 executed failures, all `jobs.sandbox.SandboxUnavailable: job isolation was requested but sandbox-exec cannot be applied here`. Nested sandbox restrictions are inferred from the error text; these failures were not re-run on an unrestricted Mac. The native sandbox is macOS-only, and required CI excludes executed tests.
 
-First `executed-linux` run (unsandboxed GitHub-hosted Ubuntu runner, 115 tests selected by `-m "executed and not sweep"`): 49 passed, 60 skipped (sandbox-exec), 6 failed, 195 deselected. The 6 failures all assert that a legitimate repair is verified (`ok=True`); `reexec.mark_sandbox` forces `ok=False` for any unsandboxed re-execution, so they cannot pass without OS isolation. They now skip when no sandbox is available. A macOS host run of the full selection has not been done, so the real-launcher suite is not claimed as passing.
+Linux lacks `sandbox-exec`. The optional, manually dispatched `.github/workflows/executed-linux.yml` runs the Gloo subset with `CI=true TD_CI_UNSANDBOXED=1`; tests requiring OS isolation skip. Initially unrun, its first unsandboxed GitHub-hosted Ubuntu run selected 115 tests: 49 passed, 60 skipped (`sandbox-exec`), 6 failed, 195 deselected. The 6 failures required a legitimate repair to return `ok=True`, while `reexec.mark_sandbox` forces `ok=False` for unsandboxed re-execution. Those tests now skip without a sandbox. At that stage, no macOS host run of the full selection had been done; the real-launcher suite was not claimed as passing.
 
+Failed runs report `FixOutcome(ok=False)` and downstream assertion failures without worker stderr, watchdog reason or launcher termination reason. The cause of run (3) remains unknown. Launcher startup grace and maximum runtime make timing sensitivity on a loaded runner plausible, but unproven. Native macOS execution remains an optional, experimental development path: its profile is a development convenience, not a security boundary. The framework-Python fix and tests remain; there is no clean executed-suite claim. Further diagnosis requires the first failing rank's stderr, exit status, launcher termination reason and trusted job record before changes.
 
-The failed runs report `FixOutcome(ok=False)` and downstream assertion failures without the worker stderr, watchdog reason or launcher termination reason, so the cause of run (3) is unknown. The launcher has a startup grace period and a maximum runtime, so timing sensitivity on a loaded runner is plausible but not shown. Native macOS execution is an optional, experimental development path (the README calls the profile a development convenience, not a security boundary); no clean executed-suite claim is made, and the framework-Python profile fix and its tests are kept. If verified local macOS execution becomes a requirement, the next step is to capture the first failing rank's stderr, exit status, launcher termination reason and trusted job record before changing anything.
+`tests/test_modal_sandbox_backend.py` tests the backend without Modal. A live `scripts/quickstart.py --modal` run exercises it for real (about $0.03, requires a Modal account). The fixed regression below provides separate current-code end-to-end validation.
 
-Current-code end-to-end validation does not depend on this: `scripts/modal_regression.py` replays a fixed set of gold, no-op and incorrect repairs in Modal gVisor sandboxes (see [MODAL_REGRESSION.md](MODAL_REGRESSION.md)).
+## Modal regression suite
+
+`scripts/modal_regression.py` replays current code against the frozen verifier in network-less Modal gVisor sandboxes: A1_src seed 90005, A1_cfg 90014, A2 90003, B_SKIP 90001, B_DUP 90000. Each kind must accept gold and reject null plus two repairs from `scripts/redteam_suite.py`: A kinds use F11 (`world_size=1`) and F03 (identity `all_reduce`); B kinds use F16 (restart from scratch) and F09 (zeroed checkpoint model). Exit 0 requires every expectation and `exec_mode=modal_sandbox` on every row; verifier, invariants and timeouts are unchanged.
+
+About 20 replays, about $0.07, requires Modal authentication:
+
+```bash
+SSL_CERT_FILE=/etc/ssl/cert.pem TD_KEY=00ff PYTHONPATH=. python scripts/modal_regression.py --cap-usd 0.5
+```
+
+Writes `regression_results/modal_regression.{md,json}`; `--list` prints cases without execution. **Recorded result:** code `f36a0f61bd005823f71e94c02bae4d4fac52f92d`, 2026-10-19 (UTC), Python 3.12.9, Modal client 1.6.2, script spend $0.074: 20 of 20 expectations held, 0 violations; 5 gold accepted, 5 null and 10 incorrect repairs rejected, all `modal_sandbox`. First rejecting invariants: A null/F03 = I1 `no_completed_relaunch`; A F11 = I6 `world_size`; B null/F16 = sample gaps and dups; B F09 = I4 `ranks_inconsistent`. [Full table](../regression_results/modal_regression.md).
+
+**Coverage limits:** not the 115 executed tests; one seed and 4 cases per kind, not the full cheat catalog; one run, with no repeat-run flakiness estimate. Spend is the script's estimate, not a Modal bill. The optional native macOS sandbox is not exercised.

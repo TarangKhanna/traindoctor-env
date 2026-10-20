@@ -1,41 +1,26 @@
 # TrainDoctor
 
-An executable RL environment for diagnosing and repairing distributed ML training failures, with a verifier that checks whether training actually recovered.
+An executable RL environment for diagnosing and repairing distributed ML training failures, with a verifier that checks recovery.
 
 [Quickstart](#quickstart) · [Demo](docs/DEMO.md) · [Task suite](docs/TASKS.md) · [Architecture](ARCHITECTURE.md) · [Research results](https://github.com/TarangKhanna/traindoctor-research)
 
-TrainDoctor turns executed multi-process PyTorch (Gloo) training failures into tasks for AI agents. Agents investigate an executed failure, identify the root cause, cite evidence and repair the training job. The suite has four fault kinds across two failure families, plus a healthy-job control:
+Agents investigate executed multi-process PyTorch (Gloo) failures, identify the cause, cite evidence and repair the job. The suite has four fault kinds across two failure families, plus a healthy-job control:
 
 - **Distributed communication failures:** a rank enters a mismatched collective (A1), or a rank stalls before communication and never reaches the collective (A2). In both, the ranks that report a failure show the same collective timeout; in A2 the stalled rank itself is killed by the launcher watchdog.
 - **Silent corruption after recovery:** a worker fails, the job restarts, loss looks normal, but checkpoint and sampler state disagree, so samples are skipped (B_SKIP) or processed twice (B_DUP).
 - **Healthy control:** a job with no fault (B_OK), where the correct answer is no fault.
 
-There are two modes over the same executed snapshot. Tier A is a single-turn bundle of evidence records and a menu of candidate repairs, used for RL training and evaluation. Tier B is an interactive development environment, not a validated multi-turn RL benchmark: tools expose logs, traces and the job's source and config, and the agent's code edits are applied and re-executed.
+Tier A provides a single-turn evidence bundle and repair menu for RL training and evaluation. Tier B exposes the same snapshot through interactive tools for logs, traces, source and config, with code edits applied and re-executed. Tier B is a development environment, not a validated multi-turn RL benchmark.
 
-The central problem is verifying the repair, not detecting the failure. A job can exit cleanly with normal-looking loss and still have consumed the wrong samples or restored inconsistent optimizer state.
-
-Code repairs are re-executed in an isolated Modal Sandbox. Launcher-controlled evidence (sample identity from a private data server, a checkpoint ledger) and an independent replay of the optimizer update let a verifier outside the sandbox check sample accounting, checkpoints, optimizer state and agreement between ranks.
-
-Rewards have three levels: V0 (diagnosis), V1 (plus grounded evidence) and V2 (plus correctness-verified recovery).
-
-## Why it is technically interesting
-
-- **Executed multi-process failures:** the faults are real four-process PyTorch/Gloo jobs that hang, restart or corrupt state, not text scenarios.
-- **Launcher-controlled evidence:** sample identity comes from a private-socket data server, not from logs the job writes.
-- **Checkpoint capture:** the launcher copies each checkpoint into its own ledger at commit time.
-- **Data accounting:** the verifier checks each scheduled sample was consumed exactly once per committed step.
-- **Independent optimizer-state reconstruction:** expected SGD-with-momentum updates are replayed from the batches the data server delivered.
-- **Sandboxed repair execution:** agent-edited code runs in a network-less Modal gVisor sandbox; verification happens outside it.
+A job can exit cleanly with normal-looking loss while consuming the wrong samples or restoring inconsistent optimizer state. TrainDoctor verifies repairs to real four-process jobs using launcher-controlled evidence and independent optimizer-state reconstruction, as described [below](#how-recovery-verification-works).
 
 ## Worked example: a repair that runs but is wrong
-
-The collective mismatch below is one example, not the whole environment: the suite also covers a rank stalled before communication, checkpoint and sampler disagreement after a restart, and a healthy control.
 
 In the A1 task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce`, and every rank times out with the same error.
 
 ![Four ranks at step 6: rank 2 calls broadcast while ranks 0, 1 and 3 call all_reduce, so all four ranks time out with COLLECTIVE_TIMEOUT](docs/figures/fig_failure.svg)
 
-A tempting shortcut is to set `world_size` from 4 to 1 (fake repair F11). The hang disappears and the job completes, but it is no longer the same training run.
+Setting `world_size` from 4 to 1 (fake repair F11) removes the hang and completes the job while changing the training run.
 
 - **Quickstart scenario (seed 123):** the verifier reports the wrong worker count, 96 missing samples and parameters that differ from the reference.
 - **Red-team run (task instance A1_src, replayed in a Modal sandbox):** 72 missing and 8 duplicated samples for the same fake ([per-case table](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/REDTEAM_TABLE.md)). The two sets of counts come from different seeds and are not comparable.
@@ -62,15 +47,15 @@ pip install -r requirements-cpu.txt
 python scripts/quickstart.py --fake F11 --out quickstart_out
 ```
 
-This builds a failed four-process job, applies the reference repair and the `world_size: 1` fake, and runs the recovery checks on both (about 30 seconds after installation). The local run prints `INVALID: unsandboxed re-execution` by design: the verifier does not count results from agent-edited code that ran without isolation. The verified path uses a Modal Sandbox ([docs/QUICKSTART.md](docs/QUICKSTART.md)). To use the package from another project: `pip install ".[modal]"` from a clone.
+This builds a failed four-process job and checks the reference repair and the `world_size: 1` fake (about 30 seconds after installation). The local run prints `INVALID: unsandboxed re-execution` by design: the verifier does not count results from agent-edited code that ran without isolation. The verified path uses a Modal Sandbox ([docs/QUICKSTART.md](docs/QUICKSTART.md)). To use the package from another project: `pip install ".[modal]"` from a clone.
 
 ## How recovery verification works
 
 ![An agent patch runs as untrusted ranks inside Modal's gVisor sandbox; a launcher-owned data server and checkpoint ledger record evidence; a verifier outside the sandbox checks it](docs/figures/fig_trust_boundary.svg)
 
-Modal's gVisor sandbox isolates the agent's code but says nothing about whether the result is correct. That is the verifier's job.
+Modal's network-less gVisor sandbox isolates agent-edited code; the external verifier checks recovery.
 
-Inside the sandbox, the launcher runs as root and the ranks as an unprivileged user. The launcher injects the worker failure, serves batches through a private-socket data server (sample identity comes from the socket, not from the job) and copies each checkpoint into its own ledger at commit time. The verifier runs outside and treats everything copied out as data. At each committed step it checks:
+Inside the sandbox, the launcher runs as root and the ranks as an unprivileged user. The launcher injects the worker failure, serves batches through a private-socket data server that determines sample identity independently of job-written logs and copies each checkpoint into its own ledger at commit time. The verifier runs outside and treats everything copied out as data. At each committed step it checks:
 
 - each scheduled sample was consumed once;
 - model, optimizer momentum and sampler position match the uninterrupted reference;
@@ -79,20 +64,13 @@ Inside the sandbox, the launcher runs as root and the ranks as an unprivileged u
 
 The checks are specific to this small MLP, sampler and optimizer, not a general verifier for production code. Details: [docs/VERIFICATION.md](docs/VERIFICATION.md), [ARCHITECTURE.md](ARCHITECTURE.md).
 
-## Tasks
-
-| Kind | Failure |
-| --- | --- |
-| A1 | A rank takes a different collective; every rank reports the timeout |
-| A2 | One rank stalls before communication and is killed by the watchdog; its peers report the timeout |
-| B_SKIP, B_DUP | After a worker failure and restart, checkpoint and sampler disagree and samples are skipped or counted twice |
-| B_OK | Healthy job; the correct answer is no fault |
+## Task evidence
 
 The ranks that report A1 and A2 failures show the same timeout, but the Tier A process records show a watchdog-killed rank only in A2, so process status alone separates A2 from A1 (a post-hoc audit on 120 new development seeds, [report](results/status_audit/run1/REPORT.md)). It cannot separate A1_src from A1_cfg. See [docs/TASKS.md](docs/TASKS.md) and [docs/EXTENDING.md](docs/EXTENDING.md).
 
 ## Tier A interface and rewards
 
-Tier A is the single-turn form of the environment. `traindoctor_env.bundle.make_bundle` turns an executed snapshot into a compact text of evidence-id-tagged records plus a menu of repairs, capped at 3,072 Qwen3 tokens. `traindoctor_env.tiera` renders the chat prompt, parses the JSON answer (label, cited evidence ids, repair, whether it claims to have fixed the job) and scores it. Tier B is multi-turn: tools in `traindoctor_env/tools.py` expose the same snapshot and the agent edits the job's declared editable files, with the diff replay-verified.
+`traindoctor_env.bundle.make_bundle` builds evidence-id-tagged records and a repair menu, capped at 3,072 Qwen3 tokens. `traindoctor_env.tiera` renders the chat prompt, parses the JSON answer (label, cited evidence ids, repair, claimed recovery) and scores it. Tier B tools in `traindoctor_env/tools.py` permit edits to declared editable files, with the diff replay-verified.
 
 The reward has three levels, each adding one requirement: V0 (correct diagnosis), V1 (plus cited evidence that was observed and is diagnostic for the mechanism), V2 (plus a repair that passes sandboxed re-execution, and no destructive action). A format violation scores zero. `audit/menu_leak.py` checks that the bundle and menu do not leak the label.
 
@@ -124,6 +102,19 @@ Qwen3-4B was trained (LoRA SFT, then GRPO) on Modal cloud GPUs and evaluated in 
 
 ## Documentation
 
-Guides are in [docs/](docs/README.md). Issues and pull requests are welcome, especially new red-team cases and tasks with several plausible repairs. Security reports: [SECURITY.md](SECURITY.md).
+For a 5-minute overview, read this README and [ARCHITECTURE.md](ARCHITECTURE.md).
+
+| Guide | Contents |
+| --- | --- |
+| [QUICKSTART.md](docs/QUICKSTART.md) | Install, local and sandboxed quickstart, unit-test commands |
+| [DEMO.md](docs/DEMO.md) | Oracle evidence, diagnosis, patch, replay, gold and fake verdicts |
+| [TASKS.md](docs/TASKS.md) | Five task kinds and two tiers |
+| [VERIFICATION.md](docs/VERIFICATION.md) | Invariants, `exec_mode` trust distinctions, red-team details |
+| [EXTENDING.md](docs/EXTENDING.md) | Package use and task extensions |
+| [TESTING.md](docs/TESTING.md) | Test selections, historical counts, known skips and Modal regression |
+| [TIERB_READINESS.md](docs/TIERB_READINESS.md) | Multi-turn RL readiness findings and proposed work |
+| [figures/](docs/figures/) | `fig_failure` (`world_size:1` fake removes a hang) and `fig_trust_boundary` |
+
+Contributions: new red-team cases and tasks with several plausible repairs. Security reports: [SECURITY.md](SECURITY.md).
 
 Apache-2.0 ([LICENSE](LICENSE), [NOTICE](NOTICE)). Citation: [CITATION.cff](CITATION.cff).

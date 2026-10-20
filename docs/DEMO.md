@@ -1,8 +1,8 @@
 # Demo: one failure, one repair, one fake repair
 
-**This is an oracle demonstration.** The diagnosis and patch below come from the reference solver (`traindoctor_env/oracle.py`), not from a model. No agent transcript is included: no validated one exists in this repository.
+**Oracle demonstration:** diagnosis and patch come from the reference solver (`traindoctor_env/oracle.py`). The repository has no validated model-agent transcript.
 
-Everything here is taken from recorded runs: the research repository's [`docs/RERUN_EXAMPLE.md`](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/RERUN_EXAMPLE.md) (seed 123, local), [`evidence/results/REDTEAM_TABLE.md`](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/REDTEAM_TABLE.md) and [`evidence/results/quickstart_verified_replay.txt`](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/quickstart_verified_replay.txt) (sandboxed). Reproduce the first with `python scripts/quickstart.py --fake F11` ([guide](QUICKSTART.md)).
+Sources are recorded runs in the research repository: [`docs/RERUN_EXAMPLE.md`](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/RERUN_EXAMPLE.md) (seed 123, local), [`evidence/results/REDTEAM_TABLE.md`](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/REDTEAM_TABLE.md) and [`evidence/results/quickstart_verified_replay.txt`](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/quickstart_verified_replay.txt) (sandboxed). Reproduce the first with `python scripts/quickstart.py --fake F11` ([guide](QUICKSTART.md)).
 
 ## 1. Failure evidence
 
@@ -53,4 +53,4 @@ Sandboxed verdicts (Modal gVisor, `exec_mode=modal_sandbox`). These come from di
 | A2 (quickstart replay, $0.008) | gold | yes | none |
 | A2 (quickstart replay, $0.008) | F11 | no | I1 no_completed_relaunch |
 
-The F11 patch removes the hang and the job completes, but the world size differs from the reference, samples are missing and the parameters are wrong. A seed-123 sandboxed replay is available through `python scripts/quickstart.py --modal` but has not been recorded.
+F11 completes with the wrong world size, missing samples and incorrect parameters. A seed-123 sandboxed replay is available through `python scripts/quickstart.py --modal` but has not been recorded.
