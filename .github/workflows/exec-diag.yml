@@ -27,8 +27,14 @@ jobs:
       - name: Sandbox availability
         run: |
           python -c "from jobs import sandbox; print('sandbox.available =', sandbox.available())"
-      - name: Oracle repairs, sequential then parallel
-        run: python scripts/diag_executed.py
+      - name: Scenario tests in pytest, failing outcome details
+        run: |
+          set +e
+          python -m pytest -q -l --tb=short -m "executed and not sweep" tests/test_scenarios.py tests/test_tiera.py > sc.txt 2>&1
+          echo "::notice title=summary::$(tail -n 1 sc.txt)"
+          grep -oE "detail='[^']{0,120}'" sc.txt | sort | uniq -c | sort -rn | head -5 | while read -r l; do echo "::notice title=detail::$l"; done
+          grep -oE "relaunches=[0-9]+, sandboxed=[A-Za-z]+, exec_mode='[a-z_]+'" sc.txt | sort | uniq -c | head -4 | while read -r l; do echo "::notice title=fields::$l"; done
+          grep -oE "steps_completed=[0-9]+, ckpt_valid=[A-Za-z]+, sample_gaps=[0-9]+, sample_dups=[0-9]+" sc.txt | sort | uniq -c | head -4 | while read -r l; do echo "::notice title=steps::$l"; done
       - name: Sandbox denials (last 60 min)
         if: always()
         run: |
