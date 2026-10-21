@@ -42,6 +42,22 @@ def _git_sha() -> str:
     return subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True).stdout.strip()
 
 
+def bad_config_check(jobs, led, rs) -> dict:
+    """A config the launcher must refuse, replayed through the verified Modal path: the outcome must be a non-completion
+    whose detail carries the BadConfig reason (no worker is started)."""
+    from jobs.build import Edit
+    from traindoctor_env.reexec import verify_fix
+    snap = next(j[0] for j in jobs if j[2] == "B_SKIP")
+    w = snap.config["world_size"]
+    try:
+        led.reserve(rs.SANDBOX_TIMEOUT_S + 30)
+        o = verify_fix(snap, [Edit("job/config.yaml", f"world_size: {w}", "world_size: 100000")], backend="modal")
+        led.book("B_SKIP-bad_config", rs.SANDBOX_TIMEOUT_S)
+        return dict(ok=o.ok, detail=o.detail, exec_mode=o.exec_mode, steps_completed=o.steps_completed)
+    except Exception as e:   # reported as a violation, never as a pass
+        return dict(error=f"{type(e).__name__}: {e}"[:300], exec_mode=None)
+
+
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--cap-usd", type=float, default=0.5)
@@ -89,6 +105,7 @@ def main(argv=None) -> int:
         rows = [first]
         with ThreadPoolExecutor(max_workers=a.workers) as ex:
             rows += [f.result() for f in [ex.submit(rs.judge, *j, led) for j in jobs[1:]]]
+        refusal = bad_config_check(jobs, led, rs)
     order = {(n, c): i for i, (n, cs) in enumerate(CASES.items()) for c in cs}
     rows.sort(key=lambda r: [i for (n, c), i in order.items() if n == r["task"] and c == r["id"]][0])
     viol = []
@@ -107,6 +124,13 @@ def main(argv=None) -> int:
         inv = "-" if r["accepted"] else (r.get("invariant") or "-")
         L.append(f"| {r['task']} | {SEEDS[r['task']]} | {r['id']} | {exp} | {got} | {inv} | {r.get('exec_mode')} | {'yes' if not bad else 'NO'} |")
         viol += [f"{r['task']}/{r['id']}: {b}" for b in bad]
+    want_detail = "BAD_CONFIG: world_size must be an integer in [1, 16]"
+    ok_ref = (not refusal.get("error") and not refusal["ok"] and refusal["detail"] == want_detail
+              and refusal["exec_mode"] == "modal_sandbox" and refusal["steps_completed"] == 0)
+    L.append(f"| B_SKIP | {SEEDS['B_SKIP']} | bad_config (world_size: 100000) | refused, detail {want_detail!r} | "
+             f"{refusal.get('error') or repr(refusal['detail'])} | - | {refusal.get('exec_mode')} | {'yes' if ok_ref else 'NO'} |")
+    if not ok_ref:
+        viol.append(f"B_SKIP/bad_config: {refusal}")
     try:
         modal_v = importlib.metadata.version("modal")
     except importlib.metadata.PackageNotFoundError:
@@ -118,7 +142,7 @@ def main(argv=None) -> int:
               f"spend (script counter) ${meta['spent_usd']:.3f}", f"violations: {len(viol)}"] + [f"- {v}" for v in viol]
     out = Path(os.environ.get("TD_RESULTS_DIR") or ROOT / "regression_results")
     out.mkdir(parents=True, exist_ok=True)
-    (out / "modal_regression.json").write_text(json.dumps(dict(meta=meta, rows=rows), indent=1, sort_keys=True, default=str))
+    (out / "modal_regression.json").write_text(json.dumps(dict(meta=meta, rows=rows, bad_config=refusal), indent=1, sort_keys=True, default=str))
     (out / "modal_regression.md").write_text("\n".join(L) + "\n")
     print("\n".join(L))
     return 1 if viol else 0
