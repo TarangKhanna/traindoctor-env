@@ -27,15 +27,21 @@ jobs:
       - name: Sandbox availability
         run: |
           python -c "from jobs import sandbox; print('sandbox.available =', sandbox.available())"
+      - name: Bind probe under the job profile
+        run: python scripts/diag_bind.py
       - name: Repeated oracle repairs with failure records
-        run: REPS=4 python scripts/diag_executed.py
+        run: REPS=2 python scripts/diag_executed.py
+      - name: Network denials
+        if: always()
+        run: |
+          log show --last 60m --style compact --predicate 'sender == "Sandbox"' 2>/dev/null | grep -i "network" | sed -E 's/^.*deny/deny/' | sed -E 's/[0-9]+\)/N)/' | sort | uniq -c | sort -rn | head -8 | while read -r l; do echo "::notice title=netdeny::$l"; done
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: diag
           path: diag.txt
           retention-days: 7
-      - name: Sandbox denials (last 60 min)
+      - name: Sandbox denials (last 60 min, non-network)
         if: always()
         run: |
           log show --last 60m --style compact --predicate 'sender == "Sandbox"' 2>/dev/null | grep -i deny | sed -E 's/^.{0,30}//' | sort | uniq -c | sort -rn | head -15 | while read -r l; do echo "::notice title=deny::$l"; done
