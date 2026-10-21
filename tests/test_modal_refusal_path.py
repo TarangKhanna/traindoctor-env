@@ -98,3 +98,30 @@ def test_refusal_text_outside_the_schema_grammar_is_never_quoted():
     assert refusal_detail(ns(status="refused", error_class="BAD_CONFIG", message="I6 worker failure")) == "BAD_CONFIG"
     assert refusal_detail(ns(status="refused", error_class="I6 worker failure", message="")) == "REFUSED"
     assert refusal_detail(ns()) == ""
+
+
+def test_every_real_bad_config_message_is_quoted_and_invented_fields_are_not():
+    """Rule: each message jobs.config actually raises is reported verbatim; a well-formed message about a field the
+    launcher never checks is not."""
+    import pytest
+
+    from jobs.config import BadConfig, validate_config
+    from test_launch_limits import LIMITS, config, set_value
+    seen = 0
+    for path, lower, upper in LIMITS:
+        cfg = config()
+        set_value(cfg, path, upper + 1)
+        with pytest.raises(BadConfig) as e:
+            validate_config(cfg)
+        res = types.SimpleNamespace(status="refused", error_class="BAD_CONFIG", message=str(e.value))
+        assert refusal_detail(res) == f"BAD_CONFIG: {e.value}"
+        seen += 1
+    assert seen == len(LIMITS)
+    fake = types.SimpleNamespace(status="refused", error_class="BAD_CONFIG", message="invented_field must be finite in [1, 2]")
+    assert refusal_detail(fake) == "BAD_CONFIG"
+
+
+def test_entry_result_survives_long_output():
+    """Rule: the result line is parsed from the full entry output, so a long diagnostic cannot drop it."""
+    line = '{"status": "refused", "error_class": "BAD_CONFIG", "message": "m", "stderr": {"r": "' + "\\ud83d" * 3000 + '"}}'
+    assert len(line) > 4000 and modal_backend.entry_result(line)["status"] == "refused"

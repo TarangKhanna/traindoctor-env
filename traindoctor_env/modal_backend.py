@@ -139,10 +139,10 @@ def run_resubmit(jd: Path, sched, kw: dict, timeout: int = 120, cpu: int = 4, me
         p.stdin.write_eof()
         p.stdin.drain()
         rc = p.wait()
-        info.update(entry_rc=rc, entry_stdout=p.stdout.read()[-4000:], entry_stderr=p.stderr.read()[-2000:])
+        out = p.stdout.read()
+        info.update(entry_rc=rc, entry_stdout=out[-4000:], entry_stderr=p.stderr.read()[-2000:], entry_result=entry_result(out))
         if rc != 0:
             raise RuntimeError(f"sandbox entry failed rc={rc}: {info['entry_stderr'][-500:]}")
-        info["entry_result"] = entry_result(info["entry_stdout"])
         names = ["protocol", "protocol.trusted"]     # the entry always creates the trusted dir (Task B has none beforehand)
         sb.exec("tar", "-cf", f"{WORK}/out.tar", "-C", WORK, *names).wait()
         blob = sb.filesystem.read_bytes(f"{WORK}/out.tar")

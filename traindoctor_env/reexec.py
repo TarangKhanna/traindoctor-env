@@ -327,7 +327,10 @@ def world_joined(digests: dict, rc: dict) -> bool:
     return len(digests) == rc["world_size"]
 
 
-_BAD_CONFIG_MESSAGE = re.compile(r"[a-z_]+ must be (an integer|finite) in \[[-+0-9.e]+, [-+0-9.e]+\]"
+_BAD_CONFIG_FIELDS = ("world_size", "num_samples", "batch_size", "seed", "steps", "hidden", "ckpt_every", "shard_steps",
+                      "warmup_steps", "pg_timeout_s", "watchdog_s", "step_time_s", "lr", "shard_mb", "cached_shards",
+                      "throttle_mb_s")   # every field jobs.config.bounded names
+_BAD_CONFIG_MESSAGE = re.compile(rf"({'|'.join(_BAD_CONFIG_FIELDS)}) must be (an integer|finite) in \[\d[\d.e-]*, \d[\d.e+-]*\]"
                                  r"|num_samples must provide at least one full batch per rank"
                                  r"|unreadable job config: [A-Za-z]+")
 
