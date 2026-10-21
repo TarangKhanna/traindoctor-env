@@ -325,18 +325,19 @@ def world_joined(digests: dict, rc: dict) -> bool:
     return len(digests) == rc["world_size"]
 
 
-def _refusal(jd: Path) -> str:
-    """The launcher's BAD_CONFIG reason when the last scheduler event is a refusal (no run was recorded), else ""."""
-    ev = trusted.events(jd)
-    if ev and ev[-1].get("event") in ("resubmit_refused", "launcher_refused"):
-        return f"BAD_CONFIG: {ev[-1].get('detail', '')}"
-    return ""
+def refusal_detail(res) -> str:
+    """The launcher's refusal of a relaunch, as outcome detail. BadConfig messages are fixed text naming a schema field;
+    a LOCK_HELD message quotes the job-writable lock file, so only its class is reported."""
+    if getattr(res, "status", None) != "refused":
+        return ""
+    return f"BAD_CONFIG: {res.message}" if res.error_class == "BAD_CONFIG" else str(res.error_class)
 
 
 def check(jd: Path, snap: Snapshot, lost: int, tampered: tuple = (), before: frozenset = frozenset(),
           expect_kill: bool = False, relaunches: int = 0, ref: dict | None = None, salt=None,
-          format_check: str = "v1.2") -> FixOutcome:
-    """`ref` and `salt` are the recovery target and data keying of THIS verification run (a fresh SaltSchedule and
+          format_check: str = "v1.2", *, refusal: str = "") -> FixOutcome:
+    """`refusal` is this verification run's own launcher refusal ("" if none), from refusal_detail. `ref` and `salt`
+    are the recovery target and data keying of THIS verification run (a fresh SaltSchedule and
     the reference computed under it); they default to the snapshot's own, which only exploratory runs use."""
     if format_check not in FORMAT_CHECKS:
         raise ValueError(f"unknown format_check {format_check!r}")
@@ -349,7 +350,7 @@ def check(jd: Path, snap: Snapshot, lost: int, tampered: tuple = (), before: fro
     base = dict(lost_steps=lost, tampered=tuple(tampered), relaunches=relaunches, format_check=format_check)
     if not proto or not proto[-1]["completed"]:
         # Launcher-written status only: rank-written text (stderr, exception names) is agent-controlled.
-        why = _refusal(jd) if not proto else f"NOT_COMPLETED: last relaunch {proto[-1].get('status', 'unknown')}"
+        why = refusal if not proto else f"NOT_COMPLETED: last relaunch {proto[-1].get('status', 'unknown')}"
         return dataclasses.replace(NO_RELAUNCH, detail=why, **base)
     if expect_kill and not proto[0]["kill_done"]:
         if proto[0].get("fault_not_injected"):
@@ -503,16 +504,17 @@ class Replay:
             start = manifest.latest_valid(jd, manifest.load(jd)) if not task_b else None
             sched = SaltSchedule.fresh_for(snap.salt, start["step"] if start else 0)
             ref = reference_for_config(snap.reference["pristine_config"], sched)
+            refusal = ""
             if self.backend == "modal":
                 from traindoctor_env import modal_backend as sandbox_backend
                 self.backend_info = sandbox_backend.run_resubmit(jd, sched, kw)
             else:
-                resubmit(jd, sandbox=True, salt=sched, allow_unsandboxed=self.allow_unsandboxed, **kw)
+                refusal = refusal_detail(resubmit(jd, sandbox=True, salt=sched, allow_unsandboxed=self.allow_unsandboxed, **kw))
             lost = max(lost_work(jd, frontier, before),
                        lost_work(self.jd, snap.meta["frontier"], self.runs0, B_VALIDATION_SCRATCH_RUNS if task_b else 0))
             n = len(run_names(jd)) - len(before) + len(run_names(self.jd)) - len(self.runs0)
             outs = {fc: check(jd, snap, lost, tampered, before, expect_kill=task_b, relaunches=n, ref=ref, salt=sched,
-                              format_check=fc) for fc in format_checks}
+                              format_check=fc, refusal=refusal) for fc in format_checks}
         return {fc: self._label(out) for fc, out in outs.items()}
 
     def _label(self, out: FixOutcome) -> FixOutcome:

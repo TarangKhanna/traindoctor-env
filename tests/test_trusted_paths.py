@@ -140,30 +140,39 @@ def test_world_shrink_edit_yields_fault_not_injected_not_exception(tmp_path):
     assert out.fault_not_injected and not out.ok and "fault plan not carried out" in out.detail
 
 
+
 def _bare_snapshot():
     return SimpleNamespace(reference=dict(config=dict(world_size=4, ckpt_every=2), steps=8), salt=None)
 
 
 def test_refused_config_reports_bad_config_reason_and_never_verifies(tmp_path):
     """Rule: a relaunch the launcher refused is a non-completion, and the outcome says why (BAD_CONFIG + reason)."""
-    from traindoctor_env.reexec import check
+    from jobs.resubmit import ResubmitResult
+    from traindoctor_env.reexec import check, refusal_detail
     jd = tmp_path / "workspace"
     jd.mkdir()
-    trusted.append_event(jd, "resubmit_refused", "world_size out of range")
-    out = check(jd, _bare_snapshot(), 0)
+    why = refusal_detail(ResubmitResult(False, "refused", None, "BAD_CONFIG", "world_size must be an integer in [1, 16]"))
+    out = check(jd, _bare_snapshot(), 0, refusal=why)
     assert not out.ok and out.steps_completed == 0 and out.path == ""
-    assert out.detail == "BAD_CONFIG: world_size out of range"
+    assert out.detail == "BAD_CONFIG: world_size must be an integer in [1, 16]"
 
 
-def test_no_refusal_keeps_empty_detail(tmp_path):
-    """Rule: the detail names BAD_CONFIG only when the launcher actually refused; otherwise the old empty detail stays."""
+def test_lock_refusal_never_quotes_the_job_writable_lock_file():
+    """Rule: outcome detail never carries text the agent's code wrote; a LOCK_HELD message quotes the lock file."""
+    from jobs.resubmit import ResubmitResult
+    from traindoctor_env.reexec import refusal_detail
+    res = ResubmitResult(False, "refused", None, "LOCK_HELD", "lock held by run_id=worker failure pid=1")
+    assert refusal_detail(res) == "LOCK_HELD"
+    assert refusal_detail(ResubmitResult(True, "completed", "r1", None, "")) == ""
+
+
+def test_stale_refusal_events_are_not_reported(tmp_path):
+    """Rule: only this verification run's refusal is reported; an older scheduler event in the copied workspace is not."""
     from traindoctor_env.reexec import check
     jd = tmp_path / "workspace"
     jd.mkdir()
+    trusted.append_event(jd, "resubmit_refused", "world_size must be an integer in [1, 16]")
     assert check(jd, _bare_snapshot(), 0).detail == ""
-    trusted.append_event(jd, "relaunch", "resume ckpt_000004")
-    assert check(jd, _bare_snapshot(), 0).detail == ""
-
 
 
 def test_incomplete_relaunch_reports_launcher_status_only(tmp_path):
@@ -174,3 +183,15 @@ def test_incomplete_relaunch_reports_launcher_status_only(tmp_path):
     trusted.append_run(jd, dict(run_id="r1", status="watchdog_killed", completed=False, captures=[]))
     out = check(jd, _bare_snapshot(), 0)
     assert not out.ok and out.path == "" and out.detail == "NOT_COMPLETED: last relaunch watchdog_killed"
+
+
+def test_out_of_range_config_edit_reports_bad_config_end_to_end(tmp_path):
+    """Rule: verify_fix on an edit the launcher must refuse returns a non-completion naming BAD_CONFIG and the field."""
+    from jobs.build import Edit
+    from traindoctor_env.reexec import verify_fix
+    from traindoctor_env.scenario import make_scenario
+    from traindoctor_env.snapshot import execute
+    snap = execute(next(s for s in map(make_scenario, range(300)) if s.kind == "B_SKIP"), tmp_path / "s")
+    w = snap.config["world_size"]
+    out = verify_fix(snap, [Edit("job/config.yaml", f"world_size: {w}", "world_size: 100000")], allow_unsandboxed=True)
+    assert not out.ok and out.steps_completed == 0 and "BAD_CONFIG: world_size" in out.detail

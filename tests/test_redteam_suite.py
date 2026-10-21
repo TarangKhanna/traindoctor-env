@@ -143,11 +143,9 @@ def test_bad_config_refusal_stays_an_execution_failure(tmp_path):
     """Rule: surfacing the BAD_CONFIG reason must not move a refused relaunch out of the execution_failure class."""
     from types import SimpleNamespace
 
-    from jobs import trusted
     from traindoctor_env.reexec import check
     jd = tmp_path / "workspace"
     jd.mkdir()
-    trusted.append_event(jd, "launcher_refused", "batch_size out of range")
     snap = SimpleNamespace(reference=dict(config=dict(world_size=4, ckpt_every=2), steps=8), salt=None)
-    out = check(jd, snap, 0)
+    out = check(jd, snap, 0, refusal="BAD_CONFIG: batch_size must be an integer in [1, 256]")
     assert out.detail.startswith("BAD_CONFIG") and rt.rejection_class(out) == "execution_failure"
