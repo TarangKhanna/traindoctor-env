@@ -1,6 +1,7 @@
 """Diagnostic only (not a test): repeat oracle-repair verification under the OS sandbox and, for any outcome that is not
 ok, keep the protocol directory and dump the ranks' stderr tails and the launcher's job record to diag.txt."""
 import glob
+import subprocess
 import json
 import os
 import sys
@@ -48,6 +49,10 @@ for rep in range(int(os.environ.get("REPS", "4"))):
         out.write(line + "\n")
         if not o.ok:
             fails += 1
+            log = subprocess.run(["log", "show", "--last", "2m", "--style", "compact", "--predicate", 'sender == "Sandbox"'],
+                                 capture_output=True, text=True).stdout
+            for x in sorted({l.split("deny", 1)[1][:160] for l in log.splitlines() if "deny" in l and "network" in l}):
+                out.write(f"  DENY{x}\n")
             for d in sorted(set(KEEP.iterdir()) - before):
                 for f in sorted(glob.glob(f"{d}/**/stderr/*.txt", recursive=True)):
                     out.write(f"  --- {Path(f).relative_to(d)}\n" + Path(f).read_text(errors="replace")[-1500:] + "\n")

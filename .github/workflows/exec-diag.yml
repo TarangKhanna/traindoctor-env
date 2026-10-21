@@ -30,7 +30,7 @@ jobs:
       - name: Bind probe under the job profile
         run: python scripts/diag_bind.py
       - name: Repeated oracle repairs with failure records
-        run: REPS=2 python scripts/diag_executed.py
+        run: REPS=6 python scripts/diag_executed.py
       - name: Network denials
         if: always()
         run: |

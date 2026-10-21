@@ -16,5 +16,8 @@ prof = sandbox.profile(run)
 for a in addrs:
     fam = "AF_INET6" if ":" in a else "AF_INET"
     code = f"import socket; s=socket.socket(socket.{fam}); s.bind(({a!r}, 0)); s.listen(); print('bound', s.getsockname())"
-    r = subprocess.run(["sandbox-exec", "-p", prof, sys.executable, "-c", code], capture_output=True, text=True, cwd=run)
-    print(f"::notice title=bind {a}::rc={r.returncode} {(r.stdout or r.stderr).strip()[-160:]}")
+    for label, argv in (("sandboxed", ["sandbox-exec", "-p", prof, sys.executable, "-c", code]),
+                        ("unsandboxed", [sys.executable, "-c", code])):
+        r = subprocess.run(argv, capture_output=True, text=True, cwd=run)
+        msg = (r.stdout or r.stderr).strip().splitlines()[-1][-160:]
+        print(f"::notice title=bind {a} {label}::rc={r.returncode} {msg}")
