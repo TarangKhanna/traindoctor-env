@@ -18,6 +18,7 @@ from __future__ import annotations
 import dataclasses
 import hashlib
 import os
+import re
 import logging
 import shutil
 import sys
@@ -25,6 +26,7 @@ import tempfile
 from collections import Counter
 from dataclasses import dataclass
 from pathlib import Path
+from types import SimpleNamespace
 
 import torch
 
@@ -325,12 +327,20 @@ def world_joined(digests: dict, rc: dict) -> bool:
     return len(digests) == rc["world_size"]
 
 
+_BAD_CONFIG_MESSAGE = re.compile(r"[a-z_]+ must be (an integer|finite) in \[[-+0-9.e]+, [-+0-9.e]+\]"
+                                 r"|num_samples must provide at least one full batch per rank"
+                                 r"|unreadable job config: [A-Za-z]+")
+
+
 def refusal_detail(res) -> str:
-    """The launcher's refusal of a relaunch, as outcome detail. BadConfig messages are fixed text naming a schema field;
-    a LOCK_HELD message quotes the job-writable lock file, so only its class is reported."""
+    """The launcher's refusal of a relaunch, as outcome detail. Only BadConfig's fixed schema messages are quoted (a
+    LOCK_HELD message quotes the job-writable lock file; a Modal entry result is sandbox output), else only the class."""
     if getattr(res, "status", None) != "refused":
         return ""
-    return f"BAD_CONFIG: {res.message}" if res.error_class == "BAD_CONFIG" else str(res.error_class)
+    cls, msg = getattr(res, "error_class", None), getattr(res, "message", "")
+    if cls == "BAD_CONFIG":
+        return f"BAD_CONFIG: {msg}" if isinstance(msg, str) and _BAD_CONFIG_MESSAGE.fullmatch(msg) else "BAD_CONFIG"
+    return cls if cls in ("LOCK_HELD",) else "REFUSED"
 
 
 def check(jd: Path, snap: Snapshot, lost: int, tampered: tuple = (), before: frozenset = frozenset(),
@@ -508,6 +518,7 @@ class Replay:
             if self.backend == "modal":
                 from traindoctor_env import modal_backend as sandbox_backend
                 self.backend_info = sandbox_backend.run_resubmit(jd, sched, kw)
+                refusal = refusal_detail(SimpleNamespace(**self.backend_info.get("entry_result", {})))
             else:
                 refusal = refusal_detail(resubmit(jd, sandbox=True, salt=sched, allow_unsandboxed=self.allow_unsandboxed, **kw))
             lost = max(lost_work(jd, frontier, before),

@@ -48,8 +48,21 @@ diag = {}
 if not r.ok:   # diagnostics for the host log only; never an input to the verdict
     for f in sorted(jd.glob("runs/*/stderr/rank*.txt")):
         diag[str(f.relative_to(jd))] = f.read_text(errors="replace")[-600:]
-print(json.dumps(dict(ok=r.ok, status=r.status, error_class=r.error_class, stderr=diag)))
+print(json.dumps(dict(ok=r.ok, status=r.status, error_class=r.error_class,
+                      message=r.message if r.status == "refused" else "", stderr=diag)))
 '''
+
+
+def entry_result(stdout: str) -> dict:
+    """The entry's own result line (status, error_class, message) as plain strings, or {} if absent or malformed.
+    Sandbox output is data: reexec uses it only to explain a relaunch the ledger shows never started."""
+    try:
+        d = json.loads(stdout.strip().splitlines()[-1])
+    except (IndexError, ValueError):
+        return {}
+    if not isinstance(d, dict):
+        return {}
+    return {k: d[k] for k in ("status", "error_class", "message") if isinstance(d.get(k), str)}
 
 
 def spec_args(sched, kw: dict) -> dict:
@@ -129,6 +142,7 @@ def run_resubmit(jd: Path, sched, kw: dict, timeout: int = 120, cpu: int = 4, me
         info.update(entry_rc=rc, entry_stdout=p.stdout.read()[-4000:], entry_stderr=p.stderr.read()[-2000:])
         if rc != 0:
             raise RuntimeError(f"sandbox entry failed rc={rc}: {info['entry_stderr'][-500:]}")
+        info["entry_result"] = entry_result(info["entry_stdout"])
         names = ["protocol", "protocol.trusted"]     # the entry always creates the trusted dir (Task B has none beforehand)
         sb.exec("tar", "-cf", f"{WORK}/out.tar", "-C", WORK, *names).wait()
         blob = sb.filesystem.read_bytes(f"{WORK}/out.tar")
