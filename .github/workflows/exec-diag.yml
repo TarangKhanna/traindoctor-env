@@ -27,8 +27,14 @@ jobs:
       - name: Sandbox availability
         run: |
           python -c "from jobs import sandbox; print('sandbox.available =', sandbox.available())"
-      - name: Oracle repairs and full menu tables
-        run: python scripts/diag_executed.py
+      - name: Repeated oracle repairs with failure records
+        run: REPS=4 python scripts/diag_executed.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: diag
+          path: diag.txt
+          retention-days: 7
       - name: Sandbox denials (last 60 min)
         if: always()
         run: |
