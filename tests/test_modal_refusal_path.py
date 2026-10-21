@@ -106,7 +106,11 @@ def test_every_real_bad_config_message_is_quoted_and_invented_fields_are_not():
     import pytest
 
     from jobs.config import BadConfig, validate_config
-    from test_launch_limits import LIMITS, config, set_value
+    import importlib.util
+    spec = importlib.util.spec_from_file_location("launch_limits", ROOT / "tests" / "test_launch_limits.py")
+    ll = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(ll)
+    LIMITS, config, set_value = ll.LIMITS, ll.config, ll.set_value
     seen = 0
     for path, lower, upper in LIMITS:
         cfg = config()
