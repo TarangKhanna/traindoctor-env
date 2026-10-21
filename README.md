@@ -1,8 +1,12 @@
 # TrainDoctor
 
-TrainDoctor is an executable RL environment in which agents diagnose and repair failed multi-process PyTorch training jobs.
+TrainDoctor is an executable RL environment in which an agent repairs a failed multi-process PyTorch training job. The difficulty is that a repair can make the job finish while silently breaking training: setting `world_size: 1` removes a collective hang and the job completes, but in one red-team case 72 scheduled samples were never trained on and 8 were trained on twice.
 
-The core problem: a job can restart cleanly, with normal-looking loss, and still skip or duplicate data or restore inconsistent optimizer state. The verifier checks recovery from launcher-controlled records (sample delivery, captured checkpoints, process history) and validates checkpoint state by replaying the update rule independently, rather than trusting the job's own logs.
+So a finished job is not taken as success. Each candidate repair is re-executed in a network-less Modal (gVisor) sandbox, and a verifier outside the sandbox checks it against records the agent's code cannot write:
+
+- sample delivery: which samples the launcher-owned data server actually served, against an uninterrupted reference run;
+- checkpoint history: every checkpoint copied by the launcher at commit time, so later edits and fabricated older checkpoints are detected;
+- optimizer updates: committed model and momentum state must equal the reference, or, where a repair changes the checkpoint layout, each committed transition must match an independent replay of the SGD-with-momentum update on the delivered batches.
 
 [Quickstart](#quickstart) · [Demo](docs/DEMO.md) · [Task suite](docs/TASKS.md) · [Architecture](ARCHITECTURE.md) · [Research results](https://github.com/TarangKhanna/traindoctor-research)
 
@@ -57,7 +61,12 @@ This builds a failed four-process job and checks the reference repair and the `w
 
 Modal's network-less gVisor sandbox isolates agent-edited code; the external verifier checks recovery.
 
-Inside the sandbox, the launcher runs as root and the ranks as an unprivileged user. The launcher injects the worker failure, serves batches through a private-socket data server that determines sample identity independently of job-written logs and copies each checkpoint into its own ledger at commit time. The verifier runs outside and treats everything copied out as data. At each committed step it checks:
+Inside the sandbox, the launcher runs as root and the ranks as an unprivileged user. The launcher injects the worker failure, serves batches through a private-socket data server that determines sample identity independently of job-written logs and copies each checkpoint into its own ledger at commit time. The verifier runs outside and treats everything copied out as data.
+
+- Trusted (repository code the agent cannot edit): the launcher, data server, checkpoint capture and ledger, the reference run and the verifier. The launcher shares the sandbox with the ranks and is separated from them by user id (root versus an unprivileged user), not by a separate machine.
+- Untrusted, checked against the trusted records: the agent's edits and everything the ranks write (logs, metrics, checkpoint files, exit codes).
+
+At each committed step the verifier checks:
 
 - each scheduled sample was consumed once;
 - model, optimizer momentum and sampler position match the uninterrupted reference;
@@ -76,11 +85,11 @@ The ranks that report A1 and A2 failures show the same timeout, but the Tier A p
 
 The reward has three levels, each adding one requirement: V0 (correct diagnosis), V1 (plus cited evidence that was observed and is diagnostic for the mechanism), V2 (plus a repair that passes sandboxed re-execution, and no destructive action). A format violation scores zero. `audit/menu_leak.py` checks that the bundle and menu do not leak the label.
 
-## Opt-in verifier v1.2 and menu v3
+## Verifier v1.2 (default) and optional menu v3
 
 `format_check='v1.2'` adds `history_intact` to v1.1: older checkpoint entries must be byte-identical to an earlier launcher capture, rejecting fabricated older checkpoints. v1.2 is the default for new verifications; the published results used v1 and reproduce with `format_check="v1"`. See [docs/VERIFICATION.md](docs/VERIFICATION.md).
 
-Menu v3 is opt-in (`make_menu(..., version="v3")`), with valid alternatives and repairs that complete while violating training semantics. Its reconciled Modal-sandboxed audit covers 720 candidates: 60 reference repairs, 115 valid alternatives, 271 incorrect-but-completed repairs, 274 non-completions and 0 infrastructure errors. v1.2 accepts 175/175 valid repairs and 0/271 incorrect-but-completed repairs; v1 has 12 false rejections. These are development outcomes, with an oracle that shares the verifier's launcher records. The experiment is NO-GO for RL. Sources: [candidate accounting](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/ACCOUNTING.md), [report](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/REPORT.md).
+Menu v3 is opt-in (`make_menu(..., version="v3")`), with valid alternatives and repairs that complete while violating training semantics. Its reconciled Modal-sandboxed audit covers 720 candidates: 60 reference repairs, 115 valid alternatives, 271 incorrect-but-completed repairs, 274 non-completions and 0 infrastructure errors. v1.2 accepts 175/175 valid repairs and 0/271 incorrect-but-completed repairs; v1 has 12 false rejections. These are development outcomes on an author-designed suite, not independent external validation, and the semantic oracle shares the verifier's launcher records. The experiment is NO-GO for RL. Sources: [candidate accounting](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/ACCOUNTING.md), [report](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/REPORT.md).
 
 ## Results (historical v0.1)
 

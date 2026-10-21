@@ -1,12 +1,18 @@
 # Tests
 
-Historical counts below come from `PYTHONPATH=. python -m pytest -q -rs -rf -m "..."`, with `requirements-cpu.txt` (torch 2.14.1 CPU) on macOS arm64, 2026-10-19, except where noted. `pytest.ini` deselects `sweep` by default and registers `executed`. CI runs the non-executed selection on Python 3.12 and 3.13; skipped tests are not passes.
+Three levels, which are not interchangeable:
+
+1. **Unit tests** (CI, every push): `-m "not sweep and not executed"`. No real multi-process job, no sandbox, no Modal. A green CI badge means only this level passed.
+2. **Executed integration tests** (`-m executed`, 115 tests): real multi-process Gloo jobs through the launcher. Not in required CI and not consistently passing on any host (below).
+3. **Sandboxed verification** (`scripts/modal_regression.py`): repairs replayed in network-less Modal gVisor sandboxes against the verifier. Paid, run manually; the last recorded run is below.
+
+Counts come from `PYTHONPATH=. python -m pytest -q -rs -rf -m "..."` with `requirements-cpu.txt` (torch 2.14.1 CPU) on macOS arm64 unless noted. `pytest.ini` deselects `sweep` by default and registers `executed`. Skipped tests are not passes.
 
 | selection | Python | historical result |
 | --- | --- | --- |
-| `-m "not sweep and not executed"` (CI selection), repo venv with `transformers`, 2026-10-19 branch | 3.12 | **199 passed, 14 skipped, 117 deselected** |
+| `-m "not sweep and not executed"` (CI selection), repo venv with `transformers`, commit `5ab56fc` + BAD_CONFIG detail change, 2026-10-21 | 3.12.9 | **508 passed, 14 skipped, 117 deselected** (115 executed + 2 sweep). Skips: 8 `tests/test_sandbox.py` and 6 `tests/test_token_cap.py`, all because `sandbox-exec` cannot be applied in the restricted shell used |
 | Same selection, clean clone without `transformers`, before quickstart CLI tests (`332782b`) | 3.12.9 and 3.13.2 | 176 passed, 17 skipped, 117 deselected on each; not re-run on the later branch |
-| `-m "executed and not sweep"`, `sandbox-exec` profile, GitHub-hosted `macos-14`, python.org framework build, workflow `executed-macos` | 3.12 | **Not consistently passing.** Observed 2026-10-19/20: (1) before the framework fix, 51 passed / 64 failed (interpreter could not start); (2) branch `executed-macos`, `1d037a7`, 115 passed in 706 s; (3) `main`, `f36a0f6`, run 39297918958, 72 passed / 43 failed in 1508 s: first scenario A1_src passed, later scenarios failed, cause not established; (4) `main` rerun 39302209373 was unfinished at the time of the report |
+| `-m "executed and not sweep"`, `sandbox-exec` profile, GitHub-hosted `macos-14`, python.org framework build, workflow `executed-macos` | 3.12 | **Not consistently passing.** Observed 2026-10-19/20: (1) before the framework fix, 51 passed / 64 failed (interpreter could not start); (2) branch `executed-macos`, `1d037a7`, 115 passed in 706 s; (3) `main`, `f36a0f6`, run 39297918958, 72 passed / 43 failed in 1508 s: first scenario A1_src passed, later scenarios failed, cause not established; (4) `main` rerun 39302209373: 68 passed / 47 failed in 1996 s. Runs (2)-(4) differ in code only by a docstring and a guard that cannot apply on the runner (`git diff 1d037a7 f36a0f6 -- jobs traindoctor_env`), so the failures depend on the runner or run, not on a code change; the failing mechanism is not established |
 | Same executed selection on a developer Mac, other Python builds (uv, Homebrew), or Python 3.13 | | Not run |
 | `-m sweep` (bundle size and validity over every variant) | 3.12 | 2 collected; not run |
 
@@ -34,6 +40,6 @@ About 20 replays, about $0.07, requires Modal authentication:
 SSL_CERT_FILE=/etc/ssl/cert.pem TD_KEY=00ff PYTHONPATH=. python scripts/modal_regression.py --cap-usd 0.5
 ```
 
-Writes `regression_results/modal_regression.{md,json}`; `--list` prints cases without execution. **Recorded result:** code `f36a0f61bd005823f71e94c02bae4d4fac52f92d`, 2026-10-19 (UTC), Python 3.12.9, Modal client 1.6.2, script spend $0.074: 20 of 20 expectations held, 0 violations; 5 gold accepted, 5 null and 10 incorrect repairs rejected, all `modal_sandbox`. First rejecting invariants: A null/F03 = I1 `no_completed_relaunch`; A F11 = I6 `world_size`; B null/F16 = sample gaps and dups; B F09 = I4 `ranks_inconsistent`. [Full table](../regression_results/modal_regression.md).
+Writes `regression_results/modal_regression.{md,json}`; `--list` prints cases without execution. **Recorded result:** code `f36a0f61bd005823f71e94c02bae4d4fac52f92d`, 2026-10-19 (UTC), Python 3.12.9, Modal client 1.6.2, script spend $0.074: 20 of 20 expectations held, 0 violations; 5 gold accepted, 5 null and 10 incorrect repairs rejected, all `modal_sandbox`. First rejecting invariants: A null/F03 = I1 `no_completed_relaunch`; A F11 = I6 `world_size`; B null/F16 = sample gaps and dups; B F09 = I4 `ranks_inconsistent`. [Full table](../regression_results/modal_regression.md). In the JSON, the local virtualenv prefix inside recorded rank tracebacks is redacted to `<VENV>` (2026-10-21); nothing else was changed.
 
 **Coverage limits:** not the 115 executed tests; one seed and 4 cases per kind, not the full cheat catalog; one run, with no repeat-run flakiness estimate. Spend is the script's estimate, not a Modal bill. The optional native macOS sandbox is not exercised.
