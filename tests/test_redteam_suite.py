@@ -137,3 +137,17 @@ def test_summary_counts_errors_separately_and_table_renders():
     t = rt.render_table(rows, s)
     assert t.splitlines()[0].startswith("| ID | task | accepted | class | first invariant | all failing |") and t.splitlines()[0].endswith("| exec_mode |")
     assert "| F06 | B_DUP | ERROR |" in t and "n/a (accepted>0)" in t and "100%" not in t
+
+
+def test_bad_config_refusal_stays_an_execution_failure(tmp_path):
+    """Rule: surfacing the BAD_CONFIG reason must not move a refused relaunch out of the execution_failure class."""
+    from types import SimpleNamespace
+
+    from jobs import trusted
+    from traindoctor_env.reexec import check
+    jd = tmp_path / "workspace"
+    jd.mkdir()
+    trusted.append_event(jd, "launcher_refused", "batch_size out of range")
+    snap = SimpleNamespace(reference=dict(config=dict(world_size=4, ckpt_every=2), steps=8), salt=None)
+    out = check(jd, snap, 0)
+    assert out.detail.startswith("BAD_CONFIG") and rt.rejection_class(out) == "execution_failure"

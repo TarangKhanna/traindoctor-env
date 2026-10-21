@@ -325,6 +325,14 @@ def world_joined(digests: dict, rc: dict) -> bool:
     return len(digests) == rc["world_size"]
 
 
+def _refusal(jd: Path) -> str:
+    """The launcher's BAD_CONFIG reason when the last scheduler event is a refusal (no run was recorded), else ""."""
+    ev = trusted.events(jd)
+    if ev and ev[-1].get("event") in ("resubmit_refused", "launcher_refused"):
+        return f"BAD_CONFIG: {ev[-1].get('detail', '')}"
+    return ""
+
+
 def check(jd: Path, snap: Snapshot, lost: int, tampered: tuple = (), before: frozenset = frozenset(),
           expect_kill: bool = False, relaunches: int = 0, ref: dict | None = None, salt=None,
           format_check: str = "v1.2") -> FixOutcome:
@@ -340,7 +348,9 @@ def check(jd: Path, snap: Snapshot, lost: int, tampered: tuple = (), before: fro
     proto = [r for r in led if r["run_id"] not in before]
     base = dict(lost_steps=lost, tampered=tuple(tampered), relaunches=relaunches, format_check=format_check)
     if not proto or not proto[-1]["completed"]:
-        return dataclasses.replace(NO_RELAUNCH, **base)
+        # Launcher-written status only: rank-written text (stderr, exception names) is agent-controlled.
+        why = _refusal(jd) if not proto else f"NOT_COMPLETED: last relaunch {proto[-1].get('status', 'unknown')}"
+        return dataclasses.replace(NO_RELAUNCH, detail=why, **base)
     if expect_kill and not proto[0]["kill_done"]:
         if proto[0].get("fault_not_injected"):
             return dataclasses.replace(NO_RELAUNCH, detail="fault plan not carried out", fault_not_injected=True, **base)
