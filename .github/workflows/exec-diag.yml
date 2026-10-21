@@ -1,0 +1,35 @@
+name: exec-diag
+# Non-required: the executed launcher tests on a GitHub-hosted ephemeral macOS runner, where the sandbox-exec
+# isolation profile exists. Runs on demand and on pushes to the executed-macos review branch.
+on:
+  workflow_dispatch:
+  push:
+    branches: [exec-diag]
+permissions:
+  contents: read
+jobs:
+  executed:
+    runs-on: macos-14
+    timeout-minutes: 60
+    env:
+      CI: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install ".[dev]"
+      - name: Sandbox availability
+        run: |
+          python -c "from jobs import sandbox; print('sandbox.available =', sandbox.available())"
+      - name: Oracle repairs, sequential then parallel
+        run: python scripts/diag_executed.py
+      - name: Sandbox denials (last 60 min)
+        if: always()
+        run: |
+          log show --last 60m --style compact --predicate 'sender == "Sandbox"' 2>/dev/null | grep -i deny | sed -E 's/^.{0,30}//' | sort | uniq -c | sort -rn | head -15 | while read -r l; do echo "::notice title=deny::$l"; done
