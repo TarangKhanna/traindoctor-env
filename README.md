@@ -2,7 +2,7 @@
 
 TrainDoctor is an executable RL environment in which an agent repairs a failed multi-process PyTorch training job. The difficulty is that a repair can make the job finish while silently breaking training: setting `world_size: 1` removes a collective hang and the job completes, but in one red-team case 72 scheduled samples were never trained on and 8 were trained on twice.
 
-So a finished job is not taken as success. Each candidate repair is re-executed in a network-less Modal (gVisor) sandbox, and a verifier outside the sandbox checks it against records the agent's code cannot write:
+So a finished job is not taken as success. Each candidate repair is re-executed in a network-less Modal (gVisor) sandbox, and a verifier outside the sandbox checks it against records written by the launcher rather than by the job:
 
 - sample delivery: which samples the launcher-owned data server actually served, against an uninterrupted reference run;
 - checkpoint history: every checkpoint copied by the launcher at commit time, so later edits and fabricated older checkpoints are detected;
