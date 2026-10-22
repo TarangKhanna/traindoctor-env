@@ -17,7 +17,7 @@ class Scenario:
     kind: str        # A1 | A2 | B_SKIP | B_DUP | B_OK
     variant: int
     world_size: int
-    job_seed: int    # the training seed shown in the job config; independent of kind/variant
+    job_seed: int    # the training seed shown in the job config; it can be inverted with the public generator to recover the label (unresolved)
 
     @property
     def label(self) -> str:

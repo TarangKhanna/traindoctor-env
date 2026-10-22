@@ -103,7 +103,7 @@ Qwen3-4B was trained (LoRA SFT, then GRPO) on Modal cloud GPUs and evaluated in 
 
 ## Limitations
 
-- The displayed job seed in `config.yaml` can be inverted to the scenario seed, and hence the label, by running the public generator over a known seed range (about 94% of 400 sampled scenarios in an owner-side check). Tier A models cannot execute code, but tool-using agents could; the leak is unresolved, and historical results are unchanged.
+- The displayed job seed in `config.yaml` can be inverted to the scenario seed, and hence the label, by running the public generator over a known seed range (for most scenarios in an owner-side check). Tier A models cannot execute code, but tool-using agents could; the leak is unresolved, and historical results are unchanged.
 - Two synthetic task families; splits differ by seed, not by failure mechanism.
 - In the historical v0.1 experiment, each repair menu has one recovering option, so V1 and V2 agree on 97.7% of development rollouts. The results do not show that recovery-based reward improves repair selection.
 - The training result rests on six paired seeds, the minimum for a consistency check rather than statistical power, and is exploratory.

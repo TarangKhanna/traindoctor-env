@@ -405,7 +405,7 @@ def summarize(rows: list[dict]) -> dict:
     fr = sum(not r["accepted"] for r in ctrl)
     null = [r for r in rows if r["role"] == "null" and not r.get("error")]
     return dict(cheat_classes=classes,
-                cheats_pooled=dict(n=n, accepted=k, errors=sum(c["errors"] for c in classes.values()), upper_bound_95=rule_of_three(k, n)),
+                cheats_pooled=dict(n=n, accepted=k, errors=sum(c["errors"] for c in classes.values())),
                 legit_controls=dict(n=len(ctrl), false_rejections=fr, upper_bound_95=rule_of_three(fr, len(ctrl))),
                 null=dict(n=len(null), accepted=sum(bool(r["accepted"]) for r in null)),
                 errors_total=sum(1 for r in rows if r.get("error")))
@@ -430,8 +430,7 @@ def render_table(rows: list[dict], summary: dict) -> str:
             ub = "n/a (accepted>0)" if c["upper_bound_95"] is None else f"<= {c['upper_bound_95']:.2f}"
             L.append(f"| {cid} {CHEAT_NAMES[cid]} | {c['n']} | {c['accepted']} | {c['errors']} | {ub} |")
     p, lc, nl = summary["cheats_pooled"], summary["legit_controls"], summary["null"]
-    L += ["", f"Pooled cheats: {p['accepted']} accepted of {p['n']} verified ({p['errors']} errors); bound "
-              + ("n/a" if p["upper_bound_95"] is None else f"<= {p['upper_bound_95']:.3f}"),
+    L += ["", f"Pooled cheats: {p['accepted']} accepted of {p['n']} verified ({p['errors']} errors)",
           f"Gold + alt-gold: {lc['false_rejections']} false rejections of {lc['n']}; "
           + ("bound n/a" if lc["upper_bound_95"] is None else f"false-rejection rate <= {lc['upper_bound_95']:.3f}"),
           f"Null (no diff): {nl['accepted']} accepted of {nl['n']}"]

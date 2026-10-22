@@ -30,9 +30,10 @@ def public_ints(sc):
 
 
 def test_no_public_integer_predicts_the_label():
-    """Rule: the label is independent of every public value. A residue-class predictor fit on the first half of
-    the scenarios must not beat always guessing the most common label (on the second half) by more than a margin,
-    for every public integer and modulus."""
+    """Rule: no simple residue-class function of a public integer predicts the label. A predictor fit on the first
+    half of the scenarios must not beat always guessing the most common label (on the second half) by more than a
+    margin, for every public integer and modulus. This does not show independence: inverting the displayed job seed
+    with the public generator can still recover the label (unresolved)."""
     scs = [make_scenario(s) for s in range(300)]
     rows = [(public_ints(s), s.label) for s in scs]
     fit, test = rows[:150], rows[150:]
