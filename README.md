@@ -1,6 +1,6 @@
-# TrainDoctor
+# TrainDoctor - Verifiable RL Environment for Distributed PyTorch Training Recovery
 
-TrainDoctor is an executable RL environment in which an agent repairs a failed multi-process PyTorch training job. The difficulty is that a repair can make the job finish while silently breaking training: setting `world_size: 1` removes a collective hang and the job completes, but in one red-team case 72 scheduled samples were never trained on and 8 were trained on twice.
+TrainDoctor is an executable RL environment (RLVR) in which an agent repairs a failed multi-process PyTorch training job. The difficulty is that a repair can make the job finish while silently breaking training: setting `world_size: 1` removes a collective hang and the job completes, but in one red-team case 72 scheduled samples were never trained on and 8 were trained on twice.
 
 So a finished job is not taken as success. Each candidate repair is re-executed in a network-less Modal (gVisor) sandbox, and a verifier outside the sandbox checks it against records written by the launcher rather than by the job:
 
@@ -83,26 +83,27 @@ The ranks that report A1 and A2 failures show the same timeout, but the Tier A p
 
 `traindoctor_env.bundle.make_bundle` builds evidence-id-tagged records and a repair menu, capped at 3,072 Qwen3 tokens. `traindoctor_env.tiera` renders the chat prompt, parses the JSON answer (label, cited evidence ids, repair, claimed recovery) and scores it. Tier B tools in `traindoctor_env/tools.py` permit edits to declared editable files, with the diff replay-verified.
 
-The reward has three levels, each adding one requirement: V0 (correct diagnosis), V1 (plus cited evidence that was observed and is diagnostic for the mechanism), V2 (plus a repair that passes sandboxed re-execution, and no destructive action). A format violation scores zero. `audit/menu_leak.py` checks that the bundle and menu do not leak the label.
+The reward has three levels, each adding one requirement: V0 (correct diagnosis), V1 (plus cited evidence that was observed and is diagnostic for the mechanism), V2 (plus a repair that passes sandboxed re-execution, and no destructive action). A format violation scores zero. `audit/menu_leak.py` checks the bundle and menu for label leakage; it does not establish that none exists (see Limitations).
 
 ## Verifier v1.2 (default) and optional menu v3
 
 `format_check='v1.2'` adds `history_intact` to v1.1: older checkpoint entries must be byte-identical to an earlier launcher capture, rejecting fabricated older checkpoints. v1.2 is the default for new verifications; the published results used v1 and reproduce with `format_check="v1"`. See [docs/VERIFICATION.md](docs/VERIFICATION.md).
 
-Menu v3 is opt-in (`make_menu(..., version="v3")`), with valid alternatives and repairs that complete while violating training semantics. Its reconciled Modal-sandboxed audit covers 720 candidates: 60 reference repairs, 115 valid alternatives, 271 incorrect-but-completed repairs, 274 non-completions and 0 infrastructure errors. v1.2 accepts 175/175 valid repairs and 0/271 incorrect-but-completed repairs; v1 has 12 false rejections. These are development outcomes on an author-designed suite, not independent external validation, and the semantic oracle shares the verifier's launcher records. The experiment is NO-GO for RL. Sources: [candidate accounting](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/ACCOUNTING.md), [report](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/REPORT.md).
+Menu v3 is opt-in (`make_menu(..., version="v3")`), with valid alternatives and repairs that complete while violating training semantics. Its reconciled Modal-sandboxed audit covers 720 candidates: 60 reference repairs, 115 valid alternatives, 271 incorrect-but-completed repairs, 274 non-completions and 0 infrastructure errors. v1.2 accepted all 175 repairs classified valid and rejected all 271 completed-but-invalid ones under the suite's reference-based criteria; v1 has 12 false rejections. Classification and verification share execution records and computed fields, so this is a consistency check, not an independent false-acceptance rate, and an author-designed development outcome rather than external validation. The experiment is NO-GO for RL. Sources: [candidate accounting](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/ACCOUNTING.md), [report](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/REPORT.md).
 
 ## Results (historical v0.1)
 
 Qwen3-4B was trained (LoRA SFT, then GRPO) on Modal cloud GPUs and evaluated in this environment, and the verifier was attacked. Claude Sonnet and Codex were evaluated separately as existing coding agents; they were not trained here. All results are exploratory and are not reproduced by this repository, which has no training or evaluation code and withholds the held-out seeds. Statistics, uncertainty and provenance are in the research repository's [evidence map](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/EVIDENCE_MAP.md) and [erratum](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/ERRATUM_mmd.md).
 
-- Reward comparison: on a held-out evaluation set, the V2 arm (recovery-aware reward) scored 10.36 points above the V0 arm (diagnosis-only reward), but the gain came from evidence grounding, not repair selection.
-- Against continued SFT: a single run with similar compute scored 29.7%; the V2 arm's +3.7-point difference is not clearly nonzero (95% interval -1.7 to +9.1).
+- Reward comparison: on a held-out evaluation set, the V2 arm (recovery-aware reward) scored 10.36 points above the V0 arm (diagnosis-only reward); the observed gain accompanies improved evidence citation, while repair-choice rates were similar (71.4% vs 71.5%).
+- Against continued SFT: a single run (compute comparability was not established) scored 29.7%; the V2 arm's +3.7-point difference is not clearly nonzero (95% interval -1.7 to +9.1).
 - Development split: V2 minus V0 was +4.64 points (interval -0.69 to +9.98), which is inconclusive; the minimum meaningful difference (7.2 in the frozen protocol, 20 in its amendment) was never reconciled.
 - Verifier attacks: none of 86 fake repairs was accepted, though 38 failed during execution rather than being caught by an invariant, and the attacks had no external review.
 - Coding agents: Claude Sonnet and Codex, evaluated separately from the Qwen3-4B results, both recovered all six development tasks (strict scores: Claude 5/6 for one missing evidence record, Codex 6/6), so the tasks are easy and do not rank agents.
 
 ## Limitations
 
+- The displayed job seed in `config.yaml` can be inverted to the scenario seed, and hence the label, by running the public generator over a known seed range (about 94% of 400 sampled scenarios in an owner-side check). Tier A models cannot execute code, but tool-using agents could; the leak is unresolved, and historical results are unchanged.
 - Two synthetic task families; splits differ by seed, not by failure mechanism.
 - In the historical v0.1 experiment, each repair menu has one recovering option, so V1 and V2 agree on 97.7% of development rollouts. The results do not show that recovery-based reward improves repair selection.
 - The training result rests on six paired seeds, the minimum for a consistency check rather than statistical power, and is exploratory.

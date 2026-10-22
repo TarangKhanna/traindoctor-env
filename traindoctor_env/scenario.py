@@ -43,8 +43,9 @@ class Truth:
 
 
 def make_scenario(seed: int) -> Scenario:
-    """Kind, variant, world size and the job's own seed come from separate private streams, so no public
-    value (seed, ids, sizes) is a function of the label."""
+    """Kind, variant, world size and the job's own seed come from separate private streams, but the job seed is
+    derived from the scenario seed (Random(f"job-seed:{seed}")), so it can be inverted over a known seed range
+    to recover the label. This leak is unresolved."""
     rng = random.Random(f"scenario:{seed}")
     kind = rng.choice(KINDS)
     return Scenario(seed, kind, rng.randrange(2) if kind == "A1" else 0, rng.choice([3, 4]),

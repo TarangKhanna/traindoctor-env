@@ -101,7 +101,7 @@ def test_bundle_fits_the_cap_keeps_the_certificate_and_does_not_mark_it(name, sn
     assert bundle.tokens == est_tokens(bundle.text) + PROMPT_OVERHEAD <= CAP_TOKENS and cert <= shown and cert
     assert all(i in bundle.text for i in cert)
     assert [r["id"] for r in bundle.records] == [r["id"] for r in snap.records if r["id"] in shown]  # canonical order
-    # the oracle solves it from the bundle alone: certificate evidence present, correct menu item present and works
+    # the reference solution (built from Truth) passes; internal consistency, not independent solvability: certificate evidence present, correct menu item present and works
     _, evidence, edits = reference_solution(snap, truth)
     assert evidence_ok([list(bundle.records)], truth, evidence, shown)
     right = [c for c in menu if c.role == "correct"]

@@ -15,9 +15,9 @@ abstract: >-
   repair in a disposable sandbox and checks that training recovered with its
   computation intact (committed-sample accounting, restored checkpoint,
   optimizer and sampler state, rank consistency), not merely that the job
-  exits cleanly. Two task families, exploratory RL results, and a red-team
-  audit of the verifier are included; results are exploratory and the audit
-  was not independently reviewed.
+  exits cleanly. Two task families are included; the exploratory RL results and the
+  red-team audit of the verifier are in traindoctor-research and were not
+  independently reviewed.
 keywords:
   - reinforcement learning
   - RL environment
