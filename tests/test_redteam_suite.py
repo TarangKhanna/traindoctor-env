@@ -130,13 +130,13 @@ def test_summary_counts_errors_separately_and_table_renders():
             row("F11", "A2", "cheat", True), row("gold", "A2", "gold", True), row("alt1", "A2", "alt", False),
             row("null", "A2", "null", False)]
     s = rt.summarize(rows)
-    assert s["cheat_classes"]["F06"] == dict(n=2, accepted=0, errors=1, upper_bound_95=pytest.approx(1.5))
-    assert s["cheat_classes"]["F11"]["upper_bound_95"] is None            # accepted > 0: no bound claimed
+    assert s["cheat_classes"]["F06"] == dict(n=2, accepted=0, errors=1)   # counts only: no population bound is claimed
+    assert "upper_bound_95" not in s["cheat_classes"]["F11"] and "upper_bound_95" not in s["legit_controls"]
     assert s["cheats_pooled"]["n"] == 3 and s["cheats_pooled"]["errors"] == 1
     assert s["legit_controls"]["false_rejections"] == 1 and s["null"] == dict(n=1, accepted=0)
     t = rt.render_table(rows, s)
     assert t.splitlines()[0].startswith("| ID | task | accepted | class | first invariant | all failing |") and t.splitlines()[0].endswith("| exec_mode |")
-    assert "| F06 | B_DUP | ERROR |" in t and "n/a (accepted>0)" in t and "100%" not in t
+    assert "| F06 | B_DUP | ERROR |" in t and "upper bound" not in t and "100%" not in t   # counts only
 
 
 def test_bad_config_refusal_stays_an_execution_failure(tmp_path):
