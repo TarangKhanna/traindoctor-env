@@ -1,14 +1,21 @@
-# TrainDoctor - Verifiable RL Environment for Distributed PyTorch Training Recovery
+# TrainDoctor - Execution-Verified RL Environment for Distributed Training Repair
 
-TrainDoctor is an executable RL environment (RLVR) in which an agent repairs a failed multi-process PyTorch training job. The difficulty is that a repair can make the job finish while silently breaking training: setting `world_size: 1` removes a collective hang and the job completes, but in one red-team case 72 scheduled samples were never trained on and 8 were trained on twice.
+A training job can finish successfully and still be wrong.
 
-So a finished job is not taken as success. Each candidate repair is re-executed in a network-less Modal (gVisor) sandbox, and a verifier outside the sandbox checks it against records written by the launcher rather than by the job:
+TrainDoctor is an executable RL environment in which an agent repairs a failed multi-process PyTorch training job. Each candidate repair is re-executed in a network-less Modal (gVisor) sandbox, and a verifier outside the sandbox checks it against records written by the launcher rather than by the job. For example, setting `world_size: 1` removes a collective hang and the job completes, but in one red-team case 72 scheduled samples were never trained on, 8 were trained on twice, and the model state differed from the reference; the repair is rejected.
 
-- sample delivery: which samples the launcher-owned data server actually served, against an uninterrupted reference run;
-- checkpoint history: every checkpoint copied by the launcher at commit time, so later edits and fabricated older checkpoints are detected;
-- optimizer updates: committed model and momentum state must equal the reference, or, where a repair changes the checkpoint layout, each committed transition must match an independent replay of the SGD-with-momentum update on the delivered batches.
+![An agent patch runs as untrusted ranks inside Modal's gVisor sandbox; a launcher-owned data server and checkpoint ledger record evidence; a verifier outside the sandbox checks it](docs/figures/fig_trust_boundary.svg)
 
 [Quickstart](#quickstart) · [Demo](docs/DEMO.md) · [Task suite](docs/TASKS.md) · [Architecture](ARCHITECTURE.md) · [Research results](https://github.com/TarangKhanna/traindoctor-research)
+
+## What makes TrainDoctor different
+
+1. **Verifies training semantics.** Committed model, momentum and sampler state must equal a fault-free reference. Where a repair changes the checkpoint layout, each committed transition (including the first update after a restore) must match an independent replay of the SGD-with-momentum update on the batches the data server delivered (`_replay`, `_transitions` and `check` in [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py)). The verifier also checks sample gaps and duplicates, world size and rank agreement, bounded rollback and, in v1.2, `history_intact` (older captures cannot be rewritten). These are behavioral invariants, so alternative correct repairs pass (115 valid alternatives in the menu v3 audit below).
+2. **Separates agent code from evidence.** Repairs run in a network-less Modal gVisor sandbox. The launcher (root) and the ranks (unprivileged uid) share the sandbox; the launcher writes the records and the verifier runs outside.
+3. **Execution-verified rewards (V0/V1/V2).** Training experiments used the single-turn Tier A menu; Tier B (interactive edits) is not a validated multi-turn benchmark. Training rewards came from precomputed outcome tables; held-out scores came from live sandbox replay.
+4. **Audits and negative results.** The menu v3 audit covers 720 candidates: 175 of 175 valid repairs accepted and 0 of 271 completed-but-incorrect repairs accepted. This is a consistency check under the suite's criteria (classification uses the verifier's computed fields; author-designed). In the Qwen3-4B SFT+GRPO experiment the gain accompanied evidence citation while repair choice was similar, and continued SFT was comparable. See [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research).
+
+Scope: synthetic CPU/Gloo workloads, four fault kinds in two families plus a healthy control, and a verifier specific to this MLP, sampler and SGD optimizer.
 
 Agents investigate executed 3- or 4-process (Gloo) failures, name the cause, cite evidence and repair the job. The suite has four fault kinds in two families, plus a healthy-job control:
 
@@ -17,8 +24,6 @@ Agents investigate executed 3- or 4-process (Gloo) failures, name the cause, cit
 - Healthy control: a job with no fault (B_OK), where the correct answer is no fault.
 
 Tier A provides a single-turn evidence bundle and repair menu for RL training and evaluation. Tier B exposes the same snapshot through interactive tools for logs, traces, source and config, with code edits applied and re-executed. Tier B is a development environment, not a validated multi-turn RL benchmark.
-
-Repairs are checked against launcher-controlled evidence and an independent reconstruction of optimizer state ([how it works](#how-recovery-verification-works)).
 
 ## Worked example: a repair that runs but is wrong
 
@@ -31,35 +36,9 @@ Setting `world_size` from 4 to 1 (fake repair F11) removes the hang and complete
 - Quickstart scenario (seed 123): the verifier reports the wrong worker count, 96 missing samples and parameters that differ from the reference.
 - Red-team run (task instance A1_src, replayed in a Modal sandbox): 72 missing and 8 duplicated samples for the same fake ([per-case table](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/REDTEAM_TABLE.md)). The two sets of counts come from different seeds and are not comparable.
 
-## Where to look
-
-- Verifier: [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py)
-- Tier A (bundle, prompt, scoring): [`bundle.py`](traindoctor_env/bundle.py), [`tiera.py`](traindoctor_env/tiera.py)
-- Tier B (tools): [`tools.py`](traindoctor_env/tools.py)
-- Launcher, data server, checkpoint capture: [`jobs/`](jobs/)
-- Design: [ARCHITECTURE.md](ARCHITECTURE.md) and [docs/VERIFICATION.md](docs/VERIFICATION.md)
-
-Research preview (v0.1): executable CPU/Gloo workloads with two synthetic failure families. It is not a general-purpose verifier for arbitrary production training jobs. This repository holds the environment and verifier; training and evaluation results are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research).
-
-## Quickstart
-
-CPU only, Python 3.12 or 3.13, no GPU, API key or Modal account.
-
-```bash
-git clone https://github.com/TarangKhanna/traindoctor-env
-cd traindoctor-env
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements-cpu.txt
-python scripts/quickstart.py --fake F11 --out quickstart_out
-```
-
-This builds a failed four-process job and checks the reference repair and the `world_size: 1` fake (about 30 seconds after installation). The local run prints `INVALID: unsandboxed re-execution` by design: the verifier does not count results from agent-edited code that ran without isolation. The verified path uses a Modal Sandbox ([docs/QUICKSTART.md](docs/QUICKSTART.md)). To use the package from another project: `pip install ".[modal]"` from a clone.
 
 ## How recovery verification works
 
-![An agent patch runs as untrusted ranks inside Modal's gVisor sandbox; a launcher-owned data server and checkpoint ledger record evidence; a verifier outside the sandbox checks it](docs/figures/fig_trust_boundary.svg)
-
-Modal's network-less gVisor sandbox isolates agent-edited code; the external verifier checks recovery.
 
 Inside the sandbox, the launcher runs as root and the ranks as an unprivileged user. The launcher injects the worker failure, serves batches through a private-socket data server that determines sample identity independently of job-written logs and copies each checkpoint into its own ledger at commit time. The verifier runs outside and treats everything copied out as data.
 
@@ -74,6 +53,32 @@ At each committed step the verifier checks:
 - lost work stays within one checkpoint interval, ranks agree, and protected files are untouched.
 
 The checks are specific to this small MLP, sampler and optimizer, not a general verifier for production code. Details: [docs/VERIFICATION.md](docs/VERIFICATION.md), [ARCHITECTURE.md](ARCHITECTURE.md).
+
+Example: a repair restores the model parameters but zeroes the optimizer momentum. The job completes and the parameters can look right, but the committed optimizer state differs from the reference, so the repair is rejected (`test_zeroing_the_final_momentum_fails_even_though_parameters_are_right` in `tests/test_tamper.py`). The transition check applies the same rule to the first update after a restore (`resume_ok` in `_transitions`).
+
+## Where to look
+
+- Verifier: [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py)
+- Tier A (bundle, prompt, scoring): [`bundle.py`](traindoctor_env/bundle.py), [`tiera.py`](traindoctor_env/tiera.py)
+- Tier B (tools): [`tools.py`](traindoctor_env/tools.py)
+- Launcher, data server, checkpoint capture: [`jobs/`](jobs/)
+- Design: [ARCHITECTURE.md](ARCHITECTURE.md) and [docs/VERIFICATION.md](docs/VERIFICATION.md)
+
+Research preview (v0.1): executable CPU/Gloo workloads with two synthetic failure families. It is not a general-purpose verifier for arbitrary production training jobs. This repository holds the environment and verifier; training and evaluation results are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research).
+
+## Quickstart
+
+CPU only, Python 3.12 or 3.13, no GPU, API key or Modal account. Local runs print `INVALID` by design because they have no OS isolation; verified verdicts need `--modal` ([docs/QUICKSTART.md](docs/QUICKSTART.md)).
+
+```bash
+git clone https://github.com/TarangKhanna/traindoctor-env
+cd traindoctor-env
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements-cpu.txt
+python scripts/quickstart.py --fake F11 --out quickstart_out
+```
+
+This builds a failed four-process job and checks the reference repair and the `world_size: 1` fake (about 30 seconds after installation). The local run prints `INVALID: unsandboxed re-execution` by design: the verifier does not count results from agent-edited code that ran without isolation. The verified path uses a Modal Sandbox ([docs/QUICKSTART.md](docs/QUICKSTART.md)). To use the package from another project: `pip install ".[modal]"` from a clone.
 
 ## Task evidence
 
