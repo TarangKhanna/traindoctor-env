@@ -10,7 +10,7 @@ TrainDoctor is an executable RL environment in which an agent repairs a failed m
 
 ## What the verifier checks
 
-1. **Training semantics.** A repair is accepted if every committed checkpoint equals the fault-free reference (model and momentum), or, when it does not (for example a different checkpoint layout), if every committed transition, including the first update after a restore, matches an independent replay of the SGD-with-momentum update on the batches the data server delivered (`_replay`, `_transitions` and `check` in [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py)). Sampler state in the checkpoint is optional; sampler progress is checked from launcher records. The verifier also checks sample gaps and duplicates, world size and rank agreement, bounded rollback and, in v1.2, `history_intact` (older captures cannot be rewritten). The menu v3 audit below includes 115 accepted alternative repairs; known edge cases that could reject a legitimate repair are listed in [docs/VERIFICATION.md](docs/VERIFICATION.md).
+1. **Training semantics.** Every accepted repair must pass an independent replay of each committed optimizer transition, including the first update after a restore (SGD with momentum on the batches the data server delivered; `_replay`, `_transitions` and `check` in [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py)), plus sample accounting, sampler progress from launcher records, world size and rank agreement, bounded rollback and, in v1.2, `history_intact` (older captures cannot be rewritten). Checkpoints must either equal the fault-free reference or pass the format check; stored sampler state is optional in v1.2. The menu v3 audit below includes 115 accepted alternative repairs; known edge cases that could reject a legitimate repair are listed in [docs/VERIFICATION.md](docs/VERIFICATION.md).
 2. **Trust boundary.** Repairs run in a network-less Modal gVisor sandbox. The launcher (root) and the ranks (unprivileged uid) share the sandbox; the launcher writes the records and the verifier runs outside.
 3. **Rewards (V0/V1/V2).** Training experiments used the single-turn Tier A menu; Tier B (interactive edits) is not a validated multi-turn benchmark. Training rewards came from precomputed outcome tables; held-out scores came from live sandbox replay.
 4. **Audits and negative results.** The menu v3 audit covers 720 candidates: 175 of 175 valid repairs accepted and 0 of 271 completed-but-incorrect repairs accepted. This is a consistency check under the suite's criteria (classification uses the verifier's computed fields; author-designed). In the Qwen3-4B SFT+GRPO experiment the gain accompanied evidence citation while repair choice was similar, and continued SFT was comparable. See [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research).
@@ -48,8 +48,8 @@ Inside the sandbox, the launcher runs as root and the ranks as an unprivileged u
 At each committed step the verifier checks:
 
 - each scheduled sample was consumed once;
-- model, optimizer momentum and sampler position match the uninterrupted reference;
-- where a repair changes the checkpoint layout, each transition between committed states matches an independent replay of the SGD-with-momentum update on the batches the data server delivered;
+- each transition between committed states matches an independent replay of the SGD-with-momentum update on the batches the data server delivered;
+- each checkpoint either equals the uninterrupted reference (model, momentum and, if stored, sampler position) or passes the format check;
 - lost work stays within one checkpoint interval, ranks agree, and protected files are untouched.
 
 The checks are specific to this small MLP, sampler and optimizer, not a general verifier for production code. Details: [docs/VERIFICATION.md](docs/VERIFICATION.md), [ARCHITECTURE.md](ARCHITECTURE.md).
