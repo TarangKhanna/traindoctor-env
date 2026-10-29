@@ -2,3 +2,4 @@
 2026-10-29: Retain full restoration and scratch as valid recoveries; the common optimum makes this an engineering demonstration rather than a conditional-selection RL benchmark. Keep scoped AGENTS.md and append-only learning notes in the isolated branch, using existing libraries and receipts rather than new infrastructure.
 
 2026-10-30: One Harbor B_DUP interoperability smoke task uses native separate verification and existing v1.2 checks; no runtime rewrite, benchmark expansion or verified-compatibility claim before local backend controls.
+2026-10-30: Executed Harbor controls establish one local interoperability smoke task only. Retain the explicit root-capability lint exception; use actual Compose network-none plus privilege/network proofs. Named volumes fix reproduced Docker Desktop tmpfs copy failure; clear both reward formats before grading. Core v1.2 remains unchanged; no publication authorized.

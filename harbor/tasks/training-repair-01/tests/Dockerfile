@@ -32,5 +32,8 @@ PY
 COPY harbor/tasks/training-repair-01/tests/grade.py /tests/grade.py
 COPY harbor/tasks/training-repair-01/tests/worker_bridge.py /tests/worker_bridge.py
 COPY --chmod=755 harbor/tasks/training-repair-01/tests/test.sh /tests/test.sh
+RUN mkdir -p /submission /logs/verifier /logs/artifacts /logs/agent \
+    && chmod 0755 /logs /logs/agent \
+    && chmod 0700 /submission /logs/verifier /logs/artifacts
 USER 0
 WORKDIR /work

@@ -1,133 +1,106 @@
-# One Harbor compatibility task
+# Harbor compatibility: one checkpoint-repair task
 
-Status: **packaging implemented; Harbor execution not yet established**. This is
-one existing checkpoint/sampler code-repair integration smoke test, not a new
-research benchmark. Historical verifier v1.2 and original evidence are unchanged.
+One existing CPU/Gloo code-repair task now runs through native Harbor 0.25.0
+(commit `509b119db0d97b141dcd9c80f4f7ab861c47c2d6`, schema 1.4) on the local Mac.
+This proves bounded interoperability, not task difficulty, model improvement or
+RL readiness. Original verifier v1.2 and historical evidence are unchanged.
 
-## What is reused
+## Executed controls
 
-`harbor/tasks/training-repair-01/` uses the existing two-rank CPU/Gloo runtime,
-checkpoint records and semantic verifier. A prepared incident supplies logs and
-real source. The agent edits `/submission/ckpt.py`; only that file crosses into a
-fresh, separate verifier. The oracle repairs the checkpoint writer. A no-op and a
-repair that completes while preserving incorrect sample semantics must fail.
-Those are acceptance criteria, not claims of executed Harbor results.
+The initial native Harbor validation completed without infrastructure errors:
 
-The task deliberately retains the original fresh-source re-execution objective:
-check whether the proposed code makes a subsequent preemption/restart correct.
-It does not claim that the agent's own diagnostic run is the final scored
-continuation. The local agent-v2 research protocol studies that separate question.
-This smoke task retains the known source-mutation shortcut and cannot support a
-claim of a difficult investigation benchmark or RL benefit.
+| Authored control | Harbor reward | Interpretation |
+| --- | ---: | --- |
+| Oracle | 1 | Correct checkpoint writer passes semantic verification |
+| No-op (`nop`) | 0 | Original defect remains |
+| Completing-invalid | 0 | Sampler persistence repaired; restored momentum discarded |
+| Tamper | 0 | Author-generated reward/record tampering rejected |
 
-## Source and layout
+These are scripted controls, not model-agent results or independent human review.
+All four controls passed again against the final stale-`reward.txt` cleanup code.
+Their task checksums agree, and the executed grader/core source hashes match the
+saved source archive. Native Mac controls agree on every shared v1.2 verdict field.
 
-Compatibility was inspected against official Harbor commit
-`509b119db0d97b141dcd9c80f4f7ab861c47c2d6` (package 0.25.0, schema 1.4).
+Evidence, exact commands, timings and remaining limits are in the companion
+research worktree: `docs/HARBOR_VALIDATION.md` and
+`results/harbor_validation_20261030/`. These are local and unpublished.
 
-```text
-harbor/tasks/training-repair-01/
-  task.toml                 separate verifier; code-only artifact declaration
-  instruction.md            actual source repair and diagnostic execution
-  environment/Dockerfile    existing runtime and public incident
-  environment/docker-compose.yaml
-  tests/Dockerfile          fresh trusted runtime/fixture/grader
-  tests/docker-compose.yaml
-  tests/test.sh             preserves grader errors instead of inventing rewards
-  tests/grade.py             semantic grading / explicit isolation preflight
-  solution/solve.sh          oracle smoke-test intervention
-```
+## Run the controls
 
-Default Harbor Docker builds see only `environment/`. This task uses Harbor's
-supported compose override to build from the repository root (`../../../..`).
-Dockerfile-specific `.dockerignore` files admit only the existing runtime,
-project dependency declarations and task build files. Final exclusions deny
-credential paths, Git data, results, caches and virtual environments. No runtime
-copy is vendored into the task. **Keep the task at its current repository path**;
-it is not a standalone Harbor Hub package.
-
-The Dockerfiles install the exact runtime dependencies from `pyproject.toml`.
-Torch uses only the official CPU wheel index; other pinned runtime dependencies
-use PyPI separately. An unavailable CPU wheel fails the build, with no CUDA or
-version fallback. Both containers limit process counts to 256. The agent image
-deletes the private fixture in the same build step after copying public evidence;
-the fresh verifier alone retains its root-protected scoring fixture.
-Image construction may need public package/image downloads; it does not download
-model weights or use paid compute. The Python base image currently has a tag,
-not a verified digest. Freeze the actual built image digest in reproduction
-receipts before claiming a reproducible executed release.
-
-## Commands after local prerequisites are available
-
-Use a local Docker daemon, Harbor 0.25.0 and sufficient memory. No model/API is
-needed for these controls. Run from a safe, non-secret working directory, passing
-an absolute task path, and keep concurrency at one:
+Keep this task inside the environment repository. Use a clean temporary working
+directory, a local Docker daemon and the pinned Harbor installation; serialize
+trials and retain sufficient host memory:
 
 ```bash
+uv venv --python 3.12 /tmp/traindoctor-harbor
+uv pip install --python /tmp/traindoctor-harbor/bin/python \
+  'harbor @ git+https://github.com/harbor-framework/harbor.git@509b119db0d97b141dcd9c80f4f7ab861c47c2d6'
+export PATH="/tmp/traindoctor-harbor/bin:$PATH"
+# Start Docker Desktop locally, then use a clean directory without dotenv files.
+mkdir -p /tmp/traindoctor-harbor-cwd
+cd /tmp/traindoctor-harbor-cwd
 TASK=/absolute/path/to/traindoctor-env/harbor/tasks/training-repair-01
-PYTHON_DOTENV_DISABLED=1 harbor lint "$TASK" --json
-PYTHON_DOTENV_DISABLED=1 harbor run -p "$TASK" -a oracle -e docker -n 1 -k 1 -r 0
-PYTHON_DOTENV_DISABLED=1 harbor run -p "$TASK" -a nop -e docker -n 1 -k 1 -r 0
+export PYTHON_DOTENV_DISABLED=1 HARBOR_TELEMETRY=0
+harbor lint "$TASK" --json
+harbor lint "$TASK" --json --ignore compose-additional-capabilities
+harbor run -p "$TASK" -a oracle -e docker -n 1 -k 1 -r 0 --force-build
+harbor run -p "$TASK" -a nop -e docker -n 1 -k 1 -r 0
 ```
 
-`harbor lint` is the offline structural/security checker. `harbor check` invokes
-an LLM quality rubric and is outside this project's no-hosted-inference scope;
-old `harbor tasks check` commands are removed in this inspected version. Harbor
-autoloads dotenv files in some code paths: keep `PYTHON_DOTENV_DISABLED=1`, whose
-support was confirmed in the prepared python-dotenv installation, and use a clean
-working directory. Never pass credential files or host API secrets to this task. The
-built-in no-op name is `nop`, not `noop`.
+Default lint reports the explicit root-verifier capabilities; that finding is
+preserved in the receipts. The reviewed invocation ignores only
+`compose-additional-capabilities`, rather than suppressing other lint checks.
+Root needs those capabilities for preemption and privilege dropping; workers must
+have zero capabilities. `harbor check` invokes an LLM rubric and is outside scope.
+Do not pass dotenv files, API secrets or host credential forwarding options.
 
-The official verifier reads `/logs/verifier/reward.json` first, then falls back
-to `reward.txt`. Infrastructure failure must remain a Harbor error with no reward,
-not a fabricated zero. Preserve `grade_result.json`, trial configuration, verifier
-logs, image identity and per-stage timings. Oracle/no-op/invalid-repair verdicts
-must match existing TrainDoctor checks before compatibility is called working.
+## Runtime and trust boundary
 
-## Trust boundary
+The agent edits `/submission/ckpt.py` as uid 1000. A fresh, separate verifier
+consumes only that bounded regular source file, never agent-authored checkpoint
+records or claimed verdicts. Harbor also transfers its publish directory; the
+grader ignores those additional artifacts. Trusted fixture, launcher and scoring
+code remain root-owned; submitted rank code runs with dropped UID/capabilities.
 
-Shared-container verification would let the agent affect scoring state. This task
-explicitly uses separate verification. The grader consumes only the declared
-source file. Harbor also transfers its agent publish directory; those additional
-artifacts are ignored by this grader. The source file is untrusted: only a bounded regular
-UTF-8 file and rejects links or unexpected submissions. A fresh image owns the
-runtime, original fixture and scoring code. Agent checkpoint files, logs and
-claimed correctness flags are never used as trusted grading records.
+Harbor's provider policy is declared `public` because this Docker backend rejected
+its `no-network` capability request. **Actual networking is denied by both custom
+Compose files' `network_mode: none`**. The worker proof checks that only `lo` is UP,
+allows dormant kernel interfaces, requires no `NET_ADMIN` capability and verifies
+an immediate external routing/policy denial. This is not Harbor policy enforcement
+or a general security guarantee from author-generated attacks.
 
-Both containers deny external networking and use read-only roots with explicit
-scratch mounts. Agent commands run as uid 1000. The trusted verifier requires
-root-owned scoring paths and drops worker privileges using existing launcher
-machinery; capability/uid and trusted-ledger write-denial checks must pass before
-executing submitted code. Harbor mounts verifier logs in the agent environment as
-well: scoring must protect their root-owned directory and unlink stale reward
-files before writing a new result, so prior open file handles cannot rewrite the
-new reward inode. These are checks to execute, not a static security proof.
-A container label alone does not justify marking an
-unsandboxed run verified. The Linux bridge must fail closed when these checks are
-unavailable. This task introduces no security guarantee from author-generated
-attacks or static configuration alone.
+Both roots remain read-only, with PID limits and explicit writable storage.
+Harbor exposes verifier-log paths during agent operation, so the grader protects
+root-owned output paths and removes stale reward files before writing a fresh
+result. Both `reward.json` and `reward.txt` matter: Harbor prefers JSON, then falls
+back to text. Infrastructure failure must produce an error with no reward.
 
-## Observed local prerequisites
+Docker Desktop demonstrated a transport mismatch: `docker exec` could read a
+regular file inside tmpfs while `docker cp` reported it missing. Transported
+`/submission`, `/logs` and the agent's `/solution` therefore use project-scoped
+named volumes, with no global names. `/tmp` and verifier `/work` remain bounded
+tmpfs. Initial directory ownership comes from the images; scoring paths stay
+root-protected.
 
-Read-only preflight found Docker client 29.5.3 and Docker.app, but the local
-`desktop-linux` socket was absent and the server unavailable. Harbor was absent
-from PATH and the prepared Python environment; the Apple `container` CLI was not
-available. No daemon was started, package installed or container run by that
-preflight. Thus no startup/verification overhead or Harbor verdict is asserted.
+## Reuse and scope
 
-Before a model trial, prove oracle, no-op and completing-invalid controls locally,
-measure memory/startup/verification overhead, and audit reward/ledger tampering.
-Then use Harbor's external `BaseAgent` interface so MLX inference stays on the Mac
-host while tools act through `BaseEnvironment`. Do not put MLX in the Linux image
-or substitute hosted inference. This is a design path, not an implemented agent
-integration or a local TRL/vLLM training solution.
+The task lives in `harbor/tasks/training-repair-01/`: standard `task.toml`,
+`instruction.md`, environment, tests and oracle solution. It reuses existing
+runtime/verifier code without vendoring a second runtime or building an adapter
+framework. Native Compose builds from the repository root; Dockerfile-specific
+allowlists exclude secrets, Git data, results and caches. Force rebuilds after
+runtime source changes outside the task directory. Existing exact Torch pins use
+only the official CPU-wheel index, with no CUDA/version fallback.
 
-Primary references:
+The task retains the historical fresh-source verification objective: test whether
+the submitted code makes a subsequent preemption/restart correct. The agent's own
+diagnostic execution is not the final scored continuation. The source-mutation
+shortcut remains, so this is an integration smoke test, not a discriminative
+learning benchmark. No Harbor model trial or SFT/RL result is established here.
+A future MLX integration would keep inference on the Mac host through Harbor's
+external `BaseAgent` interface; it is not implemented by this packaging work.
 
-- [Task overview](https://docs.harborframework.com/tasks/overview)
-- [Separate verifier and artifact transfer](https://docs.harborframework.com/tasks/separate-verifier)
-- [Offline lint](https://docs.harborframework.com/tasks/lint)
-- [Run a job](https://docs.harborframework.com/jobs/run-a-job)
-- [External agents](https://docs.harborframework.com/agents/custom-agents)
-- [Pinned Docker provider](https://github.com/harbor-framework/harbor/blob/509b119db0d97b141dcd9c80f4f7ab861c47c2d6/src/harbor/environments/docker/docker.py)
-- [Pinned task schema](https://github.com/harbor-framework/harbor/blob/509b119db0d97b141dcd9c80f4f7ab861c47c2d6/src/harbor/models/task/config.py)
+Primary references: [separate verification](https://docs.harborframework.com/tasks/separate-verifier),
+[lint](https://docs.harborframework.com/tasks/lint),
+[external agents](https://docs.harborframework.com/agents/custom-agents),
+[pinned Docker provider](https://github.com/harbor-framework/harbor/blob/509b119db0d97b141dcd9c80f4f7ab861c47c2d6/src/harbor/environments/docker/docker.py).

@@ -65,7 +65,8 @@ def run(submission: Path, out: Path, fixture: Path) -> int:
         os.chown(out, 0, 0)
         out.chmod(0o700)
     # The output is verifier-owned, never transferred from the agent. Remove stale rewards.
-    (out / "reward.json").unlink(missing_ok=True)
+    for name in ("reward.json", "reward.txt"):
+        (out / name).unlink(missing_ok=True)
     result = {"source": "executed", "protocol": "harbor-training-repair-01-v1",
               "verdict": None, "execution_performed": False, "terminal_reward": None}
     code = 0

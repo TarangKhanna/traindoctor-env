@@ -7,6 +7,7 @@ import os
 import select
 import shutil
 import signal
+import socket
 import stat
 import subprocess
 import sys
@@ -111,11 +112,24 @@ def prove_launcher_kill():
         process.stdout.close()
 
 
+def isolated_network_interfaces():
+    interfaces = []
+    for index, name in socket.if_nameindex():
+        flags = int((Path("/sys/class/net") / name / "flags").read_text().strip(), 16)
+        interfaces.append({"index": index, "name": name, "flags": flags, "up": bool(flags & 0x1)})
+    if {item["name"] for item in interfaces if item["up"]} != {"lo"}:
+        raise sandbox.SandboxUnavailable("verifier must have network_mode:none (only loopback may be UP)")
+    return interfaces
+
+
 def preflight(fixture):
     if sys.platform != "linux" or os.geteuid() != 0 or not Path("/.dockerenv").is_file():
         raise sandbox.SandboxUnavailable("Harbor worker bridge requires a fresh root Docker verifier")
-    if {p.name for p in Path("/sys/class/net").iterdir()} != {"lo"}:
-        raise sandbox.SandboxUnavailable("verifier must have network_mode:none (loopback only)")
+    interfaces = isolated_network_interfaces()
+    status = dict(line.split(":", 1) for line in Path("/proc/self/status").read_text().splitlines())
+    root_caps = {key: status[key].strip() for key in ("CapInh", "CapEff", "CapPrm", "CapBnd", "CapAmb")}
+    if any(int(value, 16) & (1 << 12) for value in root_caps.values()):
+        raise sandbox.SandboxUnavailable("root verifier must not retain CAP_NET_ADMIN")
     if Path("/proc/sys/fs/protected_hardlinks").read_text().strip() != "1":
         raise sandbox.SandboxUnavailable("kernel hardlink protection is required before job ownership changes")
     if worker_pids():
@@ -136,7 +150,8 @@ def preflight(fixture):
     if not valid or not proof["private_read_denied"] or not proof["private_write_denied"]:
         raise sandbox.SandboxUnavailable("worker privilege/private-file probe failed")
     prove_launcher_kill()
-    return dict(proof, launcher_can_kill_worker=True, network_interfaces=["lo"], protected_hardlinks=1, exec_mode=MODE)
+    return dict(proof, launcher_can_kill_worker=True, network_interfaces=interfaces,
+                root_capabilities=root_caps, protected_hardlinks=1, exec_mode=MODE)
 
 
 def export_evidence(jd, output, reference, schedule, proof, timings):
@@ -152,9 +167,16 @@ def export_evidence(jd, output, reference, schedule, proof, timings):
     evidence = output / "execution_evidence"
     evidence.mkdir(mode=0o700)
     shutil.copytree(root, evidence / "protocol.trusted")  # launcher-owned only; never copy the agent tree
+    memory = {}
+    for name in ("memory.current", "memory.peak", "memory.max"):
+        try:
+            value = (Path("/sys/fs/cgroup") / name).read_text().strip()
+            memory[name] = "max" if value == "max" else int(value)
+        except (OSError, ValueError):
+            memory[name] = None
     metadata = {"source": "executed", "exec_mode": MODE, "reference": reference,
                 "schedule": {"base": schedule.base.hex(), "fresh": schedule.fresh.hex(), "boundary": schedule.boundary},
-                "worker_isolation": proof, "timings": timings}
+                "worker_isolation": proof, "timings": timings, "cgroup_memory_bytes": memory}
     (evidence / "replay.json").write_text(json.dumps(metadata, indent=2, sort_keys=True) + "\n")
 
 

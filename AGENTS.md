@@ -58,6 +58,7 @@ to match a preferred explanation or turn documentation upkeep into infrastructur
 The owner authorizes one Harbor compatibility task, not a framework or publication.
 Read docs/HARBOR.md. Preserve v1.2 and keep transferred agent source separate from
 trusted execution records. Explicit harbor_docker_uid provenance requires actual
-worker/isolation proofs, not a container label. The isolated CLI installation and
-Docker startup approval is pending; do not infer it from elapsed time. Do not run
-Harbor from a repository directory or allow automatic dotenv reads.
+worker/isolation proofs, not a container label. The owner approved isolated CLI installation and local Docker startup on
+2026-10-30. Complete only local Harbor validation; the latest instruction prohibits
+push/publication. Do not run Harbor from a repository directory or allow automatic
+dotenv reads. No model inference/training or new tasks in this validation session.

@@ -42,6 +42,10 @@ if [ ! -e /submission/ckpt.py ]; then
 fi
 exec "$@"
 SH
+RUN mkdir -p /submission /logs/agent /logs/verifier /logs/artifacts /solution \
+    && chown 1000:1000 /submission /logs/agent /logs/artifacts \
+    && chmod 0700 /submission /logs/verifier \
+    && chmod 0755 /logs /logs/agent /logs/artifacts /solution
 USER 1000
 WORKDIR /submission
 ENTRYPOINT ["/usr/local/bin/prepare-submission"]

@@ -27,10 +27,12 @@ def test_unsupported_backend_never_runs_submitted_code_or_issues_reward(monkeypa
     out = tmp_path / "verifier"
     out.mkdir()
     (out / "reward.json").write_text('{"reward": 1}')
+    (out / "reward.txt").write_text('1')
     assert grade.run(root, out, tmp_path / "fixture") == 2
     result = json.loads((out / "grade_result.json").read_text())
     assert result["status"] == "infrastructure_error" and result["terminal_reward"] is None
     assert not result["execution_performed"] and not (out / "reward.json").exists()
+    assert not (out / "reward.txt").exists()
     assert not marker.exists()
 
 
@@ -124,7 +126,7 @@ def test_worker_tree_rejects_linked_inodes_before_root_chown(tmp_path, bad):
     assert (outside.stat().st_uid, outside.stat().st_gid) == (before.st_uid, before.st_gid)
 
 
-def test_evidence_export_copies_only_launcher_owned_state(tmp_path):
+def test_evidence_export_copies_only_launcher_owned_state_and_optional_memory(monkeypatch, tmp_path):
     from types import SimpleNamespace
     import worker_bridge
     job = tmp_path / "protocol"
@@ -136,11 +138,21 @@ def test_evidence_export_copies_only_launcher_owned_state(tmp_path):
     output = tmp_path / "output"
     output.mkdir()
     schedule = SimpleNamespace(base=b"base", fresh=b"fresh", boundary=0)
+    real_read = Path.read_text
+    def read(path, *a, **k):
+        if str(path.parent) == "/sys/fs/cgroup":
+            if path.name == "memory.peak":
+                raise FileNotFoundError("optional counter unavailable in this unit fixture")
+            return {"memory.current": "64", "memory.max": "max"}[path.name]
+        return real_read(path, *a, **k)
+    monkeypatch.setattr(Path, "read_text", read)
     worker_bridge.export_evidence(job, output, {"simulated": True}, schedule, {}, {})
     evidence = output / "execution_evidence"
     assert (evidence / "protocol.trusted/ledger.jsonl").is_file()
     assert not list(evidence.rglob("agent_file"))
-    assert json.loads((evidence / "replay.json").read_text())["schedule"]["fresh"] == b"fresh".hex()
+    metadata = json.loads((evidence / "replay.json").read_text())
+    assert metadata["schedule"]["fresh"] == b"fresh".hex()
+    assert metadata["cgroup_memory_bytes"] == {"memory.current": 64, "memory.peak": None, "memory.max": "max"}
 
 
 @pytest.mark.parametrize("bad", ["symlink", "oversize"])
@@ -157,3 +169,30 @@ def test_evidence_export_refuses_unsafe_or_oversize_files(tmp_path, bad):
     with pytest.raises(grade.sandbox.SandboxUnavailable, match="artifact bound"):
         worker_bridge.export_evidence(tmp_path / "protocol", tmp_path, {}, None, {}, {})
     assert not (tmp_path / "execution_evidence").exists()
+
+
+def test_network_gate_accepts_dormant_interfaces_and_records_actual_flags(monkeypatch):
+    import worker_bridge
+    names = [(1, "lo"), (2, "gre0"), (3, "ip6tnl0")]
+    flags = {"lo": "0x9", "gre0": "0x80", "ip6tnl0": "0x80"}
+    monkeypatch.setattr(worker_bridge.socket, "if_nameindex", lambda: names)
+    monkeypatch.setattr(worker_bridge.Path, "read_text", lambda path: flags[path.parent.name])
+    proof = worker_bridge.isolated_network_interfaces()
+    assert proof == [
+        {"index": 1, "name": "lo", "flags": 9, "up": True},
+        {"index": 2, "name": "gre0", "flags": 128, "up": False},
+        {"index": 3, "name": "ip6tnl0", "flags": 128, "up": False},
+    ]
+
+
+def test_nonloopback_up_is_rejected_before_worker_inspection_or_execution(monkeypatch, tmp_path):
+    import worker_bridge
+    monkeypatch.setattr(worker_bridge.sys, "platform", "linux")
+    monkeypatch.setattr(worker_bridge.os, "geteuid", lambda: 0)
+    monkeypatch.setattr(worker_bridge.Path, "is_file", lambda _: True)
+    monkeypatch.setattr(worker_bridge.socket, "if_nameindex", lambda: [(1, "lo"), (2, "eth0")])
+    monkeypatch.setattr(worker_bridge.Path, "read_text", lambda _: "0x1")
+    monkeypatch.setattr(worker_bridge, "worker_pids", lambda: pytest.fail("network must fail before worker inspection"))
+    monkeypatch.setattr(worker_bridge.subprocess, "run", lambda *a, **k: pytest.fail("no worker execution allowed"))
+    with pytest.raises(grade.sandbox.SandboxUnavailable, match="only loopback may be UP"):
+        worker_bridge.preflight(tmp_path)
