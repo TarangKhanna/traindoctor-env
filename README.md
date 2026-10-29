@@ -1,8 +1,21 @@
-# TrainDoctor - Execution-Verified RL Environment for Distributed Training Repair
+# TrainDoctor — Execution-Verified Training Recovery
 
 A training job can finish successfully and still be wrong.
 
-TrainDoctor is an executable RL environment in which an agent repairs a failed multi-process PyTorch training job. Each candidate repair is re-executed in a network-less Modal (gVisor) sandbox, and a verifier outside the sandbox checks it against records written by the launcher rather than by the job. For example, setting `world_size: 1` removes a collective hang and the job completes, but in one red-team case 72 scheduled samples were never trained on, 8 were trained on twice, and the model state differed from the reference; the repair is rejected.
+TrainDoctor is a small environment for investigating, repairing and checking multi-process PyTorch training jobs. It checks whether a recovery preserves the intended samples and optimizer state, rather than treating a successful exit as proof of correctness.
+
+This repository contains the environment, tools and verifier. [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research) contains experiments, raw evidence and reproduction commands.
+
+| What you can inspect | Current status |
+| --- | --- |
+| Executable communication and checkpoint failures | Small CPU/Gloo workloads with launcher-owned evidence |
+| Correct versus completing-but-wrong recoveries | [Worked state-recovery example](docs/STATE_RECOVERY_V1.md), with saved execution evidence in the research repo |
+| Verification without an uninterrupted run | Conditional checkpoint-transition check in the [research report](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/REFERENCE_FREE_REPORT.md); requires a trusted anchor and input/update specification |
+| Agent tools and RL experiments | Tier B tools exist; historical training used Tier A menus. A successful local multi-turn coding agent is not established |
+
+The historical evaluation used network-less Modal/gVisor sandboxes. The newer local demonstration uses macOS `sandbox-exec`, whose loopback permissions and trust boundary differ. No cloud account or model inference is needed to [recount its saved evidence](https://github.com/TarangKhanna/traindoctor-research#reproduce-the-saved-local-example).
+
+The strongest current artifact is the executable recovery check and its documented limits. Historical GRPO results did not establish improved repair selection, and checkpoint replay itself is established prior art.
 
 ![An agent patch runs as untrusted ranks inside Modal's gVisor sandbox; a launcher-owned data server and checkpoint ledger record evidence; a verifier outside the sandbox checks it](docs/figures/fig_trust_boundary.svg)
 
@@ -11,7 +24,7 @@ TrainDoctor is an executable RL environment in which an agent repairs a failed m
 ## What the verifier checks
 
 1. **Training semantics.** Every accepted repair must pass an independent replay of each committed optimizer transition, including the first update after a restore (SGD with momentum on the batches the data server delivered; `_replay`, `_transitions` and `check` in [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py)), plus sample accounting, sampler progress from launcher records, world size and rank agreement, bounded rollback and, in v1.2, `history_intact` (older captures cannot be rewritten). Checkpoints must either equal the fault-free reference or pass the format check; stored sampler state is optional in v1.2. The menu v3 audit below includes 115 accepted alternative repairs; known edge cases that could reject a legitimate repair are listed in [docs/VERIFICATION.md](docs/VERIFICATION.md).
-2. **Trust boundary.** Repairs run in a network-less Modal gVisor sandbox. The launcher (root) and the ranks (unprivileged uid) share the sandbox; the launcher writes the records and the verifier runs outside.
+2. **Trust boundary.** Historical sandbox evaluations used Modal/gVisor: the launcher (root) and ranks (unprivileged uid) share the sandbox, and the verifier runs outside. The separately versioned local demonstration uses the existing macOS sandbox and records that backend explicitly.
 3. **Rewards (V0/V1/V2).** Training experiments used the single-turn Tier A menu; Tier B (interactive edits) is not a validated multi-turn benchmark. Training rewards came from precomputed outcome tables; held-out scores came from live sandbox replay.
 4. **Audits and negative results.** The menu v3 audit covers 720 candidates: 175 of 175 valid repairs accepted and 0 of 271 completed-but-incorrect repairs accepted. This is a consistency check under the suite's criteria (classification uses the verifier's computed fields; author-designed). In the Qwen3-4B SFT+GRPO experiment the gain accompanied evidence citation while repair choice was similar, and continued SFT was comparable. See [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research).
 
@@ -42,7 +55,7 @@ Setting `world_size` from 4 to 1 (fake repair F11) removes the hang and complete
 ## How recovery verification works
 
 
-Inside the sandbox, the launcher runs as root and the ranks as an unprivileged user. The launcher injects the worker failure, serves batches through a private-socket data server that determines sample identity independently of job-written logs and copies each checkpoint into its own ledger at commit time. The verifier runs outside and treats everything copied out as data.
+In the historical Modal backend, the launcher runs as root and the ranks as an unprivileged user. The launcher injects the worker failure, serves batches through a private-socket data server that determines sample identity independently of job-written logs and copies each checkpoint into its own ledger at commit time. The verifier runs outside and treats everything copied out as data. The local backend has a different isolation boundary, described in the [state-recovery contract](docs/STATE_RECOVERY_V1.md).
 
 - Trusted (repository code the agent cannot edit): the launcher, data server, checkpoint capture and ledger, the reference run and the verifier. The launcher shares the sandbox with the ranks and is separated from them by user id (root versus an unprivileged user), not by a separate machine.
 - Untrusted, checked against the trusted records: the agent's edits and everything the ranks write (logs, metrics, checkpoint files, exit codes).
@@ -70,7 +83,8 @@ Research preview (v0.1): executable CPU/Gloo workloads with two synthetic failur
 
 ## Quickstart
 
-CPU only, Python 3.12 or 3.13, no GPU, API key or Modal account. Local runs print `INVALID` by design because they have no OS isolation; verified verdicts need `--modal` ([docs/QUICKSTART.md](docs/QUICKSTART.md)).
+CPU only, Python 3.12 or 3.13, no GPU, API key or Modal account. This legacy quickstart's local runs print `INVALID` by design because they have no OS isolation; its verified path uses `--modal` ([docs/QUICKSTART.md](docs/QUICKSTART.md)).
+For an accepted/rejected example without launching jobs, start with the research repository's [saved-evidence quickstart](https://github.com/TarangKhanna/traindoctor-research#reproduce-the-saved-local-example). The commands below are the historical live fault demonstration; their unsandboxed result is intentionally not counted as verified.
 
 ```bash
 git clone https://github.com/TarangKhanna/traindoctor-env
@@ -114,7 +128,7 @@ Qwen3-4B was trained (LoRA SFT, then GRPO) on Modal cloud GPUs and evaluated in 
 - Two synthetic task families; splits differ by seed, not by failure mechanism.
 - In the historical v0.1 experiment, each repair menu has one recovering option, so V1 and V2 agree on 97.7% of development rollouts. The results do not show that recovery-based reward improves repair selection.
 - The training result rests on six paired seeds, the minimum for a consistency check rather than statistical power, and is exploratory.
-- Verified replay needs a Modal account. The macOS `sandbox-exec` profile is a development convenience, not a security boundary.
+- The historical network-less replay path needs a Modal account. The local state-recovery demonstration needs macOS `sandbox-exec`; saved-artifact recounts need neither. The local profile permits loopback access and is not equivalent to gVisor or a general security guarantee.
 - Process-status records in the Tier A bundle identify A2 against A1 perfectly (40 of 40 each) but not A1_src against A1_cfg, so a model can use that shortcut instead of the traces. The environment was not changed.
 - Tier B has not been validated as a multi-turn RL benchmark.
 - No claim about production NCCL/FSDP failures or arbitrary training programs.

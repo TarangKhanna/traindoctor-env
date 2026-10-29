@@ -7,3 +7,5 @@ Full committed restoration remains a common robust action. The work targets a re
 Final network verification isolated a pre-existing wildcard TCPStore listener. The shared launcher now owns a pre-bound loopback TCPStore; live lsof regression passes, as do 241 focused local tests and the repeated twelve-continuation demonstration. Historical v1.2 and training source remain unchanged.
 
 Local follow-up: scoped [agent instructions](../AGENTS.md) now bind this branch to the worked example, reuse-first implementation and measured evidence. [The append-only learning log](LEARNINGS.md) records catches and limits; this documentation update adds no experiment or runtime.
+
+2026-10-29 release preparation: README now separates historical Modal evaluation from the local recovery example, links the saved-evidence quickstart, and states that successful local multi-turn code repair is not established. Paired-source installation and saved recount were checked; core behavior and verifier v1.2 remain unchanged.

@@ -24,7 +24,7 @@ Live `lsof` found that PyTorch's default TCPStore listened on a wildcard despite
 
 ## Reproduction
 
-Use matching local environment and research checkouts containing this unreleased change. From the research checkout, with a prepared Python 3.12 environment containing the existing pinned CPU dependencies:
+Use matching environment and research source checkouts containing `state_recovery_v1`. The research README provides a sibling-checkout installation and a saved-evidence quickstart. From the research checkout, with a prepared Python 3.12 environment containing the existing pinned CPU dependencies:
 
 ```bash
 TD_KEY=state-recovery-demo-key PYTHONPATH=/path/to/traindoctor-env:. \
