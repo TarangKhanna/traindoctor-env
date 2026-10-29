@@ -1,0 +1,13 @@
+services:
+  main:
+    build:
+      context: ../../../..
+      dockerfile: harbor/tasks/training-repair-01/environment/Dockerfile
+    pids_limit: 256
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+    network_mode: none
+    tmpfs:
+      - /tmp:rw,nosuid,nodev,size=1073741824,mode=1777
+      - /submission:rw,nosuid,nodev,size=1048576,uid=1000,gid=1000,mode=0700

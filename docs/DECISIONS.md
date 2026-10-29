@@ -1,2 +1,4 @@
 2026-10-29: Live lsof isolated a wildcard PyTorch TCPStore listener despite MASTER_ADDR=127.0.0.1. The launcher now owns a pre-bound IPv4 loopback TCPStore through PyTorch's master_listen_fd API; ranks use supported agent-store client mode. Training source, fault injection and verifier v1.2 semantics are unchanged.
 2026-10-29: Retain full restoration and scratch as valid recoveries; the common optimum makes this an engineering demonstration rather than a conditional-selection RL benchmark. Keep scoped AGENTS.md and append-only learning notes in the isolated branch, using existing libraries and receipts rather than new infrastructure.
+
+2026-10-30: One Harbor B_DUP interoperability smoke task uses native separate verification and existing v1.2 checks; no runtime rewrite, benchmark expansion or verified-compatibility claim before local backend controls.

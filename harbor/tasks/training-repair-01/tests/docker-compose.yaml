@@ -1,0 +1,15 @@
+services:
+  main:
+    build:
+      context: ../../../..
+      dockerfile: harbor/tasks/training-repair-01/tests/Dockerfile
+    pids_limit: 256
+    read_only: true
+    cap_drop: [ALL]
+    cap_add: [CHOWN, SETUID, SETGID, SETPCAP, KILL, DAC_OVERRIDE, FOWNER]
+    security_opt: [no-new-privileges:true]
+    network_mode: none
+    tmpfs:
+      - /submission:rw,nosuid,nodev,noexec,size=1048576,mode=0700
+      - /tmp:rw,nosuid,nodev,size=1073741824,mode=1777
+      - /work:rw,nosuid,nodev,size=2147483648,mode=0700

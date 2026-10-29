@@ -52,3 +52,12 @@ Append changed decisions to [the decisions log](docs/DECISIONS.md), update statu
 milestone closure, and correct old claims by explicit superseding entries.
 "Newly observed here" is not a claim of scientific novelty. Do not edit receipts
 to match a preferred explanation or turn documentation upkeep into infrastructure.
+
+## Current isolated Harbor milestone (2026-10-30)
+
+The owner authorizes one Harbor compatibility task, not a framework or publication.
+Read docs/HARBOR.md. Preserve v1.2 and keep transferred agent source separate from
+trusted execution records. Explicit harbor_docker_uid provenance requires actual
+worker/isolation proofs, not a container label. The isolated CLI installation and
+Docker startup approval is pending; do not infer it from elapsed time. Do not run
+Harbor from a repository directory or allow automatic dotenv reads.
