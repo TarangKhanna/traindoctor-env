@@ -21,6 +21,7 @@ import subprocess
 import sys
 import time
 from dataclasses import asdict, dataclass
+from datetime import timedelta
 from pathlib import Path
 from typing import Callable
 
@@ -65,6 +66,22 @@ def free_port() -> int:
         return s.getsockname()[1]
 
 
+def loopback_store():
+    """Own a pre-bound loopback TCPStore; MASTER_ADDR alone does not bind it.
+
+    PyTorch adopts this socket through master_listen_fd. That API requires its
+    supported TCP backend rather than libuv. Every rank then connects as a client.
+    """
+    import torch.distributed as dist
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.bind(("127.0.0.1", 0))
+    port = sock.getsockname()[1]
+    store = dist.TCPStore("127.0.0.1", port, None, True, timeout=timedelta(seconds=60),
+                         wait_for_workers=False, master_listen_fd=sock.detach(), use_libuv=False)
+    return port, store
+
+
 def loopback_interface() -> str:
     """The loopback interface's name on this machine (lo0 on macOS, lo on Linux): derived, not assumed."""
     names = [n for _, n in socket.if_nameindex()]
@@ -93,7 +110,7 @@ def job_env(rank: int, world: int, port: int, run_id: str, resume_from: str | No
     env.update(MASTER_ADDR="127.0.0.1", MASTER_PORT=str(port), WORLD_SIZE=str(world), RANK=str(rank), RUN_ID=run_id,
                RESUME_FROM=resume_from or "", HARNESS_START=str(start_step), TD_FD=str(fd),
                GLOO_SOCKET_IFNAME=loopback_interface(), OMP_NUM_THREADS="1", MKL_NUM_THREADS="1", PYTHONHASHSEED="0",
-               PYTHONDONTWRITEBYTECODE="1")
+               PYTHONDONTWRITEBYTECODE="1", TORCHELASTIC_USE_AGENT_STORE="True")
     return env
 
 
@@ -162,7 +179,6 @@ def run_job(job_dir: Path, run_id: str = "run0", resume_from: str | None = None,
         trusted.append_event(job_dir, "launcher_refused", str(e))
         return JobResult(run_id, "refused", [], -1, "BAD_CONFIG")
     safefs.makedirs(job_dir, f"runs/{run_id}/stderr")
-    port = free_port()
     server = DataServer(spec, salt or salt_for("default"))
     cap = trusted.Capturer(job_dir, run_id)
     # The checkpoint this run resumes from, pinned by content hash before anything of it is launched.
@@ -171,6 +187,8 @@ def run_job(job_dir: Path, run_id: str = "run0", resume_from: str | None = None,
     argv = [sys.executable, str(RUNTIME_HARNESS)]
     if sandbox_jobs:
         argv = sandbox.wrap(argv, job_dir, allow_unsandboxed)
+    # Keep the launcher-owned loopback listener alive until every rank is dead.
+    port, rendezvous = loopback_store()
     errs = [safefs.open_write(job_dir, f"runs/{run_id}/stderr/rank{r}.txt") for r in range(world)]
     ranks: list[_Rank] = []
     procs: list[subprocess.Popen] = []
@@ -322,6 +340,7 @@ def run_job(job_dir: Path, run_id: str = "run0", resume_from: str | None = None,
         server.close()
         sel.close()
         cap.scan()   # every process of this run is dead: nothing can change a checkpoint under us now
+        del rendezvous
 
     results = []
     for r in range(world):

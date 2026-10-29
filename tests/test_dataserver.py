@@ -122,8 +122,10 @@ def test_job_environment_is_an_explicit_allowlist(monkeypatch):
     env = job_env(1, 4, 12345, "run3", "ck0004", 4, 9)
     assert set(env) <= set(ENV_PASSTHROUGH) | {"MASTER_ADDR", "MASTER_PORT", "WORLD_SIZE", "RANK", "RUN_ID", "RESUME_FROM",
                                                 "HARNESS_START", "TD_FD", "GLOO_SOCKET_IFNAME", "OMP_NUM_THREADS",
-                                                "MKL_NUM_THREADS", "PYTHONHASHSEED", "PYTHONDONTWRITEBYTECODE"}
+                                                "MKL_NUM_THREADS", "PYTHONHASHSEED", "PYTHONDONTWRITEBYTECODE",
+                                                "TORCHELASTIC_USE_AGENT_STORE"}
     assert env["MASTER_ADDR"] == "127.0.0.1" and "leak" not in env.values()
+    assert env["TORCHELASTIC_USE_AGENT_STORE"] == "True"
 
 
 def test_copy_job_never_carries_private_material(tmp_path):
@@ -195,7 +197,7 @@ def test_live_protocol_abuse_is_rejected_or_harmless_and_the_salt_is_not_reachab
     assert set(probe["env_keys"]) <= set(ENV_PASSTHROUGH) | {"MASTER_ADDR", "MASTER_PORT", "WORLD_SIZE", "RANK", "RUN_ID", "RESUME_FROM",
                                                              "HARNESS_START", "TD_FD", "GLOO_SOCKET_IFNAME", "OMP_NUM_THREADS",
                                                              "MKL_NUM_THREADS", "PYTHONHASHSEED", "PYTHONDONTWRITEBYTECODE", "LC_CTYPE",
-                                                             "__CF_USER_TEXT_ENCODING"}  # the last two: added by macOS / Python
+                                                             "__CF_USER_TEXT_ENCODING", "TORCHELASTIC_USE_AGENT_STORE"}  # macOS / Python add the first two
     for hay in (probe["env_values"], probe["files"], probe["ps"]):
         assert salt.hex() not in hay and "live-probe-key" not in hay
     rec = trusted.ledger(jd)[0]

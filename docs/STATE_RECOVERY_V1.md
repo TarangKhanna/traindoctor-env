@@ -1,6 +1,6 @@
 # State only recovery demonstration
 
-`traindoctor_env.state_recovery_v1` is one explicitly versioned engineering demonstration. It does not modify historical Task B, `Replay.outcomes()`, verifier v1.2, its scratch allowance, or historical results.
+`traindoctor_env.state_recovery_v1` is one explicitly versioned engineering demonstration. It does not modify historical Task B's fault/recovery semantics, `Replay.outcomes()`, verifier v1.2, its scratch allowance, or historical results. A separate shared-launcher fix makes rendezvous binding comply with the existing loopback-only requirement.
 
 ## Incident and observations
 
@@ -19,6 +19,8 @@ Correctness is the existing sample, state-transition, rank, checkpoint and histo
 Cost is reported independently as raw redone optimizer steps, with no exemption. Scratch can be semantically correct while costly. Checkpoint continuity is not applicable to scratch. An illustrative scalar is zero for invalid outcomes and `max(0, 1-redone_steps/12)` for valid outcomes. That normalization is not a preregistered scientific metric or an established operational utility function. Job completion failures remain visible separately; a launch failure aborts the demonstration instead of being counted as semantic corruption.
 
 The preemption and continuations require the existing macOS `sandbox-exec` backend; no silent unsandboxed fallback is allowed. The existing reference helper executes trusted repository code locally without OS isolation. This distinction is recorded in the companion report. The Seatbelt policy permits loopback communication and is not equivalent to the historical network-less Modal sandbox. This module accepts fixed actions, not arbitrary generated code.
+
+Live `lsof` found that PyTorch's default TCPStore listened on a wildcard despite `MASTER_ADDR=127.0.0.1`. The launcher now owns an IPv4 socket pre-bound to loopback and adopts it through PyTorch's supported `master_listen_fd` API with the non-libuv backend. Ranks use agent-store client mode; Gloo peer sockets remain on the loopback interface. The listener regression and recovery demonstration were executed after this fix. Training source and verifier semantics are unchanged.
 
 ## Reproduction
 

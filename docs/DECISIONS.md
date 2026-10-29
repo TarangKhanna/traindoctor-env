@@ -1,0 +1,1 @@
+2026-10-29: Live lsof isolated a wildcard PyTorch TCPStore listener despite MASTER_ADDR=127.0.0.1. The launcher now owns a pre-bound IPv4 loopback TCPStore through PyTorch's master_listen_fd API; ranks use supported agent-store client mode. Training source, fault injection and verifier v1.2 semantics are unchanged.
