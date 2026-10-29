@@ -9,3 +9,5 @@ Final network verification isolated a pre-existing wildcard TCPStore listener. T
 Local follow-up: scoped [agent instructions](../AGENTS.md) now bind this branch to the worked example, reuse-first implementation and measured evidence. [The append-only learning log](LEARNINGS.md) records catches and limits; this documentation update adds no experiment or runtime.
 
 2026-10-29 release preparation: README now separates historical Modal evaluation from the local recovery example, links the saved-evidence quickstart, and states that successful local multi-turn code repair is not established. Paired-source installation and saved recount were checked; core behavior and verifier v1.2 remain unchanged.
+
+2026-10-29 focused README compression: concise recovery-first landing page; prior full content retained in docs/PROJECT_DETAIL.md. Relative links, code fences, numerical provenance and diff checks pass; read-only critic found no blocker. No new experimental claim.

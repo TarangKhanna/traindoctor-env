@@ -1,153 +1,73 @@
-# TrainDoctor — Execution-Verified Training Recovery
+# TrainDoctor
 
-A training job can finish successfully and still be wrong.
+**A training job can finish successfully and still be wrong.**
 
-TrainDoctor is a small environment for investigating, repairing and checking multi-process PyTorch training jobs. It checks whether a recovery preserves the intended samples and optimizer state, rather than treating a successful exit as proof of correctness.
+TrainDoctor is an execution environment for investigating and repairing distributed PyTorch training jobs. It checks the recovered computation—samples, model parameters and optimizer state—rather than accepting a clean exit code.
 
-This repository contains the environment, tools and verifier. [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research) contains experiments, raw evidence and reproduction commands.
+This repository contains the runtime, investigation tools and verifier. [TrainDoctor Research](https://github.com/TarangKhanna/traindoctor-research) contains the experiments and execution evidence.
 
-| What you can inspect | Current status |
-| --- | --- |
-| Executable communication and checkpoint failures | Small CPU/Gloo workloads with launcher-owned evidence |
-| Correct versus completing-but-wrong recoveries | [Worked state-recovery example](docs/STATE_RECOVERY_V1.md), with saved execution evidence in the research repo |
-| Verification without an uninterrupted run | Conditional checkpoint-transition check in the [research report](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/REFERENCE_FREE_REPORT.md); requires a trusted anchor and input/update specification |
-| Agent tools and RL experiments | Tier B tools exist; historical training used Tier A menus. A successful local multi-turn coding agent is not established |
+## A recovery that passes checksums and fails correctness
 
-The historical evaluation used network-less Modal/gVisor sandboxes. The newer local demonstration uses macOS `sandbox-exec`, whose loopback permissions and trust boundary differ. No cloud account or model inference is needed to [recount its saved evidence](https://github.com/TarangKhanna/traindoctor-research#reproduce-the-saved-local-example).
+A two-rank CPU/Gloo job is interrupted after a checkpoint. Its training source is correct, but the delivered checkpoint combines components from different committed steps. The file checksum is valid. Training resumes and finishes. The recovered computation is wrong.
 
-The strongest current artifact is the executable recovery check and its documented limits. Historical GRPO results did not establish improved repair selection, and checkpoint replay itself is established prior art.
+```text
+Committed training state       Delivered recovery state
+step 8: model + momentum       step 8: model + momentum
+step 8: sampler cursor         step 4: sampler cursor
+                                      │
+                               restart completes
+                                      │
+                               samples repeat
+                                      │
+                               semantic check rejects
+```
 
-![An agent patch runs as untrusted ranks inside Modal's gVisor sandbox; a launcher-owned data server and checkpoint ledger record evidence; a verifier outside the sandbox checks it](docs/figures/fig_trust_boundary.svg)
+The [worked demonstration](docs/STATE_RECOVERY_V1.md) also tests the reverse problem: a current sampler with stale optimizer momentum. Selective restoration fixes one inconsistency while leaving the other intact. Full committed restoration fixes both; scratch recovery is valid but repeats more work. Correctness and recovery cost are reported separately.
 
-[Quickstart](#quickstart) · [Demo](docs/DEMO.md) · [Task suite](docs/TASKS.md) · [Architecture](ARCHITECTURE.md) · [Research results](https://github.com/TarangKhanna/traindoctor-research)
+The companion repository preserves the executed continuations and a NumPy implementation of the training updates. You can [recount the saved evidence](https://github.com/TarangKhanna/traindoctor-research#reproduce-the-saved-local-example) without a model or cloud account.
 
-## What the verifier checks
+## What is implemented
 
-1. **Training semantics.** Every accepted repair must pass an independent replay of each committed optimizer transition, including the first update after a restore (SGD with momentum on the batches the data server delivered; `_replay`, `_transitions` and `check` in [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py)), plus sample accounting, sampler progress from launcher records, world size and rank agreement, bounded rollback and, in v1.2, `history_intact` (older captures cannot be rewritten). Checkpoints must either equal the fault-free reference or pass the format check; stored sampler state is optional in v1.2. The menu v3 audit below includes 115 accepted alternative repairs; known edge cases that could reject a legitimate repair are listed in [docs/VERIFICATION.md](docs/VERIFICATION.md).
-2. **Trust boundary.** Historical sandbox evaluations used Modal/gVisor: the launcher (root) and ranks (unprivileged uid) share the sandbox, and the verifier runs outside. The separately versioned local demonstration uses the existing macOS sandbox and records that backend explicitly.
-3. **Rewards (V0/V1/V2).** Training experiments used the single-turn Tier A menu; Tier B (interactive edits) is not a validated multi-turn benchmark. Training rewards came from precomputed outcome tables; held-out scores came from live sandbox replay.
-4. **Audits and negative results.** The menu v3 audit covers 720 candidates: 175 of 175 valid repairs accepted and 0 of 271 completed-but-incorrect repairs accepted. This is a consistency check under the suite's criteria (classification uses the verifier's computed fields; author-designed). In the Qwen3-4B SFT+GRPO experiment the gain accompanied evidence citation while repair choice was similar, and continued SFT was comparable. See [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research).
+- **Real failures:** multi-process Gloo communication failures and checkpoint/restart inconsistencies, with per-rank traces and launcher-owned execution records.
+- **Investigation tools:** inspect logs, collectives, source, configuration, sample history and checkpoints. Tier B permits constrained source edits and relaunches.
+- **Execution verification:** check sample accounting, optimizer transitions, checkpoint history, rank agreement and recovery cost against trusted records.
+- **Explicit isolation:** historical evaluations used Modal/gVisor; the local recovery demo uses macOS `sandbox-exec`. Each records its backend. The local profile permits loopback and provides a different isolation boundary.
 
-Scope: synthetic CPU/Gloo workloads, four fault kinds in two families plus a healthy control, and a verifier specific to this MLP, sampler and SGD optimizer.
+The code is organized around a small MLP, deterministic data delivery and SGD with momentum. It is an inspectable research environment, with no claim of coverage for arbitrary production training programs.
 
-Agents investigate executed 3- or 4-process (Gloo) failures, name the cause, cite evidence and repair the job. The suite has four fault kinds in two families, plus a healthy-job control:
+## Try it
 
-- Communication failures: a rank enters a mismatched collective (A1), or a rank stalls before communication and never reaches the collective (A2). In both, the ranks that report a failure show the same collective timeout; in A2 the stalled rank itself is killed by the launcher watchdog.
-- Silent corruption after recovery: a worker fails, the job restarts, loss looks normal, but checkpoint and sampler state disagree, so samples are skipped (B_SKIP) or processed twice (B_DUP).
-- Healthy control: a job with no fault (B_OK), where the correct answer is no fault.
+The fastest path is the research repository’s [saved-evidence quickstart](https://github.com/TarangKhanna/traindoctor-research#reproduce-the-saved-local-example). It checks archived executions locally and reports which recoveries preserve training semantics.
 
-Tier A provides a single-turn evidence bundle and repair menu for RL training and evaluation. Tier B exposes the same snapshot through interactive tools for logs, traces, source and config, with code edits applied and re-executed. Tier B is a development environment, not a validated multi-turn RL benchmark.
-
-An experimental [state-only recovery demonstration](docs/STATE_RECOVERY_V1.md) keeps the training source correct and changes delivered checkpoint components. It grades the selected local continuation, exposes committed-state observations for investigation, and reports semantic correctness separately from recomputation cost. It preserves full restore and scratch as legitimate fallbacks and does not alter historical Task B.
-
-## Worked example: a repair that runs but is wrong
-
-In the A1 task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce`, and every rank times out with the same error.
-
-![Four ranks at step 6: rank 2 calls broadcast while ranks 0, 1 and 3 call all_reduce, so all four ranks time out with COLLECTIVE_TIMEOUT](docs/figures/fig_failure.svg)
-
-Setting `world_size` from 4 to 1 (fake repair F11) removes the hang and completes the job while changing the training run.
-
-- Quickstart scenario (seed 123): the verifier reports the wrong worker count, 96 missing samples and parameters that differ from the reference.
-- Red-team run (task instance A1_src, replayed in a Modal sandbox): 72 missing and 8 duplicated samples for the same fake ([per-case table](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/results/REDTEAM_TABLE.md)). The two sets of counts come from different seeds and are not comparable.
-
-
-## How recovery verification works
-
-
-In the historical Modal backend, the launcher runs as root and the ranks as an unprivileged user. The launcher injects the worker failure, serves batches through a private-socket data server that determines sample identity independently of job-written logs and copies each checkpoint into its own ledger at commit time. The verifier runs outside and treats everything copied out as data. The local backend has a different isolation boundary, described in the [state-recovery contract](docs/STATE_RECOVERY_V1.md).
-
-- Trusted (repository code the agent cannot edit): the launcher, data server, checkpoint capture and ledger, the reference run and the verifier. The launcher shares the sandbox with the ranks and is separated from them by user id (root versus an unprivileged user), not by a separate machine.
-- Untrusted, checked against the trusted records: the agent's edits and everything the ranks write (logs, metrics, checkpoint files, exit codes).
-
-At each committed step the verifier checks:
-
-- each scheduled sample was consumed once;
-- each transition between committed states matches an independent replay of the SGD-with-momentum update on the batches the data server delivered;
-- each checkpoint either equals the uninterrupted reference (model, momentum and, if stored, sampler position) or passes the format check;
-- lost work stays within one checkpoint interval, ranks agree, and protected files are untouched.
-
-The checks are specific to this small MLP, sampler and optimizer, not a general verifier for production code. Details: [docs/VERIFICATION.md](docs/VERIFICATION.md), [ARCHITECTURE.md](ARCHITECTURE.md).
-
-Example: a repair restores the model parameters but zeroes the optimizer momentum. The job completes and the parameters can look right, but the committed optimizer state differs from the reference, so the repair is rejected (`test_zeroing_the_final_momentum_fails_even_though_parameters_are_right` in `tests/test_tamper.py`). The transition check applies the same rule to the first update after a restore (`resume_ok` in `_transitions`).
-
-## Where to look
-
-- Verifier: [`traindoctor_env/reexec.py`](traindoctor_env/reexec.py)
-- Tier A (bundle, prompt, scoring): [`bundle.py`](traindoctor_env/bundle.py), [`tiera.py`](traindoctor_env/tiera.py)
-- Tier B (tools): [`tools.py`](traindoctor_env/tools.py)
-- Launcher, data server, checkpoint capture: [`jobs/`](jobs/)
-- Design: [ARCHITECTURE.md](ARCHITECTURE.md) and [docs/VERIFICATION.md](docs/VERIFICATION.md)
-
-Research preview (v0.1): executable CPU/Gloo workloads with two synthetic failure families. It is not a general-purpose verifier for arbitrary production training jobs. This repository holds the environment and verifier; training and evaluation results are in [traindoctor-research](https://github.com/TarangKhanna/traindoctor-research).
-
-## Quickstart
-
-CPU only, Python 3.12 or 3.13, no GPU, API key or Modal account. This legacy quickstart's local runs print `INVALID` by design because they have no OS isolation; its verified path uses `--modal` ([docs/QUICKSTART.md](docs/QUICKSTART.md)).
-For an accepted/rejected example without launching jobs, start with the research repository's [saved-evidence quickstart](https://github.com/TarangKhanna/traindoctor-research#reproduce-the-saved-local-example). The commands below are the historical live fault demonstration; their unsandboxed result is intentionally not counted as verified.
+To install this environment from source with Python 3.12:
 
 ```bash
 git clone https://github.com/TarangKhanna/traindoctor-env
 cd traindoctor-env
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements-cpu.txt
-python scripts/quickstart.py --fake F11 --out quickstart_out
+python3.12 -m venv .venv
+source .venv/bin/activate
+pip install -e '.[dev]'
+pytest -q tests/test_state_recovery_v1.py
 ```
 
-This builds a failed four-process job and checks the reference repair and the `world_size: 1` fake (about 30 seconds after installation). The local run prints `INVALID: unsandboxed re-execution` by design: the verifier does not count results from agent-edited code that ran without isolation. The verified path uses a Modal Sandbox ([docs/QUICKSTART.md](docs/QUICKSTART.md)). To use the package from another project: `pip install ".[modal]"` from a clone.
+For a fresh local recovery demonstration, use the matching research checkout and the [execution commands](docs/STATE_RECOVERY_V1.md#reproduction). That path requires macOS and fails closed if its sandbox is unavailable. The older [quickstart](docs/QUICKSTART.md) demonstrates a communication fault; its unsandboxed local result is intentionally not accepted as verified.
 
-## Task evidence
+## Agent and learning research
 
-The ranks that report A1 and A2 failures show the same timeout, but the Tier A process records show a watchdog-killed rank only in A2, so process status alone separates A2 from A1 (a post-hoc audit on 120 new development seeds, [report](results/status_audit/run1/REPORT.md)). It cannot separate A1_src from A1_cfg. See [docs/TASKS.md](docs/TASKS.md) and [docs/EXTENDING.md](docs/EXTENDING.md).
+TrainDoctor exposes two interfaces: **Tier A**, a single-turn evidence bundle with a repair menu, and **Tier B**, interactive inspection and code editing. Historical Qwen3-4B SFT/GRPO experiments used Tier A. They did not establish improved repair selection or an advantage over continued SFT. A successful local-model multi-turn code repair remains unfinished work.
 
-## Tier A interface and rewards
+The state-recovery demonstration establishes a concrete verification capability. It does not establish a difficult agent benchmark: a full restore works in both states. Checkpoint-transition replay also has established prior art. The detailed [research findings](https://github.com/TarangKhanna/traindoctor-research) preserve these boundaries and the negative results.
 
-`traindoctor_env.bundle.make_bundle` builds evidence-id-tagged records and a repair menu, capped at 3,072 Qwen3 tokens. `traindoctor_env.tiera` renders the chat prompt, parses the JSON answer (label, cited evidence ids, repair, claimed recovery) and scores it. Tier B tools in `traindoctor_env/tools.py` permit edits to declared editable files, with the diff replay-verified.
+## Explore the implementation
 
-The reward has three levels, each adding one requirement: V0 (correct diagnosis), V1 (plus cited evidence that was observed and is diagnostic for the mechanism), V2 (plus a repair that passes sandboxed re-execution, and no destructive action). A format violation scores zero. `audit/menu_leak.py` checks the bundle and menu for label leakage; it does not establish that none exists (see Limitations).
-
-## Verifier v1.2 (default) and optional menu v3
-
-`format_check='v1.2'` adds `history_intact` to v1.1: older checkpoint entries must be byte-identical to an earlier launcher capture, rejecting fabricated older checkpoints. v1.2 is the default for new verifications; the published results used v1 and reproduce with `format_check="v1"`. See [docs/VERIFICATION.md](docs/VERIFICATION.md).
-
-Menu v3 is opt-in (`make_menu(..., version="v3")`), with valid alternatives and repairs that complete while violating training semantics. Its reconciled Modal-sandboxed audit covers 720 candidates: 60 reference repairs, 115 valid alternatives, 271 incorrect-but-completed repairs, 274 non-completions and 0 infrastructure errors. v1.2 accepted all 175 repairs classified valid and rejected all 271 completed-but-invalid ones under the suite's reference-based criteria; v1 has 12 false rejections. Classification and verification share execution records and computed fields, so this is a consistency check, not an independent false-acceptance rate, and an author-designed development outcome rather than external validation. The experiment is NO-GO for RL. Sources: [candidate accounting](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/ACCOUNTING.md), [report](https://github.com/TarangKhanna/traindoctor-research/blob/main/experiments/menu_v3_dev/REPORT.md).
-
-## Results (historical v0.1)
-
-Qwen3-4B was trained (LoRA SFT, then GRPO) on Modal cloud GPUs and evaluated in this environment, and the verifier was attacked. Claude Sonnet and Codex were evaluated separately as existing coding agents; they were not trained here. All results are exploratory and are not reproduced by this repository, which has no training or evaluation code and withholds the held-out seeds. Statistics, uncertainty and provenance are in the research repository's [evidence map](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/EVIDENCE_MAP.md) and [erratum](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/ERRATUM_mmd.md).
-
-- Reward comparison: on a held-out evaluation set, the V2 arm (recovery-aware reward) scored 10.36 points above the V0 arm (diagnosis-only reward); the observed gain accompanies improved evidence citation, while repair-choice rates were similar (71.4% vs 71.5%).
-- Against continued SFT: a single run (compute comparability was not established) scored 29.7%; the V2 arm's +3.7-point difference is not clearly nonzero (95% interval -1.7 to +9.1).
-- Development split: V2 minus V0 was +4.64 points (interval -0.69 to +9.98), which is inconclusive; the minimum meaningful difference (7.2 in the frozen protocol, 20 in its amendment) was never reconciled.
-- Verifier attacks: none of 86 fake repairs was accepted, though 38 failed during execution rather than being caught by an invariant, and the attacks had no external review.
-- Coding agents: Claude Sonnet and Codex, evaluated separately from the Qwen3-4B results, both recovered all six development tasks (strict scores: Claude 5/6 for one missing evidence record, Codex 6/6), so the tasks are easy and do not rank agents.
-
-## Limitations
-
-- The displayed job seed in `config.yaml` can be inverted to the scenario seed, and hence the label, by running the public generator over a known seed range (for most scenarios in an owner-side check). Tier A models cannot execute code, but tool-using agents could; the leak is unresolved, and historical results are unchanged.
-- Two synthetic task families; splits differ by seed, not by failure mechanism.
-- In the historical v0.1 experiment, each repair menu has one recovering option, so V1 and V2 agree on 97.7% of development rollouts. The results do not show that recovery-based reward improves repair selection.
-- The training result rests on six paired seeds, the minimum for a consistency check rather than statistical power, and is exploratory.
-- The historical network-less replay path needs a Modal account. The local state-recovery demonstration needs macOS `sandbox-exec`; saved-artifact recounts need neither. The local profile permits loopback access and is not equivalent to gVisor or a general security guarantee.
-- Process-status records in the Tier A bundle identify A2 against A1 perfectly (40 of 40 each) but not A1_src against A1_cfg, so a model can use that shortcut instead of the traces. The environment was not changed.
-- Tier B has not been validated as a multi-turn RL benchmark.
-- No claim about production NCCL/FSDP failures or arbitrary training programs.
-
-## Documentation
-
-For a 5-minute overview, read this README and [ARCHITECTURE.md](ARCHITECTURE.md).
-
-| Guide | Contents |
+| Start here | Purpose |
 | --- | --- |
-| [QUICKSTART.md](docs/QUICKSTART.md) | Install, local and sandboxed quickstart, unit-test commands |
-| [DEMO.md](docs/DEMO.md) | Oracle evidence, diagnosis, patch, replay, gold and fake verdicts |
-| [TASKS.md](docs/TASKS.md) | Five task kinds and two tiers |
-| [VERIFICATION.md](docs/VERIFICATION.md) | Invariants, `exec_mode` trust distinctions, red-team details |
-| [EXTENDING.md](docs/EXTENDING.md) | Package use and task extensions |
-| [TESTING.md](docs/TESTING.md) | Test selections, historical counts, known skips and Modal regression |
-| [TIERB_READINESS.md](docs/TIERB_READINESS.md) | Multi-turn RL readiness findings and proposed work |
-| [figures/](docs/figures/) | `fig_failure` (`world_size:1` fake removes a hang) and `fig_trust_boundary` |
+| [Recovery demonstration](docs/STATE_RECOVERY_V1.md) | Incident, actions, correctness contract and reproduction |
+| [Architecture](ARCHITECTURE.md) | Runtime, evidence flow and trust boundaries |
+| [Verifier](traindoctor_env/reexec.py) / [contract](docs/VERIFICATION.md) | Transition checks, invariants and known limits |
+| [Tier B tools](traindoctor_env/tools.py) | Interactive investigation and editable workspace |
+| [Launcher](jobs/) | Worker execution, data delivery and checkpoint capture |
+| [Testing](docs/TESTING.md) | CPU tests, sandbox tests and historical coverage |
+| [Detailed project record](docs/PROJECT_DETAIL.md) | Historical results, task shortcuts, verifier versions and caveats |
 
-Contributions: new red-team cases and tasks with several plausible repairs. Security reports: [SECURITY.md](SECURITY.md).
-
-Apache-2.0 ([LICENSE](LICENSE), [NOTICE](NOTICE)). Citation: [CITATION.cff](CITATION.cff).
+Apache-2.0: [LICENSE](LICENSE), [NOTICE](NOTICE). [Citation](CITATION.cff) · [Security](SECURITY.md).

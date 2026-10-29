@@ -40,3 +40,5 @@ Verification commands and exact execution configuration are in the companion
 research report, `experiments/state_recovery_v1/REPORT.md`. Linux execution and
 independent external reproduction remain unverified. The existing sandbox contract
 must not be described as stronger than its measured platform/backend guarantees.
+
+2026-10-29 README compression: lead with checksum-valid inconsistent recovery; move the previous detailed landing page intact (relative links rebased) to docs/PROJECT_DETAIL.md. Retain historical evidence and numerical checks. Critic caught that structural well-formedness does not imply checksum validation; wording now explicitly describes recomputed manifest checksums. Documentation changes only.
