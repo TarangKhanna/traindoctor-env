@@ -5,3 +5,5 @@
 Full committed restoration remains a common robust action. The work targets a reproducible engineering example; it does not establish a challenging RL task. See [the protocol contract](STATE_RECOVERY_V1.md).
 
 Final network verification isolated a pre-existing wildcard TCPStore listener. The shared launcher now owns a pre-bound loopback TCPStore; live lsof regression passes, as do 241 focused local tests and the repeated twelve-continuation demonstration. Historical v1.2 and training source remain unchanged.
+
+Local follow-up: scoped [agent instructions](../AGENTS.md) now bind this branch to the worked example, reuse-first implementation and measured evidence. [The append-only learning log](LEARNINGS.md) records catches and limits; this documentation update adds no experiment or runtime.
