@@ -25,6 +25,8 @@ Agents investigate executed 3- or 4-process (Gloo) failures, name the cause, cit
 
 Tier A provides a single-turn evidence bundle and repair menu for RL training and evaluation. Tier B exposes the same snapshot through interactive tools for logs, traces, source and config, with code edits applied and re-executed. Tier B is a development environment, not a validated multi-turn RL benchmark.
 
+An experimental [state-only recovery demonstration](docs/STATE_RECOVERY_V1.md) keeps the training source correct and changes delivered checkpoint components. It grades the selected local continuation, exposes committed-state observations for investigation, and reports semantic correctness separately from recomputation cost. It preserves full restore and scratch as legitimate fallbacks and does not alter historical Task B.
+
 ## Worked example: a repair that runs but is wrong
 
 In the A1 task, rank 2 calls `broadcast` while ranks 0, 1 and 3 call `all_reduce`, and every rank times out with the same error.
