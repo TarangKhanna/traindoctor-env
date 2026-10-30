@@ -55,10 +55,18 @@ to match a preferred explanation or turn documentation upkeep into infrastructur
 
 ## Current isolated Harbor milestone (2026-10-30)
 
-The owner authorizes one Harbor compatibility task, not a framework or publication.
+The completed milestone covers one Harbor compatibility task, not a framework.
 Read docs/HARBOR.md. Preserve v1.2 and keep transferred agent source separate from
 trusted execution records. Explicit harbor_docker_uid provenance requires actual
 worker/isolation proofs, not a container label. The owner approved isolated CLI installation and local Docker startup on
-2026-10-30. Complete only local Harbor validation; the latest instruction prohibits
-push/publication. Do not run Harbor from a repository directory or allow automatic
+2026-10-30. Validation is complete; the release authorization below supersedes
+the earlier publication hold. Do not run Harbor from a repository directory or allow automatic
 dotenv reads. No model inference/training or new tasks in this validation session.
+
+## Authorized release — 2026-10-30
+
+The owner now authorizes publishing the reviewed agent/Harbor work and concise
+README updates to both existing GitHub repositories. This supersedes the earlier
+publication hold for this release only. Preserve historical evidence; use a normal
+fast-forward push after review, credential checks and focused verification. No
+model runs, training, Hub upload or further task expansion is authorized here.

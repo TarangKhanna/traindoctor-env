@@ -21,9 +21,9 @@ All four controls passed again against the final stale-`reward.txt` cleanup code
 Their task checksums agree, and the executed grader/core source hashes match the
 saved source archive. Native Mac controls agree on every shared v1.2 verdict field.
 
-Evidence, exact commands, timings and remaining limits are in the companion
-research worktree: `docs/HARBOR_VALIDATION.md` and
-`results/harbor_validation_20261030/`. These are local and unpublished.
+[The validation report](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/HARBOR_VALIDATION.md)
+contains exact commands, timings and limits; raw receipts are in that repository’s
+`results/harbor_validation_20261030/` directory.
 
 ## Run the controls
 

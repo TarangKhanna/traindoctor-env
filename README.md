@@ -52,9 +52,15 @@ pytest -q tests/test_state_recovery_v1.py
 
 For a fresh local recovery demonstration, use the matching research checkout and the [execution commands](docs/STATE_RECOVERY_V1.md#reproduction). That path requires macOS and fails closed if its sandbox is unavailable. The older [quickstart](docs/QUICKSTART.md) demonstrates a communication fault; its unsandboxed local result is intentionally not accepted as verified.
 
+## Harbor interoperability
+
+One checkpoint code-repair task runs through Harbor with a separate semantic verifier. Executed controls accept the correct patch and reject no-op, completing-but-incorrect and forged-evidence controls; native TrainDoctor verdicts agree.
+
+Follow the [pinned setup and control commands](docs/HARBOR.md), including the isolation requirements and documented lint exception. [Raw results and measured costs](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/HARBOR_VALIDATION.md) are available in the research repository. This is a validated interoperability smoke test, not a challenging agent benchmark.
+
 ## Agent and learning research
 
-TrainDoctor exposes two interfaces: **Tier A**, a single-turn evidence bundle with a repair menu, and **Tier B**, interactive inspection and code editing. Historical Qwen3-4B SFT/GRPO experiments used Tier A. They did not establish improved repair selection or an advantage over continued SFT. A successful local-model multi-turn code repair remains unfinished work.
+TrainDoctor exposes two interfaces: **Tier A**, a single-turn evidence bundle with a repair menu, and **Tier B**, interactive inspection and code editing. Historical Qwen3-4B SFT/GRPO experiments used Tier A. They did not establish improved repair selection or an advantage over continued SFT. Local Qwen/Gemma runs have produced real tool calls and code-edit attempts; autonomous repair, relaunch and result inspection remain unproven.
 
 The state-recovery demonstration establishes a concrete verification capability. It does not establish a difficult agent benchmark: a full restore works in both states. Checkpoint-transition replay also has established prior art. The detailed [research findings](https://github.com/TarangKhanna/traindoctor-research) preserve these boundaries and the negative results.
 
