@@ -75,7 +75,7 @@ The state-recovery demonstration establishes a concrete verification capability.
 | [Verifier](traindoctor_env/reexec.py) / [contract](docs/VERIFICATION.md) | Transition checks, invariants and known limits |
 | [Tier B tools](traindoctor_env/tools.py) | Interactive investigation and editable workspace |
 | [Launcher](jobs/) | Worker execution, data delivery and checkpoint capture |
-| [Testing](docs/TESTING.md) | CPU tests, sandbox tests and historical coverage |
+| [Testing](docs/TESTING.md) | Unit versus fresh-execution checks, historical coverage and backend limitations |
 | [Detailed project record](docs/PROJECT_DETAIL.md) | Historical results, task shortcuts, verifier versions and caveats |
 
 Apache-2.0: [LICENSE](LICENSE), [NOTICE](NOTICE). [Citation](CITATION.cff) · [Security](SECURITY.md).

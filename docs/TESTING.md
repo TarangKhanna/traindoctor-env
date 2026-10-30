@@ -3,7 +3,7 @@
 Three levels, which are not interchangeable:
 
 1. **Unit tests** (CI, every push): `-m "not sweep and not executed"`. No real multi-process job, no sandbox, no Modal. A green CI badge means only this level passed.
-2. **Executed integration tests** (`-m executed`, 115 tests): real multi-process Gloo jobs through the launcher. Not in required CI and not consistently passing on any host (below).
+2. **Executed integration tests** (`-m executed`; historical run counts below): real multi-process Gloo jobs through the launcher. Not in required CI; recorded native macOS runs are inconsistent and other host coverage is limited, as documented below. Use `pytest --collect-only -q -m "executed and not sweep"` for the current collection; moving integration tests out of the unit selection changed it.
 3. **Sandboxed verification** (`scripts/modal_regression.py`): repairs replayed in network-less Modal gVisor sandboxes against the verifier. Paid, run manually; the last recorded run is below.
 
 Counts come from `PYTHONPATH=. python -m pytest -q -rs -rf -m "..."` with `requirements-cpu.txt` (torch 2.14.1 CPU) on macOS arm64 unless noted. `pytest.ini` deselects `sweep` by default and registers `executed`. Skipped tests are not passes.
