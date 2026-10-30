@@ -9,3 +9,5 @@
 2026-10-30: Owner authorized a native-subagent critic cycle and release if checks pass. Publish the implemented harness/task with negative agent observations, not an autonomous-repair claim. Correct executed-test markers and stale Harbor status; retain all historical results. No new model trial or training follows from the release.
 
 2026-10-30: The environment release passed CI after setup-python's optional pip-cache restore reported "Egress is over the account limit." Remove that optional cache restore to avoid the quota-related setup delay; preserve Python versions, dependency pins and every test/import check. The runner completed its tests successfully without the restored cache.
+
+2026-10-30 — Harbor support remains native Docker plus bundled Compose only; metadata records the existing executed controls, while runtime proofs remain mandatory and a Docker marker is not provider authentication. No new backend or runtime guarantee.

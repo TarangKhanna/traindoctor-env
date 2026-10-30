@@ -5,6 +5,15 @@ One existing CPU/Gloo code-repair task now runs through native Harbor 0.25.0
 This proves bounded interoperability, not task difficulty, model improvement or
 RL readiness. Original verifier v1.2 and historical evidence are unchanged.
 
+Supported Harbor execution is limited to the native Docker provider with both
+bundled Compose configurations. Other Harbor providers are unvalidated and
+unsupported. The Linux worker bridge fails closed without a root Docker verifier
+and its runtime isolation proofs; metadata is documentation, not provider
+authentication. A Docker marker alone is insufficient. Revalidate all controls
+and isolation before changing providers or either Compose configuration.
+The task metadata now describes the completed validation; the published receipts
+retain the exact source and task checksums actually executed at that time.
+
 ## Executed controls
 
 The initial native Harbor validation completed without infrastructure errors:

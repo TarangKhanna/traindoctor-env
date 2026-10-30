@@ -11,7 +11,8 @@ keywords = ["pytorch", "training-recovery", "code-repair"]
 category = "debugging"
 difficulty = "easy"
 harbor_source_commit = "509b119db0d97b141dcd9c80f4f7ab861c47c2d6"
-verification_status = "requires-executed-local-backend-validation"
+verification_status = "executed-local-docker-controls-2026-10-30"
+supported_backend = "native-harbor-docker-with-bundled-compose"
 
 [agent]
 timeout_sec = 600.0

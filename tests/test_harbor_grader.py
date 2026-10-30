@@ -92,6 +92,17 @@ def test_linux_bridge_cannot_activate_on_the_mac_host(monkeypatch, tmp_path):
         worker_bridge.preflight(tmp_path)
 
 
+def test_linux_without_docker_marker_refuses_before_any_runtime_probe(monkeypatch, tmp_path):
+    import worker_bridge
+    monkeypatch.setattr(worker_bridge.sys, "platform", "linux")
+    monkeypatch.setattr(worker_bridge.os, "geteuid", lambda: 0)
+    monkeypatch.setattr(worker_bridge.Path, "is_file", lambda _: False)
+    monkeypatch.setattr(worker_bridge, "isolated_network_interfaces",
+                        lambda: pytest.fail("unsupported container must fail before probing or execution"))
+    with pytest.raises(grade.sandbox.SandboxUnavailable, match="root Docker verifier"):
+        worker_bridge.preflight(tmp_path)
+
+
 def test_execution_failure_restores_global_wrapper(monkeypatch, tmp_path):
     from types import SimpleNamespace
     import worker_bridge
