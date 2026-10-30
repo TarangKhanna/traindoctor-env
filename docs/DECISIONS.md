@@ -3,3 +3,5 @@
 
 2026-10-30: One Harbor B_DUP interoperability smoke task uses native separate verification and existing v1.2 checks; no runtime rewrite, benchmark expansion or verified-compatibility claim before local backend controls.
 2026-10-30: Executed Harbor controls establish one local interoperability smoke task only. Retain the explicit root-capability lint exception; use actual Compose network-none plus privilege/network proofs. Named volumes fix reproduced Docker Desktop tmpfs copy failure; clear both reward formats before grading. Core v1.2 remains unchanged; no publication authorized.
+
+2026-10-30: Owner-authorized masked-loss follow-up reuses the existing environment without changing source or v1.2. Direct Opus review confirms external per-step rank0 checkpoint copies plus independent NumPy adjudication are conditional on exact-source safety review, not live-memory attestation. Research branch demo/masked-mean-v1 preserves unsuccessful model episodes and separately labelled supervised code execution; no training or automatic retries follow.

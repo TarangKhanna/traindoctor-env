@@ -1,5 +1,14 @@
 # Local development status
 
+2026-10-30 bounded follow-up: companion research branch `demo/masked-mean-v1`
+implements one masked-loss source-repair incident using this environment's
+existing launcher, per-step checkpoint copies, Tier B tools and isolation.
+Environment source and historical v1.2 are unchanged. Correct controls and the
+scripted tool smoke pass; neither actual Qwen/Gemma episode applies or relaunches
+a repair. A separately reviewed Qwen text fragment executes and fails Python;
+it is not autonomous model credit. Final evidence and reproduction commands are
+in the research branch's masked-mean report. Stop without training or more models.
+
 2026-10-29: `demo/state-recovery-v1` adds one state-only recovery demonstration in isolation from historical Task B. The original training source and historical verifier remain unchanged. The selected continuation is graded, with correctness separated from repeated optimizer work. Companion execution and independent continuation-oracle evidence are in the matching research worktree.
 
 Full committed restoration remains a common robust action. The work targets a reproducible engineering example; it does not establish a challenging RL task. See [the protocol contract](STATE_RECOVERY_V1.md).
