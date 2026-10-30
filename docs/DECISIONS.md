@@ -7,3 +7,5 @@
 2026-10-30: Owner-authorized masked-loss follow-up reuses the existing environment without changing source or v1.2. Direct Opus review confirms external per-step rank0 checkpoint copies plus independent NumPy adjudication are conditional on exact-source safety review, not live-memory attestation. Research branch demo/masked-mean-v1 preserves unsuccessful model episodes and separately labelled supervised code execution; no training or automatic retries follow.
 
 2026-10-30: Owner authorized a native-subagent critic cycle and release if checks pass. Publish the implemented harness/task with negative agent observations, not an autonomous-repair claim. Correct executed-test markers and stale Harbor status; retain all historical results. No new model trial or training follows from the release.
+
+2026-10-30: The environment release passed CI after setup-python's optional pip-cache restore reported "Egress is over the account limit." Remove that optional cache restore to avoid the quota-related setup delay; preserve Python versions, dependency pins and every test/import check. The runner completed its tests successfully without the restored cache.
