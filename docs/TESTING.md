@@ -8,6 +8,13 @@ Three levels, which are not interchangeable:
 
 Counts come from `PYTHONPATH=. python -m pytest -q -rs -rf -m "..."` with `requirements-cpu.txt` (torch 2.14.1 CPU) on macOS arm64 unless noted. `pytest.ini` deselects `sweep` by default and registers `executed`. Skipped tests are not passes.
 
+**2026-10-30 selection correction:** the end-to-end refusal/world-shrink tests and
+the snapshot-dependent token-cap test are now marked `executed`. They create real
+Gloo scenarios and do not belong in the fast unit selection. Earlier historical
+counts below predate this marker correction. Tests remain available under
+`-m "executed and not sweep"`; moving them does not turn a skip into a pass or
+change their assertions. The unit selection was rerun without loopback privileges.
+
 | selection | Python | historical result |
 | --- | --- | --- |
 | `-m "not sweep and not executed"` (CI selection), repo venv with `transformers`, branch `release-ready` (5ab56fc + relaunch-detail change), 2026-10-21 | 3.12.9 | **516 passed, 14 skipped, 117 deselected** (115 executed + 2 sweep). Skips: 8 `tests/test_sandbox.py` and 6 `tests/test_token_cap.py`, all because `sandbox-exec` cannot be applied in the restricted shell used |

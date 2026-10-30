@@ -57,6 +57,7 @@ def test_prompt_frame_costs_no_more_than_the_overhead(tok):
     assert len(tok.encode(training_prompt(SimpleNamespace(text="")))) <= PROMPT_OVERHEAD
 
 
+@pytest.mark.executed
 @pytest.mark.parametrize("name", ["A1_cfg", "A1_src", "A2", "B_SKIP", "B_DUP", "B_OK"])
 def test_executed_bundle_prompt_is_within_the_cap_in_true_tokens(name, tok, snapshot, menu_table):
     menu, truth, _ = menu_table(name)

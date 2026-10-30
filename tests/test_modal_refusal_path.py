@@ -7,6 +7,8 @@ import sys
 import types
 from pathlib import Path
 
+import pytest
+
 from traindoctor_env import modal_backend
 from traindoctor_env.reexec import refusal_detail
 
@@ -61,6 +63,7 @@ def _fake_modal(root: Path):
     return m
 
 
+@pytest.mark.executed
 def test_modal_path_reports_bad_config_refused_before_any_worker(tmp_path, monkeypatch):
     """Rule: on the verified Modal path a launcher refusal is a non-completion whose detail names BAD_CONFIG and the
     field, the sandbox is created network-less with no secrets, and no worker run is recorded."""

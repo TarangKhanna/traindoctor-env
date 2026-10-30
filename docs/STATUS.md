@@ -1,5 +1,11 @@
 # Local development status
 
+2026-10-30 hiring release: the companion masked-loss packet is prepared for
+publication with deidentified model traces and independently recountable captured
+states. The runtime and historical v1.2 are unchanged. Scenario-generating tests
+are correctly included in the executed selection; the fast unit selection no
+longer starts their Gloo jobs. Successful autonomous repair remains unproven.
+
 2026-10-30 bounded follow-up: companion research branch `demo/masked-mean-v1`
 implements one masked-loss source-repair incident using this environment's
 existing launcher, per-step checkpoint copies, Tier B tools and isolation.

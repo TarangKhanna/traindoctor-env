@@ -1,4 +1,4 @@
-"""Rules (no job launched): trusted files are never named or located by job-supplied strings; trusted run records
+"""Rules: trusted files are never named or located by job-supplied strings; trusted run records
 live outside job-writable paths; the CI opt-out is honored only on Linux CI and never yields verified success."""
 import json
 import os
@@ -128,6 +128,7 @@ def test_default_mark_sandbox_forces_ok_false_and_dev_container_never_passes_str
     assert not verifiers.verdict(SimpleNamespace(label="L"), "L", [], set(), [], dev).v2
 
 
+@pytest.mark.executed
 def test_world_shrink_edit_yields_fault_not_injected_not_exception(tmp_path):
     """Rule: a planned worker failure on a rank the config lacks is never skipped silently nor an exception."""
     from jobs.build import Edit
@@ -185,6 +186,7 @@ def test_incomplete_relaunch_reports_launcher_status_only(tmp_path):
     assert not out.ok and out.path == "" and out.detail == "NOT_COMPLETED: last relaunch watchdog_killed"
 
 
+@pytest.mark.executed
 def test_out_of_range_config_edit_reports_bad_config_end_to_end(tmp_path):
     """Rule: verify_fix on an edit the launcher must refuse returns a non-completion naming BAD_CONFIG and the field."""
     from jobs.build import Edit

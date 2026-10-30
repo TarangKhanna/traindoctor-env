@@ -60,7 +60,9 @@ Follow the [pinned setup and control commands](docs/HARBOR.md), including the is
 
 ## Agent and learning research
 
-TrainDoctor exposes two interfaces: **Tier A**, a single-turn evidence bundle with a repair menu, and **Tier B**, interactive inspection and code editing. Historical Qwen3-4B SFT/GRPO experiments used Tier A. They did not establish improved repair selection or an advantage over continued SFT. Local Qwen/Gemma runs have produced real tool calls and code-edit attempts; autonomous repair, relaunch and result inspection remain unproven.
+TrainDoctor exposes two interfaces: **Tier A**, a single-turn evidence bundle with a repair menu, and **Tier B**, interactive inspection and code editing. Historical Qwen3-4B SFT/GRPO experiments used Tier A. They did not establish improved repair selection or an advantage over continued SFT.
+
+The newer [masked-loss study](https://github.com/TarangKhanna/traindoctor-research/blob/main/evidence/masked_mean_v1/REPORT.md) implements a working multi-turn local-model harness and a source-debugging task with hidden semantic regressions. Its published packet can be recounted without model inference. Real Qwen/Gemma episodes attempted investigation but did not apply a patch or relaunch; successful autonomous repair remains unproven. The harness and executable task exist independently of that negative model outcome.
 
 The state-recovery demonstration establishes a concrete verification capability. It does not establish a difficult agent benchmark: a full restore works in both states. Checkpoint-transition replay also has established prior art. The detailed [research findings](https://github.com/TarangKhanna/traindoctor-research) preserve these boundaries and the negative results.
 
