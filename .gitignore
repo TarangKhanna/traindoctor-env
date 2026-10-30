@@ -27,10 +27,18 @@ INTERVIEW*
 **/INTERVIEW*
 *PRIVATE*
 interview/
-resume*
-cv*
 .handoff/
 .research/
 HANDOFF*.md
 *.egg-info/
 build/
+
+# Private local attachments and personal documents (training resume code is allowed).
+**/.codex-attachments/
+**/*[Rr][Ee][Ss][Uu][Mm][Ee]*.[Pp][Dd][Ff]
+**/*[Rr][Ee][Ss][Uu][Mm][Ee]*.[Dd][Oo][Cc][Xx]
+**/*[Rr][Ee][Ss][Uu][Mm][Ee]*.[Tt][Ee][Xx]
+**/[Cc][Vv].[Pp][Dd][Ff]
+**/[Cc][Vv].[Dd][Oo][Cc][Xx]
+**/*_[Cc][Vv].[Pp][Dd][Ff]
+**/*_[Cc][Vv].[Dd][Oo][Cc][Xx]
