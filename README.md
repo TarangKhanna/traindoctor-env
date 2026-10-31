@@ -1,6 +1,6 @@
 # TrainDoctor
 
-An execution environment for diagnosing and repairing distributed PyTorch training jobs. The verifier checks sample history, model parameters and optimizer state after recovery.
+TrainDoctor reproduces distributed PyTorch training failures and checks whether a repair preserves the intended computation—not just whether the job finishes. It verifies sample consumption, checkpoint history and optimizer updates using launcher-owned execution records, separate from the agent's editable training code.
 
 [Experiments and results](https://github.com/TarangKhanna/traindoctor-research) · [Architecture](ARCHITECTURE.md) · [Task suite](docs/TASKS.md)
 
@@ -34,10 +34,10 @@ To inspect the recorded recoveries, follow the companion repo's [saved-evidence 
 | Semantic re-execution checks | [reexec.py](traindoctor_env/reexec.py) · [Verification contract](docs/VERIFICATION.md) |
 | Harbor task with a separate Docker verifier | [Task and setup](docs/HARBOR.md) |
 
-Unit CI, fresh worker execution and sandboxed verification cover different boundaries. See [testing](docs/TESTING.md) and the [latest reproduction status](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/REPRODUCIBILITY.md).
+CI runs unit tests; fresh distributed execution and sandboxed repair tests are documented separately. See [testing](docs/TESTING.md) and [reproduction status](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/REPRODUCIBILITY.md).
 
 ## Scope
 
-The workloads use a small MLP, CPU/Gloo and SGD with momentum. They do not establish production NCCL/FSDP coverage or a difficult agent benchmark: full restoration solves both recovery states. Historical SFT/GRPO experiments did not establish better repair selection, and autonomous local-model repair remains unproven. [Results and limitations](https://github.com/TarangKhanna/traindoctor-research#results).
+Current scope: small CPU/Gloo training jobs with SGD and momentum. Production-scale distributed training and general-purpose agent evaluation are outside the validated scope.
 
 Apache-2.0: [LICENSE](LICENSE) · [Citation](CITATION.cff) · [Security](SECURITY.md)

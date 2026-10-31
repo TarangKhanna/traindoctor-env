@@ -39,3 +39,5 @@ Local follow-up: scoped [agent instructions](../AGENTS.md) now bind this branch 
 status link to the companion clean-checkout reproduction packet. Runtime,
 verifier, dependency pins and isolation policies are unchanged. The listener-test
 failure remains explicit; full fresh Harbor reproduction is not claimed.
+
+2026-10-31 editorial correction: the README leads with launcher-owned execution evidence and states the validated CPU/Gloo scope once. Runtime and historical evidence are unchanged.
