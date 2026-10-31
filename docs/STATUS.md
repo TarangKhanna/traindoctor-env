@@ -34,3 +34,8 @@ Local follow-up: scoped [agent instructions](../AGENTS.md) now bind this branch 
 2026-10-30 owner-authorized public release: concise README now links the validated Harbor task and measured research evidence, while keeping the unfinished autonomous-agent result explicit. Preserve v1.2 and publish only the reviewed/tested bounded work through a normal fast-forward push.
 
 2026-10-30 privacy audit: public tracked trees and advertised-ref history were checked for personal documents and known resume contact fields. No resume/attachment or contact match was found in file contents. Existing commit author/committer metadata does contain a personal email; it is not removed by this cleanup. Private-document ignore rules were added. The research receipt derivatives redact owner-home paths, with original/redacted hashes recorded; older public commits still retain historical paths. No history rewrite or new experiment.
+
+2026-10-31 documentation/reproduction update: concise README and current testing
+status link to the companion clean-checkout reproduction packet. Runtime,
+verifier, dependency pins and isolation policies are unchanged. The listener-test
+failure remains explicit; full fresh Harbor reproduction is not claimed.
