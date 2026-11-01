@@ -52,3 +52,12 @@ verifier, dependency pins and isolation policies are unchanged. The listener-tes
 failure remains explicit; full fresh Harbor reproduction is not claimed.
 
 2026-10-31 editorial correction: the README leads with launcher-owned execution evidence and states the validated CPU/Gloo scope once. Runtime and historical evidence are unchanged.
+
+2026-11-02 final local release candidate: retained introduction, recovery example,
+installation, implementation map and scope. Added one ownership-aware Mermaid
+chain after the example, linking the detailed architecture SVG and distinguishing
+Modal from macOS isolation. Tier A/B descriptions now link directly to research
+results. Existing renderer/Chrome produced light/dark desktop and mobile previews;
+labels are readable without horizontal overflow. 24 focused environment tests pass;
+runtime, verifier and security files are unchanged. No push or remote rendering/CI
+claim. Local previews are in docs/reviews/final-release-20261102/.

@@ -1,0 +1,91 @@
+{
+  "scope": "local GitHub-style light/dark/mobile preview; actual remote GitHub rendering unverified",
+  "results": [
+    {
+      "name": "light-desktop",
+      "width": 1000,
+      "theme": "default",
+      "diagramType": "flowchart-v2",
+      "svgWidth": 288,
+      "svgHeight": 559.734375,
+      "viewport": 1000,
+      "overflow": false,
+      "nodeCount": 5,
+      "labels": [
+        "Agent-controlled code and output",
+        "Agent repair",
+        "Isolated PyTorch ranks",
+        "Launcher-owned execution records",
+        "Semantic verifier",
+        "Accepted / rejected recovery"
+      ]
+    },
+    {
+      "name": "dark-desktop",
+      "width": 1000,
+      "theme": "dark",
+      "diagramType": "flowchart-v2",
+      "svgWidth": 288,
+      "svgHeight": 559.734375,
+      "viewport": 1000,
+      "overflow": false,
+      "nodeCount": 5,
+      "labels": [
+        "Agent-controlled code and output",
+        "Agent repair",
+        "Isolated PyTorch ranks",
+        "Launcher-owned execution records",
+        "Semantic verifier",
+        "Accepted / rejected recovery"
+      ]
+    },
+    {
+      "name": "light-mobile",
+      "width": 390,
+      "theme": "default",
+      "diagramType": "flowchart-v2",
+      "svgWidth": 288,
+      "svgHeight": 559.734375,
+      "viewport": 390,
+      "overflow": false,
+      "nodeCount": 5,
+      "labels": [
+        "Agent-controlled code and output",
+        "Agent repair",
+        "Isolated PyTorch ranks",
+        "Launcher-owned execution records",
+        "Semantic verifier",
+        "Accepted / rejected recovery"
+      ]
+    },
+    {
+      "name": "dark-mobile",
+      "width": 390,
+      "theme": "dark",
+      "diagramType": "flowchart-v2",
+      "svgWidth": 288,
+      "svgHeight": 559.734375,
+      "viewport": 390,
+      "overflow": false,
+      "nodeCount": 5,
+      "labels": [
+        "Agent-controlled code and output",
+        "Agent repair",
+        "Isolated PyTorch ranks",
+        "Launcher-owned execution records",
+        "Semantic verifier",
+        "Accepted / rejected recovery"
+      ]
+    }
+  ],
+  "source": "executed",
+  "readme_sha256": "c82cf2f8ede8764ba6854f1db1755f0ce31310afe23fce3a5b5d172190f1145e",
+  "diagram_sha256": "d839a226a378e225843b2781289aaf001f183a25a6895e0f5c678d844acc02b1",
+  "mermaid_version": "12.0.0",
+  "visual_inspection": "light and dark mobile previews inspected; labels readable, no horizontal overflow; desktop uses same parsed diagram",
+  "limits": "local GitHub-style approximation; actual remote GitHub rendering has not run because no push is authorized",
+  "local_tests": {
+    "command": "uv run --no-project --offline <prepared-python> -m pytest -q tests/test_state_recovery_v1.py tests/test_harbor_grader.py",
+    "observed": "24 passed in 0.11s"
+  }
+}

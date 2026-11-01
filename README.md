@@ -10,6 +10,29 @@ A two-rank CPU/Gloo job is interrupted after a checkpoint. Its delivered recover
 
 The [worked example](docs/STATE_RECOVERY_V1.md) also tests stale optimizer momentum, selective restoration, full restoration and recovery from scratch. Correctness and repeated work are reported separately. A NumPy continuation oracle in the research repository cross-checks the trajectories.
 
+
+```mermaid
+---
+config:
+  flowchart:
+    rankSpacing: 18
+    nodeSpacing: 12
+    padding: 8
+    wrappingWidth: 240
+---
+flowchart TB
+    subgraph editable["Agent-controlled code and output"]
+        A["Agent repair"] --> R["Isolated PyTorch ranks"]
+    end
+    R --> L["Launcher-owned execution records"]
+    L --> V["Semantic verifier"]
+    V --> O["Accepted / rejected recovery"]
+```
+
+Launcher records are separate from agent-editable files; captured checkpoint
+contents still require validation. Modal/gVisor and local macOS `sandbox-exec`
+use different isolation boundaries. See the [detailed trust-boundary SVG](ARCHITECTURE.md).
+
 ## Try it
 
 Python 3.12:
@@ -38,16 +61,11 @@ CI runs unit tests; fresh distributed execution and sandboxed repair tests are d
 
 ## Agent and learning research
 
-**Tier A** is single-turn diagnosis, evidence citation and repair-menu selection.
+**Tier A** asks for single-turn diagnosis, evidence citation and repair-menu selection.
 **Tier B** supports multi-turn inspection, source edits, distributed relaunch and feedback.
-Historical Qwen3-4B SFT/GRPO used Tier A; improved repair selection was not established.
-
-In later masked-loss coding trials, Qwen and Gemma applied edits. Qwen relaunched
-its patches and acted after failure feedback, but execution failed with Python errors.
-**Autonomous semantically correct repair has not yet been demonstrated.**
-The [results tables and receipts](https://github.com/TarangKhanna/traindoctor-research)
-separate these attempts from the single-turn training results. One normalization
-patch solves all masked-loss schedules, so the task remains an engineering demonstration.
+The [research results](https://github.com/TarangKhanna/traindoctor-research#results)
+separate post-training scores from coding-agent attempts; autonomous semantically
+correct repair has not yet been demonstrated.
 
 ## Scope
 

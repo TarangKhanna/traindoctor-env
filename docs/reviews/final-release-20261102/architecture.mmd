@@ -1,0 +1,15 @@
+---
+config:
+  flowchart:
+    rankSpacing: 18
+    nodeSpacing: 12
+    padding: 8
+    wrappingWidth: 240
+---
+flowchart TB
+    subgraph editable["Agent-controlled code and output"]
+        A["Agent repair"] --> R["Isolated PyTorch ranks"]
+    end
+    R --> L["Launcher-owned execution records"]
+    L --> V["Semantic verifier"]
+    V --> O["Accepted / rejected recovery"]
