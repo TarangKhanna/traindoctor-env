@@ -45,3 +45,10 @@ Research re-score reproduces 70/3072 V1/V2 differences and 20/384 changed DEV ad
 groups; the fixed global-normalization shortcut blocks further inference/training.
 Research additionally ran two source-only cached-Qwen capability questions,
 without workers or training. No new distributed execution, paid compute, push or publication.
+
+2026-10-31 documentation/reproduction update: concise README and current testing
+status link to the companion clean-checkout reproduction packet. Runtime,
+verifier, dependency pins and isolation policies are unchanged. The listener-test
+failure remains explicit; full fresh Harbor reproduction is not claimed.
+
+2026-10-31 editorial correction: the README leads with launcher-owned execution evidence and states the validated CPU/Gloo scope once. Runtime and historical evidence are unchanged.

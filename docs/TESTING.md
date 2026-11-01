@@ -1,5 +1,14 @@
 # Tests
 
+**2026-10-31 reproduction:** fresh local clones reproduced the worked recovery
+demo and its NumPy recount. A focused selection passed 23 checks but failed
+`test_live_job_and_rendezvous_listeners_are_loopback`: the parent listener was
+loopback, but the test did not observe the worker listener within its polling
+window. The cause remains unresolved; the later successful demo is not proof
+that this test or historical Gloo flakiness is fixed. The companion
+[reproduction record](https://github.com/TarangKhanna/traindoctor-research/blob/main/docs/REPRODUCIBILITY.md)
+separates fresh execution, archived recounts and resource-interrupted Harbor runs.
+
 Three levels, which are not interchangeable:
 
 1. **Unit tests** (CI, every push): `-m "not sweep and not executed"`. No real multi-process job, no sandbox, no Modal. A green CI badge means only this level passed.
