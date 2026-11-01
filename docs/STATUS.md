@@ -38,3 +38,10 @@ Local follow-up: scoped [agent instructions](../AGENTS.md) now bind this branch 
 2026-10-30 audit clarification: Harbor metadata now records the completed local Docker control validation and documents support only for the native Docker provider with both bundled Compose files. A marker-absence regression confirms refusal before runtime probes; 21 adapter tests and reviewed native lint pass. Runtime code and historical receipts are unchanged. This is not a fresh Docker validation or a release CI workflow; other providers remain unvalidated. No model runs, training or publication.
 
 2026-10-31 session close: 21 Harbor adapter tests pass again at the final local gate; reviewed changes are preserved in local commits only. No push, new model episode, training or fresh Docker execution. Existing evidence remains intact. Further work starts with task-discrimination baselines rather than automatic inference or RL.
+
+2026-11-02: isolated overnight audit clarifies Tier A/B and links the corrected-controller
+coding-agent evidence. Historical experiments and runtime behavior are unchanged.
+Research re-score reproduces 70/3072 V1/V2 differences and 20/384 changed DEV advantage
+groups; the fixed global-normalization shortcut blocks further inference/training.
+Research additionally ran two source-only cached-Qwen capability questions,
+without workers or training. No new distributed execution, paid compute, push or publication.
